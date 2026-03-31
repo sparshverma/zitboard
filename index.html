@@ -474,32 +474,46 @@
         </div>
       </section>
 
-      <section id="faq" class="section">
-        <div class="container faq-wrap">
-          <div class="section-head reveal">
+      <section id="faq" class="section faq-reimagined" aria-label="Frequently asked questions">
+        <div class="container faq-shell">
+          <div class="faq-intro reveal">
             <p class="eyebrow">FAQ</p>
-            <h2>Answers for architecture, AI, and operations teams</h2>
+            <h2>FAQs</h2>
+            <p class="faq-intro-text">
+              Everything you need to know about onboarding, plans, platform features, and support.
+            </p>
+            <div class="faq-pill-row" role="tablist" aria-label="FAQ categories">
+              <button class="faq-pill is-active" type="button" role="tab" aria-selected="true" data-faq-category="getting-started">
+                Getting Started
+              </button>
+              <button class="faq-pill" type="button" role="tab" aria-selected="false" data-faq-category="pricing-plans">
+                Pricing &amp; Plans
+              </button>
+              <button class="faq-pill" type="button" role="tab" aria-selected="false" data-faq-category="features-integrations">
+                Features &amp; Integrations
+              </button>
+              <button class="faq-pill" type="button" role="tab" aria-selected="false" data-faq-category="security-support">
+                Security &amp; Technical Support
+              </button>
+            </div>
           </div>
-          <details class="faq-item reveal">
-            <summary>How does AI scoring work?</summary>
-            <p>ML services analyze historical lead behavior and candidate qualifications, producing weighted scores that can be retrained per industry.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>Can we connect our own data sources?</summary>
-            <p>Yes. The plugin architecture supports REST APIs, webhooks, and databases through NestJS adapters.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>How is multi-tenant data protected?</summary>
-            <p>Tenant-scoped access at the database layer plus JWT OAuth flows ensure strict org-level separation.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>Does billing and subscription management exist out of the box?</summary>
-            <p>Yes. Stripe integration supports trials, tiered plans, and secure checkout workflows.</p>
-          </details>
-          <details class="faq-item reveal">
-            <summary>How is the platform deployed?</summary>
-            <p>Cloud-ready Kubernetes manifests with HPA and Prometheus observability are included for production operations.</p>
-          </details>
+
+          <div class="faq-content reveal">
+            <div id="faq-accordion" class="faq-accordion" aria-live="polite"></div>
+            <aside class="faq-support-card" aria-label="Support card">
+              <h3>Still have questions?</h3>
+              <p>
+                Contact our support team and we will make sure everything is clear and intuitive for you.
+              </p>
+              <a
+                class="faq-support-btn cta-track"
+                data-cta="faq_contact_support"
+                href="mailto:support@zitboard.com?subject=ZitBoard%20Support%20Request"
+              >
+                Contact Support
+              </a>
+            </aside>
+          </div>
         </div>
       </section>
 

@@ -384,6 +384,207 @@ if(engineRadios && engineContent) {
   });
 }
 
+// SECTION FAQ: Category switcher and smooth accordion
+const faqSection = document.getElementById('faq');
+const faqAccordion = document.getElementById('faq-accordion');
+const faqCategoryButtons = faqSection
+  ? faqSection.querySelectorAll('.faq-pill[data-faq-category]')
+  : [];
+
+const faqContentMap = {
+  'getting-started': [
+    {
+      q: 'What is ZitBoard and who is it designed for?',
+      a: 'ZitBoard is an all-in-one dashboard SaaS platform that combines CRM, task management, and business analytics in a single workspace. It is built for startups, agencies, and growing businesses that want to replace multiple disconnected tools with one unified platform and get a real-time view of their sales pipeline, team tasks, and KPIs without switching tabs.',
+    },
+    {
+      q: 'How do I create a ZitBoard account?',
+      a: 'Creating a ZitBoard account takes under two minutes. Click the "Sign Up" button on the homepage and register with your email address, or use one-click login via Google or GitHub. No credit card is required to get started.',
+    },
+    {
+      q: 'Can I import data from other CRM tools into ZitBoard?',
+      a: 'Yes. ZitBoard supports CSV imports for contacts, leads, and tasks, making it easy to migrate from tools like HubSpot, Notion, or Trello without losing existing data. The import wizard maps your columns automatically to reduce setup time.',
+    },
+    {
+      q: 'Is ZitBoard easy to use for non-technical teams?',
+      a: 'Absolutely. ZitBoard is designed with a clean, intuitive interface that requires no technical background. The built-in onboarding wizard walks new users through workspace setup, team invites, and dashboard creation in minutes.',
+    },
+    {
+      q: 'Can I use ZitBoard on mobile and desktop?',
+      a: 'Yes. ZitBoard is fully responsive and works seamlessly across desktop browsers, tablets, and smartphones, so your team can manage CRM records and tasks from anywhere, on any device.',
+    },
+  ],
+  'pricing-plans': [
+    {
+      q: 'What pricing plans does ZitBoard offer?',
+      a: 'ZitBoard offers three pricing tiers to suit different team sizes: a Free plan for solo users, a Pro plan for growing teams that need advanced analytics and automation, and an Enterprise plan with custom seat limits and dedicated support. All plans include core CRM and task management features.',
+    },
+    {
+      q: 'Can I upgrade or downgrade my ZitBoard plan anytime?',
+      a: 'Yes. You can switch plans at any time from the Billing section of your dashboard. Upgrades take effect immediately and downgrades are applied at the start of your next billing cycle. All changes are prorated automatically.',
+    },
+    {
+      q: 'How many team members can I add to ZitBoard?',
+      a: 'The Free plan supports up to 3 team members. Pro and Enterprise plans use per-seat pricing, allowing you to scale your workspace as your team grows with no hard caps on the Enterprise tier.',
+    },
+    {
+      q: 'What payment methods does ZitBoard accept?',
+      a: 'ZitBoard accepts all major credit and debit cards - Visa, Mastercard, and American Express - processed securely through Stripe. All transactions are encrypted and PCI-compliant.',
+    },
+    {
+      q: 'Does ZitBoard offer a free trial?',
+      a: 'Yes. ZitBoard offers a 14-day free trial of the Pro plan with no credit card required. The trial gives you full access to advanced analytics, task automation, and integrations so you can evaluate the platform before committing.',
+    },
+  ],
+  'features-integrations': [
+    {
+      q: "Does ZitBoard support automated task assignment?",
+      a: "Yes. ZitBoard's automation engine lets you create rules that auto-assign tasks to team members based on CRM lead status, tags, deal stage, or client request type, eliminating manual triage and speeding up response times.",
+    },
+    {
+      q: "How customisable are ZitBoard's analytics dashboards?",
+      a: 'ZitBoard dashboards are fully customisable. You can drag and drop widgets, pin the KPIs most relevant to your business, and build custom charts for sales pipeline tracking, task completion rates, and team performance, all without writing a single line of code.',
+    },
+    {
+      q: 'What tools and apps does ZitBoard integrate with?',
+      a: 'ZitBoard currently integrates with Slack for real-time notifications and Google Workspace for calendar and document syncing. New integrations are added regularly based on user feedback, with a public integration roadmap available in the product portal.',
+    },
+    {
+      q: 'Can I export reports and CRM data from ZitBoard?',
+      a: 'Yes. All analytics reports and CRM data tables can be exported as CSV or PDF files, making it easy to share insights in external meetings, client reports, or offline backups.',
+    },
+  ],
+  'security-support': [
+    {
+      q: 'Is my business data safe with ZitBoard?',
+      a: 'Yes. ZitBoard uses industry-standard AES-256 encryption for data at rest and TLS encryption for data in transit. The platform is built on Supabase, which provides enterprise-grade database security, automatic backups, and compliance-ready infrastructure.',
+    },
+    {
+      q: 'How do I reset my ZitBoard password?',
+      a: 'Click "Forgot Password" on the login screen and enter your registered email address. You will receive a secure password reset link within a few minutes. If the email does not arrive, check your spam folder or contact support@zitboard.com.',
+    },
+    {
+      q: 'How do I contact ZitBoard customer support?',
+      a: 'ZitBoard offers 24/7 support via the "Contact Support" button at the bottom of this page, or by emailing support@zitboard.com. Pro and Enterprise users also get access to priority support with faster response SLAs.',
+    },
+    {
+      q: 'Does ZitBoard support Two-Factor Authentication (2FA)?',
+      a: 'Yes. ZitBoard supports Two-Factor Authentication (2FA) to protect your account from unauthorised access. You can enable it in Account Settings under the Security tab. We strongly recommend enabling 2FA for all admin and billing users.',
+    },
+    {
+      q: 'What should I do if ZitBoard is running slowly?',
+      a: 'Start by checking your internet connection and clearing your browser cache. If the issue continues, visit the ZitBoard System Status page to check for any ongoing maintenance windows. For persistent performance issues, contact our support team with your browser version and a brief description of the problem.',
+    },
+  ],
+};
+
+if (faqSection && faqAccordion && faqCategoryButtons.length > 0) {
+  let activeCategory = 'getting-started';
+
+  const setAccordionItemState = (item, open) => {
+    const questionButton = item.querySelector('.faq-question');
+    item.classList.toggle('is-open', open);
+    if (questionButton) {
+      questionButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+  };
+
+  const buildAccordionItem = (entry, index, categoryKey) => {
+    const item = document.createElement('article');
+    item.className = 'faq-accordion-item';
+
+    const triggerId = `faq-trigger-${categoryKey}-${index}`;
+    const panelId = `faq-panel-${categoryKey}-${index}`;
+
+    const question = document.createElement('button');
+    question.type = 'button';
+    question.className = 'faq-question';
+    question.id = triggerId;
+    question.setAttribute('aria-expanded', 'false');
+    question.setAttribute('aria-controls', panelId);
+
+    const label = document.createElement('span');
+    label.className = 'faq-question-label';
+    label.textContent = entry.q;
+
+    const icon = document.createElement('span');
+    icon.className = 'faq-toggle-icon';
+    icon.setAttribute('aria-hidden', 'true');
+
+    question.appendChild(label);
+    question.appendChild(icon);
+
+    const answerShell = document.createElement('div');
+    answerShell.className = 'faq-answer-shell';
+    answerShell.id = panelId;
+    answerShell.setAttribute('role', 'region');
+    answerShell.setAttribute('aria-labelledby', triggerId);
+
+    const answer = document.createElement('div');
+    answer.className = 'faq-answer';
+
+    const answerText = document.createElement('p');
+    answerText.textContent = entry.a;
+
+    answer.appendChild(answerText);
+    answerShell.appendChild(answer);
+
+    question.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+
+      faqAccordion.querySelectorAll('.faq-accordion-item').forEach((row) => {
+        setAccordionItemState(row, false);
+      });
+
+      if (!isOpen) {
+        setAccordionItemState(item, true);
+      }
+    });
+
+    item.appendChild(question);
+    item.appendChild(answerShell);
+    return item;
+  };
+
+  const renderFaqCategory = (categoryKey) => {
+    const rows = faqContentMap[categoryKey] || [];
+    const fragment = document.createDocumentFragment();
+
+    faqAccordion.innerHTML = '';
+
+    rows.forEach((entry, index) => {
+      const item = buildAccordionItem(entry, index, categoryKey);
+      fragment.appendChild(item);
+    });
+
+    faqAccordion.appendChild(fragment);
+
+    const firstItem = faqAccordion.querySelector('.faq-accordion-item');
+    if (firstItem) {
+      setAccordionItemState(firstItem, true);
+    }
+  };
+
+  faqCategoryButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const nextCategory = button.getAttribute('data-faq-category');
+      if (!nextCategory || nextCategory === activeCategory) return;
+
+      activeCategory = nextCategory;
+
+      faqCategoryButtons.forEach((pill) => {
+        const isActive = pill === button;
+        pill.classList.toggle('is-active', isActive);
+        pill.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      renderFaqCategory(activeCategory);
+    });
+  });
+
+  renderFaqCategory(activeCategory);
+}
+
 // SECTION 2: Dynamic ROI Calculator
 const slider = document.getElementById('team-size-slider');
 const rateSlider = document.getElementById('hourly-rate-slider');
