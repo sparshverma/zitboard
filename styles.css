@@ -260,6 +260,31 @@ summary:focus-visible {
   to { stroke-dashoffset: 0; }
 }
 
+@keyframes velocityLineShift {
+  0%,
+  100% { stroke-dashoffset: 0; }
+  50% { stroke-dashoffset: -16; }
+}
+
+@keyframes velocityLineGlow {
+  0%,
+  100% { opacity: 0.82; }
+  50% { opacity: 1; }
+}
+
+@keyframes meterBreathe {
+  0%,
+  100% { filter: saturate(1); }
+  50% { filter: saturate(1.15); }
+}
+
+@keyframes meterSweep {
+  0%,
+  20% { transform: translateX(-130%); }
+  60%,
+  100% { transform: translateX(130%); }
+}
+
 .hero-centered-grid {
   position: relative;
   width: 100%;
@@ -317,11 +342,13 @@ summary:focus-visible {
 }
 
 .orbital-widgets {
-  width: 100%;
+  width: min(1300px, 98vw);
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
+  margin: 0 auto;
   pointer-events: none;
   z-index: 2;
 }
@@ -339,11 +366,14 @@ summary:focus-visible {
   text-align: left;
 }
 
-/* Positions */
-.widget-tl { top: -5%; left: 0%; }
-.widget-tr { top: 5%; right: 0%; width: 240px; }
-.widget-bl { bottom: -15%; left: 5%; }
-.widget-br { bottom: -15%; right: 5%; width: 280px; }
+/* Positions - Pushed outward to create breathing room around center content */
+.widget-tl { top: calc(50% - 330px); left: 0%; width: 250px; }
+.widget-ml { top: calc(50% - 50px); left: -3%; width: 250px; }
+.widget-bl { top: calc(50% + 230px); left: 1%; width: 250px; }
+
+.widget-tr { top: calc(50% - 340px); right: 0%; width: 250px; }
+.widget-mr { top: calc(50% - 40px); right: -3%; width: 250px; }
+.widget-br { top: calc(50% + 240px); right: 1%; width: 250px; }
 
 .widget-head {
   font-weight: 700;
@@ -363,6 +393,181 @@ summary:focus-visible {
   border-radius: 4px;
   color: var(--muted);
   font-weight: 600;
+}
+
+.badge-up {
+  background: rgba(32, 178, 108, 0.14);
+  color: #1a8d57;
+}
+
+.badge-warn {
+  background: rgba(245, 158, 11, 0.16);
+  color: #b86b08;
+}
+
+.widget-note {
+  font-size: 0.76rem;
+  color: #66788a;
+  margin: 0.35rem 0 0.65rem;
+}
+
+.velocity-value {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.45rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #243447;
+}
+
+.velocity-sparkline {
+  width: 100%;
+  height: 42px;
+  margin-top: 0.35rem;
+}
+
+.velocity-sparkline polyline {
+  fill: none;
+  stroke: var(--purple-600);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 240;
+  animation: velocityLineShift 10s ease-in-out infinite, velocityLineGlow 4.8s ease-in-out infinite;
+}
+
+.velocity-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.22rem;
+  font-size: 0.68rem;
+  color: #788897;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.health-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.56rem;
+}
+
+.health-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: #5f7384;
+}
+
+.health-list strong {
+  color: #233446;
+}
+
+.text-amber {
+  color: #c87306 !important;
+}
+
+.text-red {
+  color: #db3b5d !important;
+}
+
+.health-meter {
+  margin-top: 0.82rem;
+  padding-top: 0.72rem;
+  border-top: 1px solid rgba(190, 202, 216, 0.66);
+}
+
+.health-meter-label {
+  display: block;
+  font-size: 0.69rem;
+  color: #738497;
+  margin-bottom: 0.36rem;
+}
+
+.health-meter-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(199, 209, 220, 0.65);
+  overflow: hidden;
+}
+
+.health-meter-fill {
+  display: block;
+  position: relative;
+  width: 96%;
+  height: 100%;
+  background: linear-gradient(90deg, #2dd4bf, #8b5cf6);
+  transform-origin: left center;
+  animation: meterBreathe 5s ease-in-out infinite;
+}
+
+.health-meter-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-130%);
+  animation: meterSweep 6s ease-in-out infinite;
+}
+
+@media (max-width: 1360px) and (min-width: 981px) {
+  .interactive-hero {
+    padding-bottom: 4.8rem;
+  }
+
+  .orbital-widgets {
+    position: relative;
+    inset: auto;
+    width: min(1040px, 96%);
+    height: auto;
+    margin-top: 2.2rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    pointer-events: auto;
+  }
+
+  .orbital-card {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto !important;
+    min-height: 156px;
+    transform: none !important;
+  }
+
+  .velocity-sparkline {
+    height: 36px;
+  }
+}
+
+@media (max-height: 940px) and (min-width: 981px) {
+  .orbital-widgets {
+    position: relative;
+    inset: auto;
+    width: min(1040px, 96%);
+    height: auto;
+    margin-top: 2.1rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .orbital-card {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto !important;
+    min-height: 150px;
+    transform: none !important;
+  }
 }
 
 .widget-list {
@@ -1175,6 +1380,8 @@ input[type="checkbox"]:checked::after { left: 16px; }
 [data-theme="dark"] h2,
 [data-theme="dark"] h3,
 [data-theme="dark"] .widget-head,
+[data-theme="dark"] .velocity-value,
+[data-theme="dark"] .health-list strong,
 [data-theme="dark"] .widget-list strong,
 [data-theme="dark"] .a-text,
 [data-theme="dark"] .c-info,
@@ -1197,6 +1404,31 @@ input[type="checkbox"]:checked::after { left: 16px; }
 [data-theme="dark"] .price-points,
 [data-theme="dark"] .trust-badge {
   color: #cbd5e1;
+}
+
+[data-theme="dark"] .widget-note,
+[data-theme="dark"] .velocity-scale,
+[data-theme="dark"] .health-list li,
+[data-theme="dark"] .health-meter-label {
+  color: #b9c6d8;
+}
+
+[data-theme="dark"] .badge-up {
+  background: rgba(32, 178, 108, 0.25);
+  color: #6ee7b7;
+}
+
+[data-theme="dark"] .badge-warn {
+  background: rgba(245, 158, 11, 0.24);
+  color: #facc15;
+}
+
+[data-theme="dark"] .health-meter {
+  border-top-color: rgba(118, 135, 160, 0.5);
+}
+
+[data-theme="dark"] .health-meter-track {
+  background: rgba(79, 96, 121, 0.62);
 }
 
 [data-theme="dark"] .lead-form label {
