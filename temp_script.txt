@@ -1,0 +1,281 @@
+const revealItems = document.querySelectorAll('.reveal');
+
+function readMetaContent(name) {
+  const node = document.querySelector(`meta[name="${name}"]`);
+  return node ? (node.getAttribute('content') || '').trim() : '';
+}
+
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+
+revealItems.forEach((item) => revealObserver.observe(item));
+
+const counters = document.querySelectorAll('.count');
+let countersStarted = false;
+const DEMO_ENDPOINT = window.ZITBOARD_DEMO_ENDPOINT || readMetaContent('zitboard-demo-endpoint');
+const ANALYTICS_ENDPOINT =
+  window.ZITBOARD_ANALYTICS_ENDPOINT || readMetaContent('zitboard-analytics-endpoint');
+
+function animateCounter(el) {
+  const target = Number(el.getAttribute('data-target') || 0);
+  const decimals = Number(el.getAttribute('data-decimals') || 0);
+  const suffix = el.getAttribute('data-suffix') || '';
+  const duration = 1300;
+  const start = performance.now();
+
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const currentValue = progress * target;
+    const value = decimals > 0 ? currentValue.toFixed(decimals) : Math.floor(currentValue);
+    el.textContent = `${value}${suffix}`;
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+const counterObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !entry.target.dataset.started) {
+        entry.target.dataset.started = 'true';
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.1 }
+);
+
+counters.forEach((counter) => counterObserver.observe(counter));
+
+window.dataLayer = window.dataLayer || [];
+
+function trackEvent(name, payload = {}) {
+  const eventPayload = {
+    event: name,
+    timestamp: new Date().toISOString(),
+    ...payload,
+  };
+
+  window.dataLayer.push(eventPayload);
+
+  if (ANALYTICS_ENDPOINT) {
+    const body = JSON.stringify(eventPayload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      navigator.sendBeacon(ANALYTICS_ENDPOINT, blob);
+    } else {
+      fetch(ANALYTICS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+      }).catch(() => {
+        // Avoid blocking UI if analytics endpoint is unavailable.
+      });
+    }
+  }
+}
+
+document.querySelectorAll('.cta-track').forEach((node) => {
+  node.addEventListener('click', () => {
+    trackEvent('cta_click', {
+      ctaId: node.getAttribute('data-cta') || 'unknown',
+      text: (node.textContent || '').trim(),
+    });
+  });
+});
+
+document.querySelectorAll('section[id]').forEach((section) => {
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          trackEvent('funnel_section_view', { sectionId: section.id });
+          sectionObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.45 }
+  );
+
+  sectionObserver.observe(section);
+});
+
+const leadForm = document.querySelector('#lead-form');
+const formMessage = document.querySelector('#form-message');
+// Replaced network logic since status bar is removed
+
+if (leadForm && formMessage) {
+  if (!DEMO_ENDPOINT) {
+    formMessage.textContent =
+      'Form endpoint is not configured. Set ZITBOARD_DEMO_ENDPOINT before production launch.';
+  }
+
+  leadForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    if (!DEMO_ENDPOINT) {
+      trackEvent('lead_form_error', { reason: 'missing_endpoint' });
+      formMessage.textContent =
+        'Submission service is unavailable. Please contact demo@zitboard.com for access.';
+      return;
+    }
+
+    if (!navigator.onLine) {
+      trackEvent('lead_form_error', { reason: 'offline' });
+      formMessage.textContent = 'You appear offline. Reconnect and try again.';
+      return;
+    }
+
+    if (!leadForm.checkValidity()) {
+      formMessage.textContent = 'Please complete all required fields.';
+      trackEvent('lead_form_error', { reason: 'validation' });
+      return;
+    }
+
+    const formData = new FormData(leadForm);
+    const payload = Object.fromEntries(formData.entries());
+
+    formMessage.textContent = 'Submitting your request...';
+
+    try {
+      const response = await fetch(DEMO_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'zitboard_homepage',
+          ...payload,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Request failed');
+      }
+
+      formMessage.textContent = 'Request received. A demo specialist will contact you soon.';
+      trackEvent('lead_form_submit', {
+        endpoint: DEMO_ENDPOINT,
+        teamSize: payload.teamSize,
+        goal: payload.goal,
+      });
+      leadForm.reset();
+    } catch (error) {
+      formMessage.textContent = 'Could not submit right now. Please try again or email demo@zitboard.com.';
+      trackEvent('lead_form_error', {
+        reason: 'network',
+        endpoint: DEMO_ENDPOINT,
+      });
+    }
+  });
+}
+
+// Parallax Interactive Hero
+const interactiveHero = document.querySelector('.interactive-hero');
+if (interactiveHero) {
+  interactiveHero.addEventListener('mousemove', (e) => {
+    if (window.innerWidth < 980) return;
+    
+    const rect = interactiveHero.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    const elements = document.querySelectorAll('.parallax-el');
+    elements.forEach((el) => {
+      const speed = parseFloat(el.getAttribute('data-speed') || '0.05');
+      // Subtle opposite translation
+      el.style.setProperty('--px', (x * speed).toFixed(2));
+      el.style.setProperty('--py', (y * speed).toFixed(2));
+    });
+  });
+  
+  interactiveHero.addEventListener('mouseleave', () => {
+    const elements = document.querySelectorAll('.parallax-el');
+    elements.forEach((el) => {
+      el.style.setProperty('--px', '0');
+      el.style.setProperty('--py', '0');
+    });
+  });
+}
+
+// ----------------------------------------------------
+// Dark Mode Toggle & Ripple Event (View Transitions)
+// ----------------------------------------------------
+const themeBtn = document.getElementById('theme-toggle');
+const iconSun = document.getElementById('icon-sun');
+const iconMoon = document.getElementById('icon-moon');
+
+function applyTheme(isDark) {
+  document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  
+  if (isDark) {
+    iconSun.style.display = 'none';
+    iconMoon.style.display = 'block';
+  } else {
+    iconSun.style.display = 'block';
+    iconMoon.style.display = 'none';
+  }
+}
+
+// Initialize icon state on load
+if (document.documentElement.dataset.theme === 'dark') {
+  iconSun.style.display = 'none';
+  iconMoon.style.display = 'block';
+}
+
+if (themeBtn) {
+  themeBtn.addEventListener('click', (e) => {
+    const isDark = document.documentElement.dataset.theme !== 'dark';
+
+    // Fallback for browsers that don't support View Transitions
+    if (!document.startViewTransition) {
+      applyTheme(isDark);
+      return;
+    }
+
+    // Get click coords for the "waterfall/ripple" center
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    // Calculate the distance to the furthest corner to ensure full screen cover
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      applyTheme(isDark);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+
+      document.documentElement.animate(
+        { clipPath: clipPath },
+        {
+          duration: 700,
+          easing: 'ease-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
+  });
+}
+
+
