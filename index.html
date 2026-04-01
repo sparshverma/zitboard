@@ -219,7 +219,8 @@
       </section>
 
       <!-- SECTION 1: Dual-Engine Interactive Showcase -->
-      <section id="dual-engine" class="section reveal">
+      <section id="dual-engine" class="section reveal theme-frontend">
+        <div class="engine-bg-glow"></div>
         <div class="container">
           <div class="section-head">
             <p class="eyebrow">ONE PLATFORM</p>
@@ -227,122 +228,137 @@
             <p class="section-desc">Toggle our dual-engine command center to see how our engineering agents adapt to your stack.</p>
           </div>
           
-          <div class="engine-toggle-wrap">
-            <div class="engine-toggle">
-              <input type="radio" id="mode-sales" name="engine-mode" value="sales" checked>
-              <label for="mode-sales">Frontend Agent</label>
-              
-              <input type="radio" id="mode-hiring" name="engine-mode" value="hiring">
-              <label for="mode-hiring">Backend Agent</label>
-              <div class="toggle-pill"></div>
+          <div class="engine-toggle-wrapper">
+            <div class="engine-island" role="radiogroup" aria-label="Toggle Agent Mode">
+              <label class="island-tab">
+                <input type="radio" id="mode-sales" name="engine-mode" value="sales" checked class="visually-hidden" aria-label="Frontend Agent">
+                <span class="island-text">Frontend Agent</span>
+              </label>
+              <label class="island-tab">
+                <input type="radio" id="mode-hiring" name="engine-mode" value="hiring" class="visually-hidden" aria-label="Backend Agent">
+                <span class="island-text">Backend Agent</span>
+              </label>
+              <div class="island-pill"></div>
             </div>
           </div>
 
-          <div class="engine-display" id="engine-display">
-            <div class="engine-orb"></div>
-            <div class="engine-content sales-active">
-              <div class="engine-sales glass-panel">
-                  <h3>Frontend Developer Agent</h3>
-                  <p>Expert frontend developer specializing in modern web technologies, UI/UX implementation, and performant web applications.</p>
-                  <ul class="feature-list">
-                    <li><i class="icon">⚛️</i> Modern JS Frameworks (React, Vue)</li>
-                    <li><i class="icon">🎨</i> Responsive &amp; Accessible Design</li>
-                    <li><i class="icon">⚡</i> Web Performance Optimization</li>
-                  </ul>
+          <div class="bento-engine-display" id="engine-display">
+            <!-- Left Side / Agent Details -->
+            <div class="bento-col-left engine-content sales-active">
+              
+              <!-- Frontend Content -->
+              <div class="engine-sales bento-card profile-card">
+                <div class="profile-header">
+                  <div class="agent-avatar frontend-avatar">🖥️</div>
+                  <div>
+                    <h3>Frontend Developer Agent</h3>
+                    <span class="agent-role-badge">UI/UX Specialist</span>
+                  </div>
                 </div>
-              <div class="engine-hiring glass-panel">
-                  <h3>Backend Architect Agent</h3>
-                  <p>Senior Backend Architect focusing on scalable, secure, and resilient system design and API implementation.</p>
-                  <ul class="feature-list">
-                    <li><i class="icon">🏗️</i> Microservices &amp; Systems</li>
-                    <li><i class="icon">🔒</i> Security &amp; Auth</li>
-                    <li><i class="icon">🗄️</i> Database Optimization</li>
-                  </ul>
+                <p>Expert frontend developer specializing in modern web technologies, UI/UX implementation, and performant web applications.</p>
+              </div>
+
+              <div class="engine-sales bento-card skills-card">
+                <h4>Core Capabilities</h4>
+                <ul class="feature-list">
+                  <li><i class="icon">⚛️</i> Modern JS Frameworks (React, Vue)</li>
+                  <li><i class="icon">🎨</i> Responsive &amp; Accessible Design</li>
+                  <li><i class="icon">⚡</i> Web Performance Optimization</li>
+                </ul>
+              </div>
+
+              <!-- Backend Content -->
+              <div class="engine-hiring bento-card profile-card">
+                <div class="profile-header">
+                  <div class="agent-avatar backend-avatar">🏗️</div>
+                  <div>
+                    <h3>Backend Architect Agent</h3>
+                    <span class="agent-role-badge">System Designer</span>
+                  </div>
                 </div>
+                <p>Senior Backend Architect focusing on scalable, secure, and resilient system design and API implementation.</p>
+              </div>
+
+              <div class="engine-hiring bento-card skills-card">
+                <h4>Core Capabilities</h4>
+                <ul class="feature-list">
+                  <li><i class="icon">🌐</i> Microservices &amp; Systems</li>
+                  <li><i class="icon">🔒</i> Security &amp; Auth</li>
+                  <li><i class="icon">🗄️</i> Database Optimization</li>
+                </ul>
+              </div>
             </div>
-            <div class="engine-visual sales-active">
-              <!-- SALES VISUAL -->
-              <div class="visual-pane visual-sales">
-                <div class="float-badge fb-top-right">
-                  <div class="fb-icon" style="background:#8b5cf6;">🏆</div>
-                  <div class="fb-text">
-                    <strong>AI Lead Score</strong>
-                    <span>+85% Conversion</span>
-                  </div>
+
+            <!-- Right Side / Visual Dashboard -->
+            <div class="bento-col-right engine-visual sales-active">
+              <!-- Frontend Visual -->
+              <div class="bento-card visual-pane visual-sales">
+                <div class="visual-header">
+                  <div class="window-controls"><span class="wc close"></span><span class="wc min"></span><span class="wc max"></span></div>
+                  <div class="window-title">App_UI_Refactor.tsx</div>
                 </div>
-                <div class="dashboard-base">
-                  <div class="dash-head">
-                    <div class="dash-dots">
-                      <span class="dot" style="background:#ef4444;"></span><span class="dot" style="background:#eab308;"></span><span class="dot" style="background:#22c55e;"></span>
+                <div class="modern-dashboard">
+                  <div class="float-badge fb-top-right pulse-glow">
+                    <div class="fb-icon" style="background:var(--frontend-accent);">⚡</div>
+                    <div class="fb-text">
+                      <strong>LCP Score</strong>
+                      <span>Improved by 45%</span>
                     </div>
-                    <div class="dash-search"></div>
-                    <div class="dash-tabs"><div class="dtab active"></div><div class="dtab"></div></div>
                   </div>
-                  <div class="dash-body pipeline-body">
-                    <!-- Column 1 -->
-                    <div class="pline-stage">
-                      <div style="font-size: 0.6rem; color: var(--text-light); font-weight: bold; text-transform: uppercase;">Lead Entry</div>
-                      <div class="pcard" style="display:flex; justify-content:space-between; align-items:center; padding: 0 8px; font-size:0.75rem;"><span>Acme Corp</span> <strong>$12k</strong></div>
-                      <div class="pcard" style="display:flex; justify-content:space-between; align-items:center; padding: 0 8px; font-size:0.75rem;"><span>TechFlow</span> <strong>$8k</strong></div>
-                    </div>
-                    <!-- Column 2 -->
-                    <div class="pline-stage">
-                      <div style="font-size: 0.6rem; color: var(--text-light); font-weight: bold; text-transform: uppercase;">Closing Phase</div>
-                      <div class="pcard spark" style="display:flex; justify-content:space-between; align-items:center; padding: 0 8px; font-size:0.75rem;"><span>Global AI</span> <strong style="color:var(--teal-main);">$45k</strong></div>
-                      <div class="pcard" style="display:flex; justify-content:space-between; align-items:center; padding: 0 8px; font-size:0.75rem;"><span>ZitBoard</span> <strong>$11k</strong></div>
-                    </div>
+
+                  <div class="code-editor-mock">
+                    <div class="line"><span class="kd">import</span> <span class="nx">React</span>, { <span class="nx">useState</span> } <span class="kd">from</span> <span class="s">'react'</span>;</div>
+                    <div class="line"><span class="kd">import</span> <span class="nx">styles</span> <span class="kd">from</span> <span class="s">'./UI.module.css'</span>;</div>
+                    <br>
+                    <div class="line"><span class="kd">export const</span> <span class="nx">InteractiveWidget</span> = () =&gt; {</div>
+                    <div class="line indent">  <span class="kd">const</span> [<span class="nx">active</span>, <span class="nx">setActive</span>] = <span class="nx">useState</span>(<span class="kc">false</span>);</div>
+                    <br>
+                    <div class="line indent">  <span class="kd">return</span> (</div>
+                    <div class="line indent2">    &lt;<span class="nx">div</span> <span class="na">className</span>=<span class="s">{styles.bentoGrid}</span>&gt;</div>
+                    <div class="line indent3">      &lt;<span class="nx">GlassCard</span> <span class="na">animate</span>=<span class="s">{active}</span> /&gt;</div>
+                    <div class="line indent2">    &lt;/<span class="nx">div</span>&gt;</div>
+                    <div class="line indent">  );</div>
+                    <div class="line">};</div>
+                  </div>
+                  
+                  <div class="ui-elements-mock">
+                    <div class="mock-btn primary">Click Me</div>
+                    <div class="mock-loader"><div class="spinner"></div> Loading Assets...</div>
                   </div>
                 </div>
               </div>
 
-              <!-- HIRING VISUAL -->
-              <div class="visual-pane visual-hiring">
-                <div class="float-badge fb-top-right">
-                  <div class="fb-icon" style="background:#2dd4bf;">⏱</div>
-                  <div class="fb-text">
-                    <strong>API Uptime</strong>
-                    <span>Reduced by 14 days</span>
-                  </div>
+              <!-- Backend Visual -->
+              <div class="bento-card visual-pane visual-hiring">
+                <div class="visual-header">
+                  <div class="window-controls"><span class="wc close"></span><span class="wc min"></span><span class="wc max"></span></div>
+                  <div class="window-title">System_Architecture.yml</div>
                 </div>
-                <div class="float-badge fb-bottom-left">
-                  <div class="fb-icon" style="background:#0ea5e9;">✨</div>
-                  <div class="fb-text">
-                    <strong>Top Talent</strong>
-                    <span>Automated Sourcing</span>
-                  </div>
-                </div>
-                <div class="dashboard-base" style="border-color: rgba(45,212,191,0.5);">
-                  <div class="dash-head">
-                    <div class="dash-dots">
-                      <span class="dot" style="background:#ef4444;"></span><span class="dot" style="background:#eab308;"></span><span class="dot" style="background:#22c55e;"></span>
+                <div class="modern-dashboard">
+                  <div class="float-badge fb-top-right pulse-glow-backend">
+                    <div class="fb-icon" style="background:var(--backend-accent);">🛡️</div>
+                    <div class="fb-text">
+                      <strong>API Latency</strong>
+                      <span>Reduced to 45ms</span>
                     </div>
-                    <div class="dash-search" style="width: 60%"></div>
                   </div>
-                  <div class="dash-body">
-                      <div class="dash-nav" style="opacity:0.8; font-size:0.6rem; color:var(--text-light); padding:10px 5px; display:flex; flex-direction:column; gap:12px;">
-                        <div style="display:flex; flex-direction:column;">
-                          <strong style="color:var(--text); font-size:1.1rem; line-height:1;">42</strong> Active Roles
-                        </div>
-                        <div style="display:flex; flex-direction:column;">
-                          <strong style="color:var(--text); font-size:1.1rem; line-height:1;">18</strong> Interviews
-                        </div>
-                      </div>
-                      <div class="dash-content">
-                        <div class="dash-chart-area" style="flex-direction:column; justify-content:flex-start; align-items:flex-start;">
-                          <div style="font-size:0.7rem; font-weight:bold; color:var(--text); z-index:2;">Applicant Velocity</div>
-                          <div style="font-size:1.2rem; font-weight:800; color:#2dd4bf; z-index:2; margin-top:2px;">24 Days <span style="font-size:0.6rem; color:#22c55e;">↓ 12% YoY</span></div>
-                          <!-- Simulated SVG Line Chart -->
-                          <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none" style="position:absolute; bottom:0; left:0; width:100%; height:50%;">
-                            <polyline fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,25 20,20 40,22 60,10 80,15 100,5"/>
-                          </svg>
-                        </div>
-                        <div class="dash-bars">
-                          <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:var(--text-light); font-weight:500;"><span>Engineering Fit</span><span>85% Match</span></div>
-                          <div class="dbar" style="width:100%; height:6px; background:var(--border-color); overflow:hidden;"><div style="width:85%; background:#8b5cf6; height:100%;"></div></div>
-                          <div style="display:flex; justify-content:space-between; font-size:0.6rem; color:var(--text-light); font-weight:500; margin-top:2px;"><span>Marketing Fit</span><span>62% Match</span></div>
-                          <div class="dbar" style="width:100%; height:6px; background:var(--border-color); overflow:hidden;"><div style="width:62%; background:#2dd4bf; height:100%;"></div></div>
-                      </div>
+                  
+                  <div class="server-mock">
+                    <div class="server-node"><div class="node-icon">API</div><div class="node-line"></div></div>
+                    <div class="server-status">
+                      <div class="status-row"><span>Load Balancer</span> <span class="sys-ok">Healthy</span></div>
+                      <div class="status-row"><span>Auth Service</span> <span class="sys-ok">25ms</span></div>
+                      <div class="status-row"><span>Database</span> <span class="sys-ok">Synced</span></div>
                     </div>
+                  </div>
+                  
+                  <div class="code-editor-mock metrics">
+                    <div class="line"><span class="c">// GET /api/v1/metrics</span></div>
+                    <div class="line">{</div>
+                    <div class="line indent">  <span class="s">"status"</span>: <span class="s">"operational"</span>,</div>
+                    <div class="line indent">  <span class="s">"requests_sec"</span>: <span class="mi">4200</span>,</div>
+                    <div class="line indent">  <span class="s">"error_rate"</span>: <span class="mi">0.01%</span></div>
+                    <div class="line">}</div>
                   </div>
                 </div>
               </div>

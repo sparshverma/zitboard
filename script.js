@@ -362,9 +362,12 @@ if (orbitContainer && orbitToggle) {
 const engineRadios = document.querySelectorAll('input[name="engine-mode"]');
 const engineContent = document.querySelector('.engine-content');
 const engineVisual = document.querySelector('.engine-visual');
+const dualEngineSection = document.getElementById('dual-engine');
+
 if(engineRadios && engineContent) {
   engineRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
+      // Changed to 'frontend' from 'sales'
       if(e.target.value === 'sales') {
         engineContent.classList.remove('hiring-active');
         engineContent.classList.add('sales-active');
@@ -372,12 +375,20 @@ if(engineRadios && engineContent) {
           engineVisual.classList.remove('hiring-active');
           engineVisual.classList.add('sales-active');
         }
+        if(dualEngineSection) {
+          dualEngineSection.classList.remove('theme-backend');
+          dualEngineSection.classList.add('theme-frontend');
+        }
       } else {
         engineContent.classList.remove('sales-active');
         engineContent.classList.add('hiring-active');
         if(engineVisual) {
           engineVisual.classList.remove('sales-active');
           engineVisual.classList.add('hiring-active');
+        }
+        if(dualEngineSection) {
+          dualEngineSection.classList.remove('theme-frontend');
+          dualEngineSection.classList.add('theme-backend');
         }
       }
     });
