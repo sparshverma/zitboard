@@ -358,40 +358,296 @@ if (orbitContainer && orbitToggle) {
    FOUR NEW SECTIONS JS INTERACTIONS
    ========================================================================= */
 
-// SECTION 1: Dual-Engine Switch
-const engineRadios = document.querySelectorAll('input[name="engine-mode"]');
-const engineContent = document.querySelector('.engine-content');
-const engineVisual = document.querySelector('.engine-visual');
-const dualEngineSection = document.getElementById('dual-engine');
+// SECTION 1: Interactive Feature Cards
+const featureCardsSection = document.getElementById('feature-cards');
 
-if(engineRadios && engineContent) {
-  engineRadios.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      // Changed to 'frontend' from 'sales'
-      if(e.target.value === 'sales') {
-        engineContent.classList.remove('hiring-active');
-        engineContent.classList.add('sales-active');
-        if(engineVisual) {
-          engineVisual.classList.remove('hiring-active');
-          engineVisual.classList.add('sales-active');
-        }
-        if(dualEngineSection) {
-          dualEngineSection.classList.remove('theme-backend');
-          dualEngineSection.classList.add('theme-frontend');
-        }
-      } else {
-        engineContent.classList.remove('sales-active');
-        engineContent.classList.add('hiring-active');
-        if(engineVisual) {
-          engineVisual.classList.remove('sales-active');
-          engineVisual.classList.add('hiring-active');
-        }
-        if(dualEngineSection) {
-          dualEngineSection.classList.remove('theme-frontend');
-          dualEngineSection.classList.add('theme-backend');
-        }
+if (featureCardsSection) {
+  const growthTrack = featureCardsSection.querySelector('[data-feature-track="growth"]');
+  const operationsTrack = featureCardsSection.querySelector('[data-feature-track="operations"]');
+  const growthViewport = featureCardsSection.querySelector('#feature-track-growth');
+  const operationsViewport = featureCardsSection.querySelector('#feature-track-operations');
+  const viewports = featureCardsSection.querySelectorAll('.feature-track-viewport');
+
+  const featureData = {
+    growth: [
+      {
+        icon: '🎯',
+        title: 'The "Game-On" CRM Pipeline',
+        description: 'Drag, drop, and win. Our visual pipeline turns closing deals into a satisfying game. Watch your progress bars fill up and celebrate every victory.',
+        benefit: 'Close deals 30% faster.'
+      },
+      {
+        icon: '🔮',
+        title: 'AI Lead Clairvoyance',
+        description: 'Stop guessing who to call. Our built-in Machine Learning automatically scores your leads, pointing you directly to the ones ready to buy today.',
+        benefit: 'Focus only on hot leads.'
+      },
+      {
+        icon: '📊',
+        title: 'Metrics That Look Like Art',
+        description: 'Say goodbye to endless, ugly spreadsheets. Get gorgeous, real-time analytics dashboards that make understanding your business growth actually enjoyable.',
+        benefit: 'Know your numbers instantly.'
+      },
+      {
+        icon: '💸',
+        title: '"Set It & Forget It" Billing',
+        description: 'Automated invoicing, subscription management, and webhook triggers mean the money keeps flowing in, even while you’re on vacation.',
+        benefit: 'Get paid while you sleep.'
+      },
+      {
+        icon: '✍️',
+        title: 'Frictionless Deal Contracts',
+        description: 'Generate, send, and securely store deal contracts in seconds. Get signatures before your morning coffee even has a chance to get cold.',
+        benefit: 'Zero paperwork headaches.'
+      },
+      {
+        icon: '📈',
+        title: 'The Cashflow Crystal Ball',
+        description: 'Effortlessly predict your upcoming quarters. Our sales module analyzes your pipeline to give you pinpoint-accurate revenue forecasts without the math anxiety.',
+        benefit: 'Plan your future with confidence.'
+      },
+      {
+        icon: '🤖',
+        title: 'Smart AI Follow-Ups',
+        description: 'Never let a warm lead go cold again. Your dashboard gently nudges you at the exact right moment to follow up, keeping your relationships thriving.',
+        benefit: 'Perfect timing, zero memory required.'
+      },
+      {
+        icon: '🚀',
+        title: 'Real-Time Revenue Alerts',
+        description: 'We turned our enterprise-grade monitoring into your personal hype machine. Get instant, satisfying notifications the second a big deal crosses the finish line.',
+        benefit: 'Celebrate wins in real-time.'
+      },
+      {
+        icon: '🌌',
+        title: 'The Universal Sales Command Center',
+        description: 'Your inbox, calendar, and contacts, all blended into one beautiful interface. No more tab-switching fatigue—rule your sales universe from a single screen.',
+        benefit: 'Reclaim 2 hours every day.'
+      }
+    ],
+    operations: [
+      {
+        icon: '🌟',
+        title: 'Hiring That Feels Like Magic',
+        description: 'Sifting through resumes is a thing of the past. Our ATS organizes candidates beautifully so you can find your next superstar seamlessly.',
+        benefit: 'Build your dream team stress-free.'
+      },
+      {
+        icon: '🦄',
+        title: 'AI Applicant Matchmaker',
+        description: 'Need a unicorn candidate? Our ML scoring pipeline reads between the lines of every application to highlight the absolute best fits for your company culture.',
+        benefit: 'Skip the resume black hole.'
+      },
+      {
+        icon: '✅',
+        title: 'Zen-Mode Task Management',
+        description: 'Turn daily chaos into a satisfying checklist. Create, assign, and clear tasks with smooth animations that make getting things done feel like a reward.',
+        benefit: 'Clear your mind and your desk.'
+      },
+      {
+        icon: '🧩',
+        title: 'Plays Nice With Everyone (Plugins)',
+        description: 'Bring your favorite tools to the party. Our one-click integrations meaning your dashboard talks effortlessly to the apps you already know and love.',
+        benefit: 'No more copy-pasting between apps.'
+      },
+      {
+        icon: '🛡️',
+        title: 'Fort Knox Security',
+        description: 'Enterprise-grade authentication, SSO, and comprehensive audit logs wrap your business in an invisible shield. Sleep soundly knowing your data is locked down.',
+        benefit: 'Total peace of mind.'
+      },
+      {
+        icon: '⚙️',
+        title: 'Invisible Robot Assistants',
+        description: 'Routine tasks are for robots. Set up automated workflows that trigger actions across your dashboard so you can focus on high-impact, creative work.',
+        benefit: 'Automate the boring stuff.'
+      },
+      {
+        icon: '⚡',
+        title: '"Always On" Reliability',
+        description: 'Built on robust, auto-scaling Kubernetes architecture. While you\'re logging off for the weekend, your platform is scaling up to handle traffic spikes flawlessly.',
+        benefit: '99.99% uptime, 0% stress.'
+      },
+      {
+        icon: '🔑',
+        title: 'One-Click VIP Access',
+        description: 'Smart Role-Based Access Control means you can hand out the right "keys" to the right employees instantly. No IT degree required to keep things secure.',
+        benefit: 'Easy, safe delegation.'
+      },
+      {
+        icon: '🌍',
+        title: 'Timezone-Defying Collaboration',
+        description: 'Shared views, notes, and activity streams keep your entire team in sync, whether they are sitting across the desk or across the globe. High-fives everywhere.',
+        benefit: 'Sync up without the meetings.'
+      }
+    ]
+  };
+
+  const createCardMarkup = (item, setName, index) => `
+    <button class="feature-track-card" type="button" data-feature-set="${setName}" data-feature-index="${index}" style="--feature-order:${index};">
+      <span class="feature-track-icon" aria-hidden="true">${item.icon}</span>
+      <h4 class="feature-track-title">${item.title}</h4>
+      <p class="feature-track-description">${item.description}</p>
+      <p class="feature-track-benefit">Lifestyle Benefit<span>${item.benefit}</span></p>
+    </button>
+  `;
+
+  const growthLoop = [...featureData.growth, ...featureData.growth];
+  const operationsLoop = [...featureData.operations, ...featureData.operations];
+
+  if (growthTrack) {
+    growthTrack.innerHTML = growthLoop
+      .map((item, index) => createCardMarkup(item, 'growth', index % featureData.growth.length))
+      .join('');
+  }
+
+  if (operationsTrack) {
+    operationsTrack.innerHTML = operationsLoop
+      .map((item, index) => createCardMarkup(item, 'operations', index % featureData.operations.length))
+      .join('');
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const railState = [
+    growthViewport && growthTrack
+      ? { viewport: growthViewport, track: growthTrack, direction: 1, speed: 1.05, paused: false }
+      : null,
+    operationsViewport && operationsTrack
+      ? { viewport: operationsViewport, track: operationsTrack, direction: -1, speed: 1.05, paused: false }
+      : null
+  ].filter(Boolean);
+
+  const syncRailGeometry = () => {
+    railState.forEach((state) => {
+      state.loopWidth = state.track.scrollWidth / 2;
+
+      if (!state.loopWidth) return;
+
+      if (state.viewport.scrollLeft < 1) {
+        state.viewport.scrollLeft = state.loopWidth / 2;
+      }
+
+      if (state.viewport.scrollLeft >= state.loopWidth) {
+        state.viewport.scrollLeft -= state.loopWidth;
       }
     });
+  };
+
+  railState.forEach((state) => {
+
+    const pause = () => {
+      state.paused = true;
+    };
+
+    const resume = () => {
+      state.paused = false;
+    };
+
+    state.viewport.addEventListener('pointerenter', pause);
+    state.viewport.addEventListener('pointerleave', resume);
+    state.viewport.addEventListener('focusin', pause);
+    state.viewport.addEventListener('focusout', resume);
+    state.viewport.addEventListener('touchstart', pause, { passive: true });
+    state.viewport.addEventListener('touchend', resume, { passive: true });
+    state.viewport.addEventListener('touchcancel', resume, { passive: true });
+  });
+
+  let featureRailsRaf = 0;
+
+  const tickFeatureRails = () => {
+    railState.forEach((state) => {
+      if (state.paused || !state.loopWidth) return;
+
+      state.viewport.scrollLeft += state.direction * state.speed;
+
+      if (state.direction > 0 && state.viewport.scrollLeft >= state.loopWidth) {
+        state.viewport.scrollLeft -= state.loopWidth;
+      }
+
+      if (state.direction < 0 && state.viewport.scrollLeft <= 0) {
+        state.viewport.scrollLeft += state.loopWidth;
+      }
+    });
+
+    featureRailsRaf = window.requestAnimationFrame(tickFeatureRails);
+  };
+
+  if (!prefersReducedMotion && railState.length) {
+    window.requestAnimationFrame(() => {
+      syncRailGeometry();
+      tickFeatureRails();
+    });
+  }
+
+  viewports.forEach((viewport) => {
+    viewport.addEventListener('wheel', (event) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+
+      const state = railState.find((item) => item.viewport === viewport);
+      if (state) {
+        state.paused = true;
+      }
+
+      viewport.scrollLeft += event.deltaY;
+      event.preventDefault();
+
+      if (state) {
+        window.clearTimeout(state.resumeTimer);
+        state.resumeTimer = window.setTimeout(() => {
+          state.paused = false;
+        }, 240);
+      }
+    }, { passive: false });
+  });
+
+  const interactiveCards = featureCardsSection.querySelectorAll('.feature-track-card');
+  const canHover = window.matchMedia('(pointer: fine)').matches;
+
+  if (canHover) {
+    interactiveCards.forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+
+        const rotateY = (x - 0.5) * 10;
+        const rotateX = (0.5 - y) * 8;
+
+        card.style.setProperty('--card-rotate-x', `${rotateX.toFixed(2)}deg`);
+        card.style.setProperty('--card-rotate-y', `${rotateY.toFixed(2)}deg`);
+        card.style.setProperty('--glow-x', `${(x * 100).toFixed(2)}%`);
+        card.style.setProperty('--glow-y', `${(y * 100).toFixed(2)}%`);
+      });
+
+      card.addEventListener('pointerenter', () => {
+        card.classList.add('is-hovering');
+      });
+
+      card.addEventListener('pointerleave', () => {
+        card.classList.remove('is-hovering');
+        card.style.setProperty('--card-rotate-x', '0deg');
+        card.style.setProperty('--card-rotate-y', '0deg');
+        card.style.setProperty('--glow-x', '50%');
+        card.style.setProperty('--glow-y', '18%');
+      });
+    });
+  }
+
+  featureCardsSection.addEventListener('click', (event) => {
+    const card = event.target.closest('.feature-track-card');
+    if (!card) return;
+
+    if (typeof trackEvent === 'function') {
+      trackEvent('feature_card_select', {
+        set: card.getAttribute('data-feature-set'),
+        index: Number(card.getAttribute('data-feature-index'))
+      });
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    syncRailGeometry();
   });
 }
 

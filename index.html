@@ -69,7 +69,7 @@
               <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
               <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
-            <a class="nav-demo-btn cta-track" data-cta="nav_book_demo" href="index.html#cta">Book Demo</a>
+            <a class="nav-demo-btn cta-track" data-cta="nav_login" href="login.html">Login / Sign Up</a>
           </div>
         </div>
 
@@ -218,151 +218,38 @@
         </div>
       </section>
 
-      <!-- SECTION 1: Dual-Engine Interactive Showcase -->
-      <section id="dual-engine" class="section reveal theme-frontend">
-        <div class="engine-bg-glow"></div>
+      <!-- SECTION 1: Interactive Horizontal Feature Tracks -->
+      <section id="feature-cards" class="section reveal feature-cards" aria-labelledby="feature-cards-title">
+        <div class="feature-bg-glow" aria-hidden="true"></div>
         <div class="container">
           <div class="section-head">
-            <p class="eyebrow">ONE PLATFORM</p>
-            <h2>Code <em>Smarter</em>. Build <em>Faster</em>.</h2>
-            <p class="section-desc">Toggle our dual-engine command center to see how our engineering agents adapt to your stack.</p>
-          </div>
-          
-          <div class="engine-toggle-wrapper">
-            <div class="engine-island" role="radiogroup" aria-label="Toggle Agent Mode">
-              <label class="island-tab">
-                <input type="radio" id="mode-sales" name="engine-mode" value="sales" checked class="visually-hidden" aria-label="Frontend Agent">
-                <span class="island-text">Frontend Agent</span>
-              </label>
-              <label class="island-tab">
-                <input type="radio" id="mode-hiring" name="engine-mode" value="hiring" class="visually-hidden" aria-label="Backend Agent">
-                <span class="island-text">Backend Agent</span>
-              </label>
-              <div class="island-pill"></div>
-            </div>
+            <p class="eyebrow">USE CASES</p>
+            <h2 id="feature-cards-title">Stop Running 14 Tabs. <em>Start Running a Business.</em></h2>
+            <p class="section-desc">One dashboard to close deals, hire superstars, automate the boring stuff, and get paid — while you're busy doing literally anything else.</p>
           </div>
 
-          <div class="bento-engine-display" id="engine-display">
-            <!-- Left Side / Agent Details -->
-            <div class="bento-col-left engine-content sales-active">
-              
-              <!-- Frontend Content -->
-              <div class="engine-sales bento-card profile-card">
-                <div class="profile-header">
-                  <div class="agent-avatar frontend-avatar">🖥️</div>
-                  <div>
-                    <h3>Frontend Developer Agent</h3>
-                    <span class="agent-role-badge">UI/UX Specialist</span>
-                  </div>
-                </div>
-                <p>Expert frontend developer specializing in modern web technologies, UI/UX implementation, and performant web applications.</p>
+          <div class="feature-sets">
+            <article class="feature-set feature-set-growth" aria-labelledby="feature-set-growth-title">
+              <div class="feature-set-head">
+                <h3 id="feature-set-growth-title">Supercharge Your Growth &amp; Revenue</h3>
               </div>
-
-              <div class="engine-sales bento-card skills-card">
-                <h4>Core Capabilities</h4>
-                <ul class="feature-list">
-                  <li><i class="icon">⚛️</i> Modern JS Frameworks (React, Vue)</li>
-                  <li><i class="icon">🎨</i> Responsive &amp; Accessible Design</li>
-                  <li><i class="icon">⚡</i> Web Performance Optimization</li>
-                </ul>
-              </div>
-
-              <!-- Backend Content -->
-              <div class="engine-hiring bento-card profile-card">
-                <div class="profile-header">
-                  <div class="agent-avatar backend-avatar">🏗️</div>
-                  <div>
-                    <h3>Backend Architect Agent</h3>
-                    <span class="agent-role-badge">System Designer</span>
-                  </div>
-                </div>
-                <p>Senior Backend Architect focusing on scalable, secure, and resilient system design and API implementation.</p>
-              </div>
-
-              <div class="engine-hiring bento-card skills-card">
-                <h4>Core Capabilities</h4>
-                <ul class="feature-list">
-                  <li><i class="icon">🌐</i> Microservices &amp; Systems</li>
-                  <li><i class="icon">🔒</i> Security &amp; Auth</li>
-                  <li><i class="icon">🗄️</i> Database Optimization</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Right Side / Visual Dashboard -->
-            <div class="bento-col-right engine-visual sales-active">
-              <!-- Frontend Visual -->
-              <div class="bento-card visual-pane visual-sales">
-                <div class="visual-header">
-                  <div class="window-controls"><span class="wc close"></span><span class="wc min"></span><span class="wc max"></span></div>
-                  <div class="window-title">App_UI_Refactor.tsx</div>
-                </div>
-                <div class="modern-dashboard">
-                  <div class="float-badge fb-top-right pulse-glow">
-                    <div class="fb-icon" style="background:var(--frontend-accent);">⚡</div>
-                    <div class="fb-text">
-                      <strong>LCP Score</strong>
-                      <span>Improved by 45%</span>
-                    </div>
-                  </div>
-
-                  <div class="code-editor-mock">
-                    <div class="line"><span class="kd">import</span> <span class="nx">React</span>, { <span class="nx">useState</span> } <span class="kd">from</span> <span class="s">'react'</span>;</div>
-                    <div class="line"><span class="kd">import</span> <span class="nx">styles</span> <span class="kd">from</span> <span class="s">'./UI.module.css'</span>;</div>
-                    <br>
-                    <div class="line"><span class="kd">export const</span> <span class="nx">InteractiveWidget</span> = () =&gt; {</div>
-                    <div class="line indent">  <span class="kd">const</span> [<span class="nx">active</span>, <span class="nx">setActive</span>] = <span class="nx">useState</span>(<span class="kc">false</span>);</div>
-                    <br>
-                    <div class="line indent">  <span class="kd">return</span> (</div>
-                    <div class="line indent2">    &lt;<span class="nx">div</span> <span class="na">className</span>=<span class="s">{styles.bentoGrid}</span>&gt;</div>
-                    <div class="line indent3">      &lt;<span class="nx">GlassCard</span> <span class="na">animate</span>=<span class="s">{active}</span> /&gt;</div>
-                    <div class="line indent2">    &lt;/<span class="nx">div</span>&gt;</div>
-                    <div class="line indent">  );</div>
-                    <div class="line">};</div>
-                  </div>
-                  
-                  <div class="ui-elements-mock">
-                    <div class="mock-btn primary">Click Me</div>
-                    <div class="mock-loader"><div class="spinner"></div> Loading Assets...</div>
-                  </div>
+              <div class="feature-track-shell">
+                <div class="feature-track-viewport" id="feature-track-growth" aria-label="Growth and revenue feature cards" tabindex="0">
+                  <div class="feature-track" data-feature-track="growth"></div>
                 </div>
               </div>
+            </article>
 
-              <!-- Backend Visual -->
-              <div class="bento-card visual-pane visual-hiring">
-                <div class="visual-header">
-                  <div class="window-controls"><span class="wc close"></span><span class="wc min"></span><span class="wc max"></span></div>
-                  <div class="window-title">System_Architecture.yml</div>
-                </div>
-                <div class="modern-dashboard">
-                  <div class="float-badge fb-top-right pulse-glow-backend">
-                    <div class="fb-icon" style="background:var(--backend-accent);">🛡️</div>
-                    <div class="fb-text">
-                      <strong>API Latency</strong>
-                      <span>Reduced to 45ms</span>
-                    </div>
-                  </div>
-                  
-                  <div class="server-mock">
-                    <div class="server-node"><div class="node-icon">API</div><div class="node-line"></div></div>
-                    <div class="server-status">
-                      <div class="status-row"><span>Load Balancer</span> <span class="sys-ok">Healthy</span></div>
-                      <div class="status-row"><span>Auth Service</span> <span class="sys-ok">25ms</span></div>
-                      <div class="status-row"><span>Database</span> <span class="sys-ok">Synced</span></div>
-                    </div>
-                  </div>
-                  
-                  <div class="code-editor-mock metrics">
-                    <div class="line"><span class="c">// GET /api/v1/metrics</span></div>
-                    <div class="line">{</div>
-                    <div class="line indent">  <span class="s">"status"</span>: <span class="s">"operational"</span>,</div>
-                    <div class="line indent">  <span class="s">"requests_sec"</span>: <span class="mi">4200</span>,</div>
-                    <div class="line indent">  <span class="s">"error_rate"</span>: <span class="mi">0.01%</span></div>
-                    <div class="line">}</div>
-                  </div>
+            <article class="feature-set feature-set-operations" aria-labelledby="feature-set-operations-title">
+              <div class="feature-set-head">
+                <h3 id="feature-set-operations-title">Streamline Operations &amp; Build Your Dream Team</h3>
+              </div>
+              <div class="feature-track-shell">
+                <div class="feature-track-viewport" id="feature-track-operations" aria-label="Operations and team feature cards" tabindex="0">
+                  <div class="feature-track" data-feature-track="operations"></div>
                 </div>
               </div>
-            </div>
+            </article>
           </div>
         </div>
       </section>
