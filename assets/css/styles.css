@@ -4009,6 +4009,12 @@ input[type="checkbox"]:checked::after { left: 16px; }
   font-size: 0.95rem;
 }
 
+.social-btn svg {
+  flex-shrink: 0;
+  width: 20px !important;
+  height: 20px !important;
+}
+
 .social-btn:hover {
   background: var(--bg-soft);
   border-color: var(--text);
