@@ -60,6 +60,11 @@ const counterObserver = new IntersectionObserver(
 
 counters.forEach((counter) => counterObserver.observe(counter));
 
+// Initialize Lucide Icons
+if (typeof lucide !== 'undefined') {
+  lucide.createIcons();
+}
+
 window.dataLayer = window.dataLayer || [];
 
 function trackEvent(name, payload = {}) {
@@ -1124,4 +1129,5 @@ document.addEventListener('DOMContentLoaded', () => {
     slider.dispatchEvent(event);
   }
 });
+
 

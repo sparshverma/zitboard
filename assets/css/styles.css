@@ -3823,7 +3823,7 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .auth-side-image {
   flex: 1;
   position: relative;
-  background: url('dash_1.png') center/cover no-repeat;
+  background: url('../../dash_1.png') center/cover no-repeat;
   padding: 2.5rem;
   display: flex;
   flex-direction: column;
@@ -3852,6 +3852,7 @@ input[type="checkbox"]:checked::after { left: 16px; }
   font-weight: 700;
   letter-spacing: -0.05em;
   font-family: "Space Grotesk", sans-serif;
+  -webkit-text-stroke: 0.4px #000;
 }
 
 .back-badge {
@@ -3923,7 +3924,7 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .auth-input {
   width: 100%;
   background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--border-color);
   padding: 1.1rem;
   border-radius: 8px;
   color: var(--text);
@@ -3980,7 +3981,7 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .auth-divider::before, .auth-divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .auth-divider:not(:empty)::before { margin-right: 1em; }
@@ -3994,10 +3995,10 @@ input[type="checkbox"]:checked::after { left: 16px; }
 
 .social-btn {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--border-color);
   padding: 0.9rem;
   border-radius: 8px;
-  color: #fff;
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4009,8 +4010,8 @@ input[type="checkbox"]:checked::after { left: 16px; }
 }
 
 .social-btn:hover {
-  background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.2);
+  background: var(--bg-soft);
+  border-color: var(--text);
 }
 
 @media (max-width: 980px) {
