@@ -30,10 +30,10 @@
         <h1>Welcome back</h1>
         <p class="subtitle">Don't have an account? <a href="signup.html">Sign up</a></p>
 
-        <form onsubmit="event.preventDefault();">
+        <form action="login.html" id="loginForm">
           <div class="auth-form-grid full">
-            <input type="email" class="auth-input" placeholder="Email" aria-label="Email">
-            <input type="password" class="auth-input" placeholder="Password" aria-label="Password">
+            <input type="email" class="auth-input" placeholder="Email" aria-label="Email" required>
+            <input type="password" class="auth-input" placeholder="Password" aria-label="Password" required>
           </div>
           
           <div class="auth-checkbox" style="justify-content: space-between;">
@@ -63,6 +63,9 @@
   </div>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/auth.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html>

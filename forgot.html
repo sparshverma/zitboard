@@ -30,7 +30,7 @@
         <h1>Reset Password</h1>
         <p class="subtitle">Enter the email associated with your account and we'll send you a link to reset your password.</p>
 
-        <form onsubmit="event.preventDefault();">
+        <form action="forgot.html" id="forgotForm">
           <div class="auth-form-grid full" style="margin-bottom: 2.5rem;">
             <input type="email" class="auth-input" placeholder="Email address" aria-label="Email Address" required>
           </div>
@@ -46,6 +46,9 @@
   </div>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/auth.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html>

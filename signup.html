@@ -30,15 +30,15 @@
         <h1>Create an account</h1>
         <p class="subtitle">Already have an account? <a href="login.html">Log in</a></p>
 
-        <form onsubmit="event.preventDefault();">
+        <form action="signup.html" id="signupForm">
           <div class="auth-form-grid">
-            <input type="text" class="auth-input" placeholder="First name" aria-label="First Name">
-            <input type="text" class="auth-input" placeholder="Last name" aria-label="Last Name">
+            <input type="text" class="auth-input" placeholder="First name" aria-label="First Name" required>
+            <input type="text" class="auth-input" placeholder="Last name" aria-label="Last Name" required>
           </div>
           <div class="auth-form-grid full">
-            <input type="email" class="auth-input" placeholder="Email" aria-label="Email">
+            <input type="email" class="auth-input" placeholder="Email" aria-label="Email" required>
             <div class="auth-input-group">
-              <input type="password" class="auth-input" placeholder="Enter your password" aria-label="Password">
+              <input type="password" class="auth-input" placeholder="Enter your password" aria-label="Password" required>
             </div>
           </div>
           
@@ -62,6 +62,9 @@
   </div>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/auth.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html>
