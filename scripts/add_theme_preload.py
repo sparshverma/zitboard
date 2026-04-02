@@ -1,3 +1,4 @@
+import os
 import glob
 import re
 
@@ -9,7 +10,7 @@ preload_script = """    <!-- Preload Theme to avoid flash -->
     </script>
 """
 
-for fpath in glob.glob('ZitBoard/*.html'):
+for fpath in glob.glob(os.path.join(os.path.dirname(os.path.dirname(__file__)), '*.html')):
     with open(fpath, 'r', encoding='utf-8') as f:
         content = f.read()
 

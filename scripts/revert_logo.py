@@ -1,6 +1,7 @@
+import os
 import glob
 
-for fpath in glob.glob('*.html'):
+for fpath in glob.glob(os.path.join(os.path.dirname(os.path.dirname(__file__)), '*.html')):
     with open(fpath, 'r', encoding='utf-8') as f:
         content = f.read()
 
