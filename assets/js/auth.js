@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Login Form
   const loginForm = document.querySelector('form[action="login.html"], form'); // We'll infer it by page
-  if (window.location.pathname.includes('login.html') && loginForm) {
+  if (window.location.pathname.includes('login') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = loginForm.querySelector('input[type="email"]').value;
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Signup Form
-  if (window.location.pathname.includes('signup.html') && loginForm) {
+  if (window.location.pathname.includes('signup') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       // Adjust to grab the appropriate query selectors
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Forgot Password / Reset Form
-  if (window.location.pathname.includes('forgot.html') && loginForm) {
+  if (window.location.pathname.includes('forgot') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = loginForm.querySelector('input[type="email"]').value;
