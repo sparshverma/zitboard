@@ -25,7 +25,7 @@ async function handleAuthResponse(response) {
   if (data?.session) {
     // Cross-domain handoff
     const token = data.session.access_token;
-    window.location.href = `${DASHBOARD_URL}/api/auth/callback?token=${token}`;
+    window.location.href = `${DASHBOARD_URL}/auth/callback?token=${token}`;
   } else if (data?.user) {
     // Some flows (like magic links or email confirm) might just return a user immediately
     alert('Please check your email to confirm your account!');
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: provider,
             options: {
-              redirectTo: `${DASHBOARD_URL}/api/auth/callback`
+              redirectTo: `${DASHBOARD_URL}/auth/callback`
             }
           });
 
