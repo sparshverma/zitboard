@@ -10,7 +10,7 @@ const SUPABASE_URL = 'https://xyz.supabase.co'; // Replace with actual URL
 const SUPABASE_ANON_KEY = 'anon-key-placeholder'; // Replace with actual Anon Key
 
 // Initialize the Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.com'; // Adjust to local/staging/prod url
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!email || !password) return alert("Please enter both email and password.");
       
-      const response = await supabase.auth.signInWithPassword({ email, password });
+      const response = await supabaseClient.auth.signInWithPassword({ email, password });
       handleAuthResponse(response);
     });
   }
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!email || !password) return alert("Please provide email and password.");
 
-      const response = await supabase.auth.signUp({ 
+      const response = await supabaseClient.auth.signUp({ 
         email, 
         password,
         options: {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!email) return alert("Please enter your email.");
 
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password.html`,
       });
 
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
 
           // Autonomous Architect: Secure API execution
-          const { error } = await supabase.auth.signInWithOAuth({
+          const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: provider,
             options: {
               redirectTo: `${DASHBOARD_URL}/api/auth/callback`
