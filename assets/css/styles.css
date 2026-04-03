@@ -3987,27 +3987,29 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .auth-divider:not(:empty)::before { margin-right: 1em; }
 .auth-divider:not(:empty)::after { margin-left: 1em; }
 
-.social-btns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
+  .social-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
 
-.social-btn {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  padding: 0.9rem;
-  border-radius: 8px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  font-family: inherit;
-  font-size: 0.95rem;
-}
+  .social-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    padding: 0.8rem 0.25rem;
+    border-radius: 8px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: inherit;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
 .social-btn svg {
   flex-shrink: 0;
@@ -4028,5 +4030,16 @@ input[type="checkbox"]:checked::after { left: 16px; }
 }
 @media (max-width: 640px) {
   .auth-form-grid { grid-template-columns: 1fr; }
-  .social-btns { grid-template-columns: 1fr; }
-}
+    .social-btns { 
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .social-btn {
+      font-size: 0.65rem;
+      padding: 0.6rem 0.15rem;
+    }
+    .social-btn svg {
+      width: 14px !important;
+      height: 14px !important;
+      margin-right: 2px !important;
+    }

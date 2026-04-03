@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---------------------------------------------
-  // 2. Setup OAuth (Google, Apple) Providers
+  // 2. Setup OAuth (Google, Microsoft, Twitter) Providers
   // ---------------------------------------------
   document.querySelectorAll('.social-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
@@ -106,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
       let provider = null;
       
       if (btnText.includes('google')) provider = 'google';
-      else if (btnText.includes('apple')) provider = 'apple';
+      else if (btnText.includes('microsoft')) provider = 'azure';
+      else if (btnText.includes('twitter')) provider = 'twitter';
       
       if (provider) {
         // Supabase will automatically redirect to the provider UI
