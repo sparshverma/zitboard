@@ -13,7 +13,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Redirect target for successful login (Dashboard App)
-const DASHBOARD_URL = 'https://app.zitboard.com'; // Adjust to local/staging/prod url
+const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
 
 async function handleAuthResponse(response) {
   const { data, error } = response;
