@@ -23,9 +23,31 @@ async function handleAuthResponse(response) {
   }
   
   if (data?.session) {
-    // Cross-domain handoff
-    const token = data.session.access_token;
-    window.location.href = `${DASHBOARD_URL}/auth/callback?token=${token}`;
+    // Bridge Supabase Auth into Dashboard Custom Auth
+    try {
+      const user = data.session.user;
+      const res = await fetch("https://jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api/auth/dev-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          fullName: user.user_metadata?.full_name || "New User",
+          tenantId: "app",
+          role: "admin"
+        })
+      });
+      const backendData = await res.json();
+
+      if (backendData.accessToken) {
+        window.location.href = `${DASHBOARD_URL}/auth/callback?accessToken=${backendData.accessToken}&refreshToken=${backendData.refreshToken}`;
+        return;
+      }
+    } catch (err) {
+      console.error("Backend bridge failed", err);
+    }
+    
+    // Fallback redirect if API is unreachable
+    window.location.href = DASHBOARD_URL;
   } else if (data?.user) {
     // Some flows (like magic links or email confirm) might just return a user immediately
     alert('Please check your email to confirm your account!');
