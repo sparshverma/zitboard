@@ -6,8 +6,8 @@
 
 // We expect these configuration keys to be set either securely via environment replacement on build
 // or injected here. For production, never expose sensitive admin keys, only the `ANON_KEY`.
-const SUPABASE_URL = 'https://xyz.supabase.co'; // Replace with actual URL
-const SUPABASE_ANON_KEY = 'anon-key-placeholder'; // Replace with actual Anon Key
+const SUPABASE_URL = 'https://mwoixpkmqfqintiecsui.supabase.co'; // Replace with actual URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13b2l4cGttcWZxaW50aWVjc3VpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5Mjk4NDEsImV4cCI6MjA4OTUwNTg0MX0.SXYefSORzFwFR1f2_Qi1MU39Uxi_jlgdeVBH1Ht9b_4'; // Replace with actual Anon Key
 
 // Initialize the Supabase client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
