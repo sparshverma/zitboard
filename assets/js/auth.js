@@ -102,21 +102,47 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------------------------------------------
   document.querySelectorAll('.social-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
+      // Prevent multiple clicks
+      if (btn.disabled) return;
+      
+      const originalHtml = btn.innerHTML;
       const btnText = btn.innerText.trim().toLowerCase();
       let provider = null;
-      
+
       if (btnText.includes('google')) provider = 'google';
       else if (btnText.includes('microsoft')) provider = 'azure';
       else if (btnText.includes('twitter')) provider = 'twitter';
-      
+
       if (provider) {
-        // Supabase will automatically redirect to the provider UI
-        await supabase.auth.signInWithOAuth({
-          provider: provider,
-          options: {
-            redirectTo: `${DASHBOARD_URL}/api/auth/callback`
+        try {
+          // Premium UX: Loading state
+          btn.disabled = true;
+          btn.style.opacity = '0.7';
+          btn.style.cursor = 'not-allowed';
+          btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
+
+          // Autonomous Architect: Secure API execution
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: provider,
+            options: {
+              redirectTo: `${DASHBOARD_URL}/api/auth/callback`
+            }
+          });
+
+          if (error) {
+            console.error(`[Auth] ${provider} auth error:`, error.message);
+            alert(`Could not connect to ${provider}: ${error.message}`);
           }
-        });
+        } catch (err) {
+          console.error(`[Auth] System error during ${provider} routing:`, err);
+          alert('A system error occurred. Please try again.');
+        } finally {
+          // Restore button if redirect failed or errored
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.style.cursor = 'pointer';
+          btn.innerHTML = originalHtml;
+        }
       }
     });
   });
