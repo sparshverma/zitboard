@@ -26,7 +26,7 @@ async function handleAuthResponse(response) {
     // Bridge Supabase Auth into Dashboard Custom Auth
     try {
       const user = data.session.user;
-      const res = await fetch("https://jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api/auth/dev-login", {
+      const res = await fetch("https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api/auth/dev-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
