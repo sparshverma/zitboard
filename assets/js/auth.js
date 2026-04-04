@@ -14,42 +14,115 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
+const API_BASE = 'https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api';
+const DEFAULT_TENANT_ID = 'app';
+const DEFAULT_ROLE = 'admin';
 
-async function handleAuthResponse(response) {
+function fetchWithTimeout(url, options, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  return fetch(url, {
+    ...options,
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeout));
+}
+
+function redirectToDashboard(accessToken, refreshToken, returnTo) {
+  const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
+  callback.searchParams.set('accessToken', accessToken);
+  callback.searchParams.set('refreshToken', refreshToken);
+  callback.searchParams.set('returnTo', returnTo || '/');
+  window.location.replace(callback.toString());
+}
+
+function redirectToDashboardViaSupabase(session, returnTo) {
+  if (!session?.access_token) {
+    window.location.replace(`${DASHBOARD_URL}/`);
+    return;
+  }
+
+  const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
+  callback.searchParams.set('supabaseAccessToken', session.access_token);
+  callback.searchParams.set('tenantId', DEFAULT_TENANT_ID);
+  callback.searchParams.set('role', DEFAULT_ROLE);
+  callback.searchParams.set('returnTo', returnTo || '/');
+
+  if (session.refresh_token) {
+    callback.searchParams.set('supabaseRefreshToken', session.refresh_token);
+  }
+
+  window.location.replace(callback.toString());
+}
+
+async function bridgeSupabaseSession(session) {
+  if (!session?.access_token) {
+    return false;
+  }
+
+  try {
+    const response = await fetchWithTimeout(`${API_BASE}/auth/supabase-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accessToken: session.access_token,
+        tenantId: DEFAULT_TENANT_ID,
+        role: DEFAULT_ROLE,
+      }),
+    }, 10000);
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      throw new Error(`Bridge failed (${response.status}) ${errorText}`);
+    }
+
+    const backendData = await response.json();
+    if (backendData.accessToken && backendData.refreshToken) {
+      redirectToDashboard(backendData.accessToken, backendData.refreshToken, '/');
+      return true;
+    }
+  } catch (err) {
+    console.error('Backend bridge failed', err);
+  }
+
+  return false;
+}
+
+async function handleAuthResponse(response, context) {
   const { data, error } = response;
+  const mode = context?.mode || 'login';
+  const password = context?.password || '';
+
   if (error) {
     alert(`Authentication Error: ${error.message}`);
     return;
   }
   
   if (data?.session) {
-    // Bridge Supabase Auth into Dashboard Custom Auth
-    try {
-      const user = data.session.user;
-      const res = await fetch("https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api/auth/dev-login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: user.email,
-          fullName: user.user_metadata?.full_name || "New User",
-          tenantId: "app",
-          role: "admin"
-        })
-      });
-      const backendData = await res.json();
+    const bridged = await bridgeSupabaseSession(data.session);
+    if (!bridged) {
+      redirectToDashboardViaSupabase(data.session, '/');
+    }
+    return;
+  }
 
-      if (backendData.accessToken) {
-        window.location.href = `${DASHBOARD_URL}/auth/callback?accessToken=${backendData.accessToken}&refreshToken=${backendData.refreshToken}`;
+  if (mode === 'signup' && data?.user && password) {
+    const email = data.user.email;
+    if (email) {
+      const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (signInResponse.data?.session) {
+        await handleAuthResponse(signInResponse, { mode: 'login' });
         return;
       }
-    } catch (err) {
-      console.error("Backend bridge failed", err);
+
+      if (signInResponse.error) {
+        alert('Account created. Please verify your email if required, then log in.');
+        return;
+      }
     }
-    
-    // Fallback redirect if API is unreachable
-    window.location.href = DASHBOARD_URL;
-  } else if (data?.user) {
-    // Some flows (like magic links or email confirm) might just return a user immediately
+  }
+
+  if (data?.user) {
     alert('Please check your email to confirm your account!');
   }
 }
@@ -60,7 +133,7 @@ async function handleAuthResponse(response) {
 document.addEventListener('DOMContentLoaded', () => {
   
   // Login Form
-  const loginForm = document.querySelector('form[action="login.html"], form'); // We'll infer it by page
+  const loginForm = document.querySelector('#loginForm, #signupForm, #forgotForm, form');
   if (window.location.pathname.includes('login') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -70,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!email || !password) return alert("Please enter both email and password.");
       
       const response = await supabaseClient.auth.signInWithPassword({ email, password });
-      handleAuthResponse(response);
+      await handleAuthResponse(response, { mode: 'login' });
     });
   }
 
@@ -95,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
-      handleAuthResponse(response);
+      await handleAuthResponse(response, { mode: 'signup', password });
     });
   }
 
@@ -124,6 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------------------------------------------
   document.querySelectorAll('.social-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+
       // Prevent multiple clicks
       if (btn.disabled) return;
       
@@ -137,23 +212,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (provider) {
         try {
+          if (provider === 'twitter') {
+            alert('Twitter sign in is temporarily unavailable. Please use email, Google, or Microsoft.');
+            return;
+          }
+
           // Premium UX: Loading state
           btn.disabled = true;
           btn.style.opacity = '0.7';
           btn.style.cursor = 'not-allowed';
           btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
 
-          // Autonomous Architect: Secure API execution
+          if (provider === 'google' || provider === 'microsoft') {
+            const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(DEFAULT_TENANT_ID)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}`;
+            window.location.assign(oauthStartUrl);
+            return;
+          }
+
           const { error } = await supabaseClient.auth.signInWithOAuth({
-            provider: provider,
+            provider,
             options: {
-              redirectTo: `${DASHBOARD_URL}/auth/callback`
-            }
+              redirectTo: `${DASHBOARD_URL}/auth/callback`,
+            },
           });
 
           if (error) {
-            console.error(`[Auth] ${provider} auth error:`, error.message);
-            alert(`Could not connect to ${provider}: ${error.message}`);
+            if (String(error.message || '').toLowerCase().includes('unsupported provider')) {
+              alert('This social provider is not enabled yet. Please use email login or another provider.');
+            } else {
+              console.error(`[Auth] ${provider} auth error:`, error.message);
+              alert(`Could not connect to ${provider}: ${error.message}`);
+            }
           }
         } catch (err) {
           console.error(`[Auth] System error during ${provider} routing:`, err);
