@@ -14,7 +14,13 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
-const API_BASE = 'https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api';
+
+function normalizeApiBase(rawBase) {
+  const trimmed = String(rawBase || '').replace(/\/+$/, '');
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+}
+
+const API_BASE = normalizeApiBase('https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api');
 const DEFAULT_TENANT_ID = 'app';
 const DEFAULT_ROLE = 'admin';
 
@@ -32,6 +38,7 @@ function redirectToDashboard(accessToken, refreshToken, returnTo) {
   const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
   callback.searchParams.set('accessToken', accessToken);
   callback.searchParams.set('refreshToken', refreshToken);
+  callback.searchParams.set('apiBase', API_BASE);
   callback.searchParams.set('returnTo', returnTo || '/');
   window.location.replace(callback.toString());
 }
@@ -44,6 +51,7 @@ function redirectToDashboardViaSupabase(session, returnTo) {
 
   const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
   callback.searchParams.set('supabaseAccessToken', session.access_token);
+  callback.searchParams.set('apiBase', API_BASE);
   callback.searchParams.set('tenantId', DEFAULT_TENANT_ID);
   callback.searchParams.set('role', DEFAULT_ROLE);
   callback.searchParams.set('returnTo', returnTo || '/');
@@ -92,8 +100,21 @@ async function handleAuthResponse(response, context) {
   const { data, error } = response;
   const mode = context?.mode || 'login';
   const password = context?.password || '';
+  const email = context?.email || '';
 
   if (error) {
+    const alreadyRegistered =
+      mode === 'signup' &&
+      password &&
+      email &&
+      String(error.message || '').toLowerCase().includes('already registered');
+
+    if (alreadyRegistered) {
+      const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
+      await handleAuthResponse(signInResponse, { mode: 'login' });
+      return;
+    }
+
     alert(`Authentication Error: ${error.message}`);
     return;
   }
@@ -168,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
-      await handleAuthResponse(response, { mode: 'signup', password });
+      await handleAuthResponse(response, { mode: 'signup', password, email });
     });
   }
 
@@ -204,11 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const originalHtml = btn.innerHTML;
       const btnText = btn.innerText.trim().toLowerCase();
-      let provider = null;
+      let provider = (btn.dataset.provider || '').toLowerCase() || null;
 
-      if (btnText.includes('google')) provider = 'google';
-      else if (btnText.includes('microsoft')) provider = 'azure';
-      else if (btnText.includes('twitter')) provider = 'twitter';
+      if (!provider) {
+        if (btnText.includes('google')) provider = 'google';
+        else if (btnText.includes('microsoft')) provider = 'azure';
+        else if (btnText.includes('twitter')) provider = 'twitter';
+      }
 
       if (provider) {
         try {
