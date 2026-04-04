@@ -235,8 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (provider) {
         try {
-          if (provider === 'twitter') {
-            alert('Twitter sign in is temporarily unavailable. Please use email, Google, or Microsoft.');
+          if (provider === 'twitter' || provider === 'google' || provider === 'azure') {
+            alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} sign in is temporarily disabled. Please use email/password login to continue.`);
             return;
           }
 
