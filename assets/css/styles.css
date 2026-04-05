@@ -49,7 +49,7 @@ body::before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -2;
+  z-index: 0;
   pointer-events: none;
   background: radial-gradient(circle at 10% 10%, rgba(87, 207, 192, 0.15) 0%, transparent 40%),
               radial-gradient(circle at 90% 80%, rgba(157, 142, 232, 0.15) 0%, transparent 40%);
