@@ -479,10 +479,12 @@
         const numBubbles = 100; // Count of elements
 
         function resize() {
+          const dpr = window.devicePixelRatio || 1;
           width = window.innerWidth;
           height = window.innerHeight;
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.scale(dpr, dpr);
         }
         window.addEventListener("resize", resize);
         resize();
@@ -492,12 +494,8 @@
            bubbles.push({
              x: Math.random() * 2000 - 1000,
              y: Math.random() * 2000 - 1000,
-             z: Math.random() * 800 + 200
-           });
-        }
-
-        let scrollY = 0;
-        window.addEventListener("scroll", () => {
+               z: Math.random() * 800 + 200,
+               layerType: Math.floor(Math.random() * 3)
            scrollY = window.scrollY;
         });
 
@@ -507,8 +505,11 @@
           
           const fov = 400;
           const isDark = document.documentElement.dataset.theme === 'dark';
-          // Theme-adaptive bubbles: light/translucent in dark mode, bolder dark/ink in light mode
-          ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.25)" : "rgba(31, 42, 51, 0.5)";
+          
+          const slate = isDark ? "rgba(241, 245, 249, 0.4)" : "rgba(31, 42, 51, 0.5)";
+          const teal = isDark ? "rgba(87, 207, 192, 0.5)" : "rgba(45, 180, 165, 0.7)";
+          const purple = isDark ? "rgba(157, 142, 232, 0.5)" : "rgba(125, 107, 219, 0.7)";
+
           bubbles.forEach(p => {
             // Apply scroll factor to the Z axis for a cool 3D movement effect
             let z = p.z - (scrollY * 0.7);
@@ -527,9 +528,14 @@
             const floatY = y2d + Math.cos(time + (p.y/100)) * 20 * scale;
 
             if (floatX >= 0 && floatX <= width && floatY >= 0 && floatY <= height) {
-              const r = Math.max(0.5, 3 * scale);
+              const r = Math.max(1.5, 4.5 * scale);
               ctx.beginPath();
               ctx.arc(floatX, floatY, r, 0, Math.PI * 2);
+              
+              if (p.layerType === 1) ctx.fillStyle = teal;
+              else if (p.layerType === 2) ctx.fillStyle = purple;
+              else ctx.fillStyle = slate;
+              
               ctx.fill();
             }
           });
