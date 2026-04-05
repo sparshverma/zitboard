@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
     <title>ZitBoard Pricing | Plans for Every Stage</title>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://www.zitboard.com/pricing.html" />
@@ -61,6 +63,8 @@
         width: 100%;
         overflow-x: auto;
         padding-bottom: 2rem;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
       }
       .features-table {
         width: 100%;
@@ -69,7 +73,12 @@
         min-width: 900px;
         table-layout: fixed;
       }
-      /* Fake card background wrapper inside th */
+      .features-table th {
+        scroll-snap-align: start;
+        vertical-align: bottom;
+        padding-bottom: 2rem;
+        border-bottom: none;
+      }
       .pricing-card {
         border-radius: 0.5rem;
         padding: var(--space-6, 1.5rem);
@@ -193,11 +202,12 @@
       }
       
       .features-table tbody {
-        background: var(--card-bg); /* Use semi-transparent background for readability over canvas */
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 12px;
-        box-shadow: 0 0 0 1px var(--border-color);
+        background: var(--glass); /* Enhanced glassmorphism */
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
       }
       /* Teal circular background for checkmarks */
       .check-icon {
@@ -497,9 +507,8 @@
           
           const fov = 400;
           const isDark = document.documentElement.dataset.theme === 'dark';
-          // Use teal colors that fit the aesthetic
-          ctx.fillStyle = isDark ? "rgba(87, 207, 192, 0.4)" : "rgba(87, 207, 192, 0.25)";
-
+          // Theme-adaptive bubbles: light/translucent in dark mode, bolder dark/ink in light mode
+          ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.25)" : "rgba(31, 42, 51, 0.5)";
           bubbles.forEach(p => {
             // Apply scroll factor to the Z axis for a cool 3D movement effect
             let z = p.z - (scrollY * 0.7);

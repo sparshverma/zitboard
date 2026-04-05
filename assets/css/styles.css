@@ -39,7 +39,9 @@ body {
 body {
   font-family: 'Inter', sans-serif;
   color: var(--text);
-  background-color: var(--bg);
+  background: radial-gradient(circle at 10% 10%, rgba(87, 207, 192, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 90% 80%, rgba(157, 142, 232, 0.15) 0%, transparent 40%),
+              var(--bg);
 }
 
 /* -------------------------------------
