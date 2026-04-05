@@ -2,9 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ZitBoard Pricing | Plans for Every Stage</title>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://www.zitboard.com/pricing.html" />
@@ -12,13 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="assets/js/theme-bootstrap.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css" />
-    <!-- Preload Theme to avoid flash -->
-    <script>
-      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.dataset.theme = 'dark';
-      }
-    </script>
     <style>
       /* 3D animated Background Container */
       #bg-canvas {
@@ -63,7 +56,6 @@
         width: 100%;
         overflow-x: auto;
         padding-bottom: 2rem;
-        -webkit-overflow-scrolling: touch;
         scroll-snap-type: x mandatory;
       }
       .features-table {
@@ -195,6 +187,16 @@
         padding-left: clamp(1rem, 2.4vw, 2rem);
         width: 24%;
       }
+      .pricing-features-row td {
+        padding-bottom: 24px;
+      }
+      .pricing-features-heading {
+        font-weight: 700;
+        font-size: 1.125rem;
+      }
+      .pricing-features-spacer {
+        border-bottom: none;
+      }
       .features-table th:not(:first-child) {
         width: 19%; /* remaining 76% / 4 */
         padding-left: 0;
@@ -203,8 +205,8 @@
       
       .features-table tbody {
         background: var(--glass); /* Enhanced glassmorphism */
-        backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
         border-radius: 16px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border: 1px solid var(--border-color);
@@ -257,7 +259,7 @@
           <div class="island-actions">
             <button class="theme-toggle btn-icon" aria-label="Toggle Dark Mode">
               <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-              <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
             <a class="nav-demo-btn cta-track" data-cta="nav_login" href="login.html">Login / Sign Up</a>
           </div>
@@ -287,13 +289,13 @@
         <div class="mobile-dropdown-actions">
           <button class="theme-toggle btn-icon" aria-label="Toggle Dark Mode">
             <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
         </div>
       </div>
     </header>
 
-    <main style="position: relative; z-index: 10;">
+    <main class="pricing-main">
       <section class="section">
         <div class="container pricing-section">
           <div class="pricing-hero">
@@ -345,12 +347,12 @@
                     </div>
                   </th>
                 </tr>
-                <tr>
-                  <td style="padding-bottom: 24px; font-weight: 700; font-size: 1.125rem;">Key Features</td>
-                  <td style="padding-bottom: 24px; border-bottom: none;"></td>
-                  <td style="padding-bottom: 24px; border-bottom: none;"></td>
-                  <td style="padding-bottom: 24px; border-bottom: none;"></td>
-                  <td style="padding-bottom: 24px; border-bottom: none;"></td>
+                <tr class="pricing-features-row">
+                  <td class="pricing-features-heading">Key Features</td>
+                  <td class="pricing-features-spacer"></td>
+                  <td class="pricing-features-spacer"></td>
+                  <td class="pricing-features-spacer"></td>
+                  <td class="pricing-features-spacer"></td>
                 </tr>
               </thead>
               <tbody>
@@ -424,7 +426,7 @@
       </section>
     </main>
 
-    <footer class="site-footer" style="position: relative; z-index: 10;">
+    <footer class="site-footer pricing-footer">
       <div class="container">
         <div class="footer-links-grid">
           <div class="footer-col">
@@ -467,82 +469,6 @@
     </footer>
     
     <script src="assets/js/script.js"></script>
-
-    <!-- 3D Scroll Interactive Background Script -->
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const canvas = document.getElementById("bg-canvas");
-        const ctx = canvas.getContext("2d");
-
-        let width, height;
-        const bubbles = [];
-        const numBubbles = 100; // Count of elements
-
-        function resize() {
-          const dpr = window.devicePixelRatio || 1;
-          width = window.innerWidth;
-          height = window.innerHeight;
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          ctx.scale(dpr, dpr);
-        }
-        window.addEventListener("resize", resize);
-        resize();
-
-        // Init 3D points
-        for(let i = 0; i < numBubbles; i++) {
-           bubbles.push({
-             x: Math.random() * 2000 - 1000,
-             y: Math.random() * 2000 - 1000,
-               z: Math.random() * 800 + 200,
-               layerType: Math.floor(Math.random() * 3)
-           scrollY = window.scrollY;
-        });
-
-        function draw() {
-          // Add subtle trail effect
-          ctx.clearRect(0, 0, width, height);
-          
-          const fov = 400;
-          const isDark = document.documentElement.dataset.theme === 'dark';
-          
-          const slate = isDark ? "rgba(241, 245, 249, 0.4)" : "rgba(31, 42, 51, 0.5)";
-          const teal = isDark ? "rgba(87, 207, 192, 0.5)" : "rgba(45, 180, 165, 0.7)";
-          const purple = isDark ? "rgba(157, 142, 232, 0.5)" : "rgba(125, 107, 219, 0.7)";
-
-          bubbles.forEach(p => {
-            // Apply scroll factor to the Z axis for a cool 3D movement effect
-            let z = p.z - (scrollY * 0.7);
-            
-            // Loop points continuously
-            while(z < 10) z += 1000;
-            while(z > 1010) z -= 1000;
-
-            const scale = fov / z;
-            const x2d = (p.x * scale) + (width / 2);
-            const y2d = (p.y * scale) + (height / 2);
-
-            // Give slight sway or rotation
-            const time = performance.now() / 1500;
-            const floatX = x2d + Math.sin(time + (p.x/100)) * 20 * scale;
-            const floatY = y2d + Math.cos(time + (p.y/100)) * 20 * scale;
-
-            if (floatX >= 0 && floatX <= width && floatY >= 0 && floatY <= height) {
-              const r = Math.max(1.5, 4.5 * scale);
-              ctx.beginPath();
-              ctx.arc(floatX, floatY, r, 0, Math.PI * 2);
-              
-              if (p.layerType === 1) ctx.fillStyle = teal;
-              else if (p.layerType === 2) ctx.fillStyle = purple;
-              else ctx.fillStyle = slate;
-              
-              ctx.fill();
-            }
-          });
-          requestAnimationFrame(draw);
-        }
-        draw();
-      });
-    </script>
+    <script src="assets/js/pricing-background.js"></script>
   </body>
 </html>
