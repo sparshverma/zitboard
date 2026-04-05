@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Inject Favicon",
+			"type": "shell",
+			"command": "$files = Get-ChildItem -Path \"b:\\VS Code\\Agents\\ZitBoard\\\" -Filter \"*.html\"\n\nforeach ($file in $files) {\n    $content = Get-Content $file.FullName\n    if ($content -notmatch '<link rel=\"icon\"') {\n        $content = $content -replace '</head>', \"  <link rel=`\"icon`\" type=`\"image/png`\" href=`\"assets/logo.png`\">`n</head>\"\n        Set-Content -Path $file.FullName -Value $content\n        Write-Output \"Updated $($file.Name)\"\n    }\n}"
+		}
+	]
+}

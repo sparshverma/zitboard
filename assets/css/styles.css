@@ -31,8 +31,73 @@ body {
   min-height: 100%;
 }
 
+/* -------------------------------------
+ * FULL-PAGE LOGIN LOADER (SPINKIT INSPIRED)
+ * Author: Tobias Ahlin (SpinKit) / Adapted for ZitBoard
+   https://github.com/tobiasahlin/SpinKit
+ * ------------------------------------- */
 body {
-  font-family: "Manrope", sans-serif;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+/* -------------------------------------
+ * FULL-PAGE LOGIN LOADER (SPINKIT INSPIRED)
+ * Author: Tobias Ahlin (SpinKit) / Adapted for ZitBoard
+   https://github.com/tobiasahlin/SpinKit
+ * ------------------------------------- */
+#zit-full-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg);
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+}
+#zit-full-loader.is-active {
+  opacity: 1;
+  pointer-events: all;
+}
+.spinner {
+  width: 60px;
+  text-align: center;
+}
+.spinner > div {
+  width: 16px;
+  height: 16px;
+  background-color: var(--teal-main);
+  border-radius: 100%;
+  display: inline-block;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  margin-right: 4px;
+}
+.spinner .bounce1 {
+  animation-delay: -0.32s;
+  background-color: var(--purple-main);
+}
+.spinner .bounce2 {
+  animation-delay: -0.16s;
+  background-color: var(--teal-main);
+}
+.spinner .bounce3 {
+  background-color: var(--purple-main);
+}
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    transform: scale(0);
+  } 40% { 
+    transform: scale(1.0);
+  }
+}
+
   color: var(--text);
   background: radial-gradient(circle at 12% 14%, #e8fffb 0%, transparent 42%),
     radial-gradient(circle at 84% 16%, #f1edff 0%, transparent 41%),
