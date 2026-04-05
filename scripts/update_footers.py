@@ -10,7 +10,7 @@ footer_html = '''<footer class="site-footer">
             <a href="index.html#features">Platform Features</a>
             <a href="product.html">Full Capabilities</a>
             <a href="integrations.html">Integrations & Plugins</a>
-            <a href="index.html#pricing">Pricing Plans</a>
+            <a href="pricing.html">Pricing Plans</a>
           </div>
           <div class="footer-col">
             <h4>Resources</h4>
