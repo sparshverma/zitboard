@@ -1964,11 +1964,11 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .dynamic-island:hover .group-left a:nth-child(2) { transition-delay: 0.10s; }
 .dynamic-island:hover .group-left a:nth-child(3) { transition-delay: 0.15s; }
 .dynamic-island:hover .group-left a:nth-child(4) { transition-delay: 0.20s; }
+.dynamic-island:hover .group-left a:nth-child(5) { transition-delay: 0.25s; }
 
 .dynamic-island:hover .group-right a:nth-child(1) { transition-delay: 0.05s; }
 .dynamic-island:hover .group-right a:nth-child(2) { transition-delay: 0.10s; }
 .dynamic-island:hover .group-right a:nth-child(3) { transition-delay: 0.15s; }
-.dynamic-island:hover .group-right a:nth-child(4) { transition-delay: 0.20s; }
 .dynamic-island:hover .island-actions { transition-delay: 0.25s; }
 
 @media (max-width: 980px) {
