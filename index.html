@@ -399,6 +399,394 @@
         </div>
       </section>
 
+      <section id="testimonials" class="zitboard-testimonials" aria-labelledby="testimonials-title">
+        <style>
+          .zitboard-testimonials {
+            position: relative;
+            padding: 100px 0;
+            overflow: hidden;
+            isolation: isolate;
+            color: #ffffff;
+            background:
+              radial-gradient(circle at 18% 10%, rgba(127, 119, 221, 0.24), transparent 28%),
+              radial-gradient(circle at 82% 0%, rgba(29, 158, 117, 0.18), transparent 26%),
+              linear-gradient(180deg, #07070c 0%, #0c0c14 48%, #09090f 100%);
+          }
+
+          .zitboard-testimonials::before,
+          .zitboard-testimonials::after {
+            content: "";
+            position: absolute;
+            inset: auto;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 999px;
+            filter: blur(18px);
+            opacity: 0.7;
+          }
+
+          .zitboard-testimonials::before {
+            top: 56px;
+            left: -120px;
+            width: 280px;
+            height: 280px;
+            background: rgba(127, 119, 221, 0.18);
+          }
+
+          .zitboard-testimonials::after {
+            right: -140px;
+            bottom: 64px;
+            width: 320px;
+            height: 320px;
+            background: rgba(29, 158, 117, 0.14);
+          }
+
+          .zitboard-testimonials__inner {
+            position: relative;
+            z-index: 1;
+          }
+
+          .zitboard-testimonials__heading {
+            max-width: 820px;
+            margin: 0 auto 48px;
+            padding: 0 24px;
+            text-align: center;
+          }
+
+          .zitboard-testimonials__heading h2 {
+            margin: 0;
+            color: #ffffff;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.8rem, 6vw, 4.9rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+          }
+
+          .zitboard-testimonials__heading p {
+            margin: 1rem 0 0;
+            color: #1d9e75;
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: -0.01em;
+          }
+
+          .zitboard-testimonials__marquee {
+            display: grid;
+            gap: 20px;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+          }
+
+          .zitboard-testimonials__row {
+            display: flex;
+            width: max-content;
+            gap: 20px;
+            will-change: transform;
+          }
+
+          .zitboard-testimonials__row--forward {
+            animation: marquee 30s linear infinite;
+          }
+
+          .zitboard-testimonials__row--reverse {
+            animation: marquee-reverse 30s linear infinite;
+          }
+
+          .zitboard-testimonials__marquee:hover .zitboard-testimonials__row {
+            animation-play-state: paused;
+          }
+
+          .zitboard-testimonials__card {
+            flex: 0 0 320px;
+            width: 320px;
+            min-width: 320px;
+            padding: 24px;
+            border: 1px solid rgba(127, 119, 221, 0.2);
+            border-radius: 16px;
+            background: #13131a;
+            box-shadow: 0 0 0 0 rgba(29, 158, 117, 0);
+            transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+            will-change: transform;
+          }
+
+          .zitboard-testimonials__card:hover {
+            transform: scale(1.03);
+            border-color: rgba(29, 158, 117, 0.6);
+            box-shadow: 0 0 16px 0 rgba(29, 158, 117, 0.15);
+          }
+
+          .zitboard-testimonials__stars {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 18px;
+            font-size: 0;
+          }
+
+          .zitboard-testimonials__star {
+            color: #1d9e75;
+            font-size: 15px;
+            line-height: 1;
+          }
+
+          .zitboard-testimonials__star.is-empty {
+            color: rgba(136, 135, 128, 0.34);
+          }
+
+          .zitboard-testimonials__quote {
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+            margin: 0;
+            color: #ffffff;
+            font-family: "Manrope", sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            font-style: italic;
+          }
+
+          .zitboard-testimonials__quote-mark {
+            position: relative;
+            top: 16px;
+            flex: 0 0 auto;
+            color: #7f77dd;
+            font-size: 48px;
+            line-height: 0;
+          }
+
+          .zitboard-testimonials__quote-text {
+            display: block;
+          }
+
+          .zitboard-testimonials__author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 22px;
+          }
+
+          .zitboard-testimonials__avatar {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            background: #1d9e75;
+            color: #085041;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            flex: 0 0 auto;
+          }
+
+          .zitboard-testimonials__author-copy h3 {
+            margin: 0;
+            color: #ffffff;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+          }
+
+          .zitboard-testimonials__author-copy p {
+            margin: 4px 0 0;
+            color: #888780;
+            font-family: "Manrope", sans-serif;
+            font-size: 13px;
+            line-height: 1.35;
+          }
+
+          @keyframes marquee {
+            from {
+              transform: translate3d(-50%, 0, 0);
+            }
+
+            to {
+              transform: translate3d(0, 0, 0);
+            }
+          }
+
+          @keyframes marquee-reverse {
+            from {
+              transform: translate3d(0, 0, 0);
+            }
+
+            to {
+              transform: translate3d(-50%, 0, 0);
+            }
+          }
+
+          @media (max-width: 767px) {
+            .zitboard-testimonials__heading {
+              margin-bottom: 36px;
+            }
+
+            .zitboard-testimonials__marquee {
+              gap: 16px;
+            }
+
+            .zitboard-testimonials__row {
+              gap: 16px;
+            }
+
+            .zitboard-testimonials__card {
+              padding: 22px;
+            }
+          }
+        </style>
+
+        <div class="zitboard-testimonials__inner">
+          <div class="zitboard-testimonials__heading">
+            <h2 id="testimonials-title">Testimonials</h2>
+            <p>Don't take our word for it. Take theirs.</p>
+          </div>
+
+          <div class="zitboard-testimonials__marquee" data-testimonials-marquee>
+            <div class="zitboard-testimonials__row zitboard-testimonials__row--forward" data-testimonial-row="0" role="list" aria-label="Customer testimonials row one"></div>
+            <div class="zitboard-testimonials__row zitboard-testimonials__row--reverse" data-testimonial-row="1" role="list" aria-label="Customer testimonials row two"></div>
+          </div>
+        </div>
+
+        <script>
+          (() => {
+            const section = document.currentScript.closest('.zitboard-testimonials');
+            if (!section) {
+              return;
+            }
+
+            const testimonialRows = [
+              [
+                {
+                  name: 'Arjun Mehta',
+                  role: 'Founder · Rootline Agency',
+                  rating: 5,
+                  quote:
+                    'The sales plugin alone paid for itself in month one. I can finally see deal velocity and forecasted close in one place.'
+                },
+                {
+                  name: 'Lena Hoffman',
+                  role: 'Co-founder · Beryl Creative',
+                  rating: 5,
+                  quote:
+                    'We cut our project kickoff time from two days to four hours. That\'s meant two extra clients this quarter without hiring anyone new.'
+                },
+                {
+                  name: 'Marcus Teo',
+                  role: 'Sales Director · Vantiv Labs',
+                  rating: 5,
+                  quote:
+                    'My CEO finally trusts our forecast slides because the numbers come from ZitBoard, not a spreadsheet I built.'
+                },
+                {
+                  name: 'Sanya Kapoor',
+                  role: 'Boutique Studio Owner',
+                  rating: 4,
+                  quote:
+                    'ZitBoard replaced four separate subscriptions. I used to spend Sunday evenings doing admin. Now I don\'t.'
+                },
+                {
+                  name: 'Rishi Patel',
+                  role: 'Founder · Loopstack',
+                  rating: 5,
+                  quote:
+                    'We went from seed to Series A and never had to migrate to a different tool. That continuity is priceless.'
+                }
+              ],
+              [
+                {
+                  name: 'Priya Nair',
+                  role: 'Operations Lead · Stackly',
+                  rating: 5,
+                  quote:
+                    'Roles and permissions are actually intuitive. It removed a whole category of "wait, what does X see?" questions from our weekly calls.'
+                },
+                {
+                  name: 'Daniel Osei',
+                  role: 'Freelance Product Consultant',
+                  rating: 4,
+                  quote:
+                    'I haven\'t had a late payment in three months. Invoicing doesn\'t feel like a chore anymore.'
+                },
+                {
+                  name: 'Tom Aguilar',
+                  role: 'Head of Revenue · Driftwave',
+                  rating: 5,
+                  quote:
+                    'I get notified before deals go cold — not after. That shift has changed how our team runs pipeline reviews entirely.'
+                },
+                {
+                  name: 'Aisha Balogun',
+                  role: 'Project Manager · Forefront Consulting',
+                  rating: 4,
+                  quote:
+                    'Tasks, deals, and timelines all talk to each other. We cut the number of status update meetings in half.'
+                },
+                {
+                  name: 'Claire Beaumont',
+                  role: 'Freelance Brand Strategist',
+                  rating: 5,
+                  quote:
+                    'Clients comment on how professional everything looks. One asked which agency tool I was using — now they\'ve signed up too.'
+                }
+              ]
+            ];
+
+            const rows = section.querySelectorAll('[data-testimonial-row]');
+
+            const getInitials = (name) => {
+              return name
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((part) => part[0])
+                .join('')
+                .toUpperCase();
+            };
+
+            const renderStars = (rating) => {
+              return Array.from({ length: 5 }, (_, index) => {
+                const isFilled = index < rating;
+                return `<span class="zitboard-testimonials__star${isFilled ? '' : ' is-empty'}" aria-hidden="true">★</span>`;
+              }).join('');
+            };
+
+            const renderCard = (item, isClone = false) => {
+              const initials = getInitials(item.name);
+              const ariaHidden = isClone ? ' aria-hidden="true"' : '';
+
+              return `
+                <article class="zitboard-testimonials__card" role="listitem"${ariaHidden}>
+                  <div class="zitboard-testimonials__stars" aria-label="${item.rating} out of 5 stars">
+                    ${renderStars(item.rating)}
+                  </div>
+                  <p class="zitboard-testimonials__quote">
+                    <span class="zitboard-testimonials__quote-mark" aria-hidden="true">&quot;</span>
+                    <span class="zitboard-testimonials__quote-text">${item.quote}</span>
+                  </p>
+                  <div class="zitboard-testimonials__author">
+                    <div class="zitboard-testimonials__avatar" aria-hidden="true">${initials}</div>
+                    <div class="zitboard-testimonials__author-copy">
+                      <h3>${item.name}</h3>
+                      <p>${item.role}</p>
+                    </div>
+                  </div>
+                </article>
+              `;
+            };
+
+            rows.forEach((row, index) => {
+              const cards = testimonialRows[index].map((item) => renderCard(item));
+              const clones = testimonialRows[index].map((item) => renderCard(item, true));
+              row.innerHTML = [...cards, ...clones].join('');
+            });
+          })();
+        </script>
+      </section>
+
       <section id="faq" class="section faq-reimagined" aria-label="Frequently asked questions">
         <div class="container faq-shell">
           <div class="faq-intro reveal">
