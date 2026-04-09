@@ -34,10 +34,8 @@ function fetchWithTimeout(url, options, timeoutMs) {
   }).finally(() => clearTimeout(timeout));
 }
 
-function redirectToDashboard(accessToken, refreshToken, returnTo) {
+function redirectToDashboard(returnTo) {
   const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
-  callback.searchParams.set('accessToken', accessToken);
-  callback.searchParams.set('refreshToken', refreshToken);
   callback.searchParams.set('apiBase', API_BASE);
   callback.searchParams.set('returnTo', returnTo || '/');
   window.location.replace(callback.toString());
@@ -49,21 +47,18 @@ function redirectToDashboardViaSupabase(session, returnTo) {
     return;
   }
 
-  const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
-  callback.searchParams.set('supabaseAccessToken', session.access_token);
-  callback.searchParams.set('apiBase', API_BASE);
-  callback.searchParams.set('tenantId', DEFAULT_TENANT_ID);
-  callback.searchParams.set('role', DEFAULT_ROLE);
-  callback.searchParams.set('returnTo', returnTo || '/');
+  window.name = JSON.stringify({
+    supabaseAccessToken: session.access_token,
+    apiBase: API_BASE,
+    tenantId: DEFAULT_TENANT_ID,
+    role: DEFAULT_ROLE,
+    returnTo: returnTo || '/',
+  });
 
-  if (session.refresh_token) {
-    callback.searchParams.set('supabaseRefreshToken', session.refresh_token);
-  }
-
-  window.location.replace(callback.toString());
+  window.location.replace(`${DASHBOARD_URL}/auth/callback`);
 }
 
-async function bridgeSupabaseSession(session) {
+async function bridgeSupabaseSession(session, returnTo) {
   if (!session?.access_token) {
     return false;
   }
@@ -71,6 +66,7 @@ async function bridgeSupabaseSession(session) {
   try {
     const response = await fetchWithTimeout(`${API_BASE}/auth/supabase-login`, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         accessToken: session.access_token,
@@ -84,11 +80,9 @@ async function bridgeSupabaseSession(session) {
       throw new Error(`Bridge failed (${response.status}) ${errorText}`);
     }
 
-    const backendData = await response.json();
-    if (backendData.accessToken && backendData.refreshToken) {
-      redirectToDashboard(backendData.accessToken, backendData.refreshToken, '/');
-      return true;
-    }
+    await response.json().catch(() => null);
+    redirectToDashboard(returnTo || '/');
+    return true;
   } catch (err) {
     console.error('Backend bridge failed', err);
   }
@@ -120,7 +114,7 @@ async function handleAuthResponse(response, context) {
   }
   
   if (data?.session) {
-    const bridged = await bridgeSupabaseSession(data.session);
+    const bridged = await bridgeSupabaseSession(data.session, '/');
     if (!bridged) {
       redirectToDashboardViaSupabase(data.session, '/');
     }

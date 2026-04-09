@@ -25,6 +25,317 @@ const DEMO_ENDPOINT = window.ZITBOARD_DEMO_ENDPOINT || readMetaContent('zitboard
 const ANALYTICS_ENDPOINT =
   window.ZITBOARD_ANALYTICS_ENDPOINT || readMetaContent('zitboard-analytics-endpoint');
 
+const CONSENT_STORAGE_KEY = 'zitboard_cookie_consent';
+const CONSENT_COOKIE_NAME = 'zitboard_cookie_consent';
+const CONSENT_VERSION = 1;
+const CONSENT_LIFETIME_SECONDS = 180 * 24 * 60 * 60;
+
+let consentState = null;
+let analyticsScriptsLoaded = false;
+let consentBannerElement = null;
+let consentPanelElement = null;
+let consentSettingsButton = null;
+
+function readCookieValue(name) {
+  const cookie = document.cookie || '';
+  const match = cookie
+    .split('; ')
+    .find((item) => item.startsWith(`${name}=`));
+
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : '';
+}
+
+function writeCookieValue(name, value, maxAgeSeconds = CONSENT_LIFETIME_SECONDS) {
+  const secureAttribute = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax${secureAttribute}`;
+}
+
+function parseConsentState(rawValue) {
+  if (!rawValue) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(rawValue);
+    if (!parsed || parsed.version !== CONSENT_VERSION) {
+      return null;
+    }
+
+    return {
+      version: CONSENT_VERSION,
+      analytics: Boolean(parsed.analytics),
+      marketing: Boolean(parsed.marketing),
+      updatedAt: parsed.updatedAt || new Date().toISOString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function readStoredConsentState() {
+  const cookieState = parseConsentState(readCookieValue(CONSENT_COOKIE_NAME));
+  if (cookieState) {
+    return cookieState;
+  }
+
+  try {
+    return parseConsentState(localStorage.getItem(CONSENT_STORAGE_KEY) || '');
+  } catch {
+    return null;
+  }
+}
+
+function persistConsentState(nextState) {
+  const normalizedState = {
+    version: CONSENT_VERSION,
+    analytics: Boolean(nextState.analytics),
+    marketing: Boolean(nextState.marketing),
+    updatedAt: new Date().toISOString(),
+  };
+
+  consentState = normalizedState;
+  const payload = JSON.stringify(normalizedState);
+
+  try {
+    localStorage.setItem(CONSENT_STORAGE_KEY, payload);
+  } catch {
+    // Ignore storage failures and fall back to the cookie only.
+  }
+
+  writeCookieValue(CONSENT_COOKIE_NAME, payload);
+  return normalizedState;
+}
+
+function hasAnalyticsConsent() {
+  return Boolean(consentState?.analytics);
+}
+
+function canLoadAnalyticsScripts() {
+  return window.location.protocol === 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+}
+
+function appendAnalyticsScript(src, dataName) {
+  const existing = document.querySelector(`script[data-zitboard-consent="${dataName}"]`);
+  if (existing) {
+    return existing;
+  }
+
+  const script = document.createElement('script');
+  script.src = src;
+  script.dataset.zitboardConsent = dataName;
+  document.head.appendChild(script);
+  return script;
+}
+
+function loadAnalyticsScripts() {
+  if (analyticsScriptsLoaded || !hasAnalyticsConsent() || !canLoadAnalyticsScripts()) {
+    return;
+  }
+
+  analyticsScriptsLoaded = true;
+  const bootstrapScript = appendAnalyticsScript('assets/js/vercel-insights-bootstrap.js', 'bootstrap');
+
+  const loadVercelScripts = () => {
+    appendAnalyticsScript('/_vercel/insights/script.js', 'insights');
+    appendAnalyticsScript('/_vercel/speed-insights/script.js', 'speed-insights');
+  };
+
+  if (bootstrapScript.getAttribute('data-zitboard-consent-loaded') === 'true') {
+    loadVercelScripts();
+    return;
+  }
+
+  bootstrapScript.addEventListener('load', () => {
+    bootstrapScript.setAttribute('data-zitboard-consent-loaded', 'true');
+    loadVercelScripts();
+  });
+}
+
+function syncConsentUi() {
+  if (consentPanelElement) {
+    const analyticsToggle = consentPanelElement.querySelector('[data-consent-toggle="analytics"]');
+    const marketingToggle = consentPanelElement.querySelector('[data-consent-toggle="marketing"]');
+
+    if (analyticsToggle) {
+      analyticsToggle.checked = Boolean(consentState?.analytics);
+    }
+
+    if (marketingToggle) {
+      marketingToggle.checked = Boolean(consentState?.marketing);
+    }
+  }
+
+  if (consentSettingsButton) {
+    consentSettingsButton.hidden = !consentState;
+  }
+}
+
+function closeConsentBanner() {
+  if (consentPanelElement) {
+    consentPanelElement.hidden = true;
+  }
+
+  if (consentBannerElement) {
+    consentBannerElement.hidden = true;
+  }
+
+  if (consentSettingsButton) {
+    consentSettingsButton.hidden = !consentState;
+  }
+}
+
+function openConsentBanner() {
+  if (consentBannerElement) {
+    consentBannerElement.hidden = false;
+  }
+
+  if (consentPanelElement) {
+    consentPanelElement.hidden = false;
+  }
+
+  if (consentSettingsButton) {
+    consentSettingsButton.hidden = true;
+  }
+}
+
+function applyConsentChoice(nextState) {
+  const previousAnalytics = Boolean(consentState?.analytics);
+  const persistedState = persistConsentState(nextState);
+
+  if (persistedState.analytics) {
+    loadAnalyticsScripts();
+  }
+
+  syncConsentUi();
+  closeConsentBanner();
+
+  if (previousAnalytics && !persistedState.analytics) {
+    window.location.reload();
+  }
+}
+
+function buildConsentBanner() {
+  if (consentBannerElement) {
+    return;
+  }
+
+  const banner = document.createElement('section');
+  banner.className = 'cookie-banner';
+  banner.setAttribute('data-zitboard-consent-banner', 'true');
+  banner.setAttribute('role', 'dialog');
+  banner.setAttribute('aria-label', 'Cookie preferences');
+
+  banner.innerHTML = `
+    <div class="cookie-banner__content">
+      <p class="cookie-banner__eyebrow">Cookies</p>
+      <h2>Control how ZitBoard uses cookies.</h2>
+      <p>Essential cookies keep the site and login working. Analytics cookies help us measure usage and improve the experience.</p>
+      <p class="cookie-banner__note">Essential cookies are always on. Analytics and marketing are optional.</p>
+      <a class="cookie-banner__link" href="privacy.html">Read the privacy notice</a>
+    </div>
+    <div class="cookie-banner__actions">
+      <button type="button" class="cookie-banner__button cookie-banner__button--primary" data-consent-action="accept">Accept all</button>
+      <button type="button" class="cookie-banner__button" data-consent-action="reject">Reject non-essential</button>
+      <button type="button" class="cookie-banner__button cookie-banner__button--ghost" data-consent-action="manage">Manage settings</button>
+    </div>
+    <div class="cookie-banner__panel" hidden>
+      <label class="cookie-toggle">
+        <input type="checkbox" data-consent-toggle="analytics" />
+        <span>Analytics cookies</span>
+      </label>
+      <label class="cookie-toggle">
+        <input type="checkbox" data-consent-toggle="marketing" />
+        <span>Marketing cookies</span>
+      </label>
+      <div class="cookie-banner__panel-actions">
+        <button type="button" class="cookie-banner__button cookie-banner__button--primary" data-consent-action="save">Save preferences</button>
+        <button type="button" class="cookie-banner__button" data-consent-action="close">Close</button>
+      </div>
+    </div>
+  `;
+
+  banner.addEventListener('click', (event) => {
+    const actionNode = event.target.closest('[data-consent-action]');
+    if (!actionNode) {
+      return;
+    }
+
+    const action = actionNode.getAttribute('data-consent-action');
+    if (action === 'manage') {
+      if (consentPanelElement) {
+        consentPanelElement.hidden = false;
+      }
+      openConsentBanner();
+      return;
+    }
+
+    if (action === 'close') {
+      if (consentPanelElement) {
+        consentPanelElement.hidden = true;
+      }
+
+      if (consentState) {
+        closeConsentBanner();
+      }
+      return;
+    }
+
+    if (action === 'accept') {
+      applyConsentChoice({ analytics: true, marketing: true });
+      return;
+    }
+
+    if (action === 'reject') {
+      applyConsentChoice({ analytics: false, marketing: false });
+      return;
+    }
+
+    if (action === 'save' && consentPanelElement) {
+      const analyticsToggle = consentPanelElement.querySelector('[data-consent-toggle="analytics"]');
+      const marketingToggle = consentPanelElement.querySelector('[data-consent-toggle="marketing"]');
+      applyConsentChoice({
+        analytics: Boolean(analyticsToggle && analyticsToggle.checked),
+        marketing: Boolean(marketingToggle && marketingToggle.checked),
+      });
+    }
+  });
+
+  document.body.appendChild(banner);
+
+  const settingsButton = document.createElement('button');
+  settingsButton.type = 'button';
+  settingsButton.className = 'cookie-settings-fab';
+  settingsButton.textContent = 'Cookie settings';
+  settingsButton.setAttribute('aria-label', 'Open cookie settings');
+  settingsButton.addEventListener('click', () => {
+    openConsentBanner();
+  });
+
+  document.body.appendChild(settingsButton);
+
+  consentBannerElement = banner;
+  consentPanelElement = banner.querySelector('.cookie-banner__panel');
+  consentSettingsButton = settingsButton;
+}
+
+function initializeConsentBanner() {
+  consentState = readStoredConsentState();
+  buildConsentBanner();
+  syncConsentUi();
+
+  if (consentState?.analytics) {
+    loadAnalyticsScripts();
+  }
+
+  if (consentBannerElement) {
+    consentBannerElement.hidden = Boolean(consentState);
+  }
+
+  if (consentSettingsButton) {
+    consentSettingsButton.hidden = !consentState;
+  }
+}
+
 function animateCounter(el) {
   const target = Number(el.getAttribute('data-target') || 0);
   const decimals = Number(el.getAttribute('data-decimals') || 0);
@@ -67,7 +378,13 @@ if (typeof lucide !== 'undefined') {
 
 window.dataLayer = window.dataLayer || [];
 
+initializeConsentBanner();
+
 function trackEvent(name, payload = {}) {
+  if (!hasAnalyticsConsent()) {
+    return;
+  }
+
   const eventPayload = {
     event: name,
     timestamp: new Date().toISOString(),
@@ -984,7 +1301,7 @@ if(slider) {
     // Payback period assumption: average SaaS seat is ~$40/mo
     const monthlyCost = employees * 40;
     // Payback = Cost / Savings. 
-    const paybackMonths = (monthlyCost / rawMonthlySavings).toFixed(1);
+    const paybackMonths = rawMonthlySavings > 0 ? (monthlyCost / rawMonthlySavings).toFixed(1) : '0.0';
     if(periodState) periodState.textContent = isAnnual ? 'Showing annual totals' : 'Showing monthly totals';
 
     if(hoursLabel) hoursLabel.textContent = isAnnual ? 'Hours Saved /yr' : 'Hours Saved /mo';
@@ -992,7 +1309,7 @@ if(slider) {
 
     animateValue(displayHours, currentHours, newHours, 200);
     animateValue(displaySavings, currentSavings, newSavings, 200);
-    if(displayPayback) displayPayback.innerHTML = paybackMonths;
+    if(displayPayback) displayPayback.textContent = paybackMonths;
 
     currentHours = newHours;
     currentSavings = newSavings;

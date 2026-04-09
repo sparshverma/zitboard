@@ -16,6 +16,7 @@
 - [ ] Add contact/lead capture form with backend endpoint
 - [ ] Add analytics events and conversion tracking
 - [ ] Add accessibility and performance audit fixes
+- [x] Start cookie implementation plan and checklist ([COOKIE_IMPLEMENTATION_PLAN.md](COOKIE_IMPLEMENTATION_PLAN.md))
 
 ## Later
 

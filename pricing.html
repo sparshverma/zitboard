@@ -41,6 +41,54 @@
         position: relative;
         z-index: 1;
       }
+
+      .pricing-main {
+        --pricing-table-surface: rgba(255, 255, 255, 0.76);
+        --pricing-table-border: rgba(229, 234, 239, 0.9);
+        --pricing-row-surface: rgba(255, 255, 255, 0.82);
+        --pricing-card-text: #1f2a33;
+        --pricing-card-muted: #5e6a72;
+        --pricing-card-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+        --pricing-card-border: rgba(229, 234, 239, 0.94);
+        --pricing-card-free-bg: linear-gradient(180deg, rgba(247, 250, 252, 0.98) 0%, rgba(231, 236, 242, 0.96) 100%);
+        --pricing-card-starter-bg: linear-gradient(180deg, rgba(239, 234, 252, 0.98) 0%, rgba(226, 217, 243, 0.96) 100%);
+        --pricing-card-pro-bg: linear-gradient(180deg, rgba(220, 247, 242, 0.98) 0%, rgba(208, 240, 235, 0.96) 100%);
+        --pricing-card-enterprise-bg: linear-gradient(180deg, rgba(207, 243, 236, 0.98) 0%, rgba(166, 229, 219, 0.96) 100%);
+        --pricing-badge-bg: #1f2a33;
+        --pricing-badge-text: #ffffff;
+        --pricing-button-bg: #1f2a33;
+        --pricing-button-hover: #3b4b5a;
+        --pricing-button-text: #ffffff;
+        --pricing-button-border: transparent;
+        --pricing-button-pro-bg: var(--teal-500);
+        --pricing-button-pro-hover: #45bdae;
+        --pricing-button-pro-text: #ffffff;
+        --pricing-check-shadow: 0 2px 4px rgba(87, 207, 192, 0.3);
+      }
+
+      [data-theme="dark"] .pricing-main {
+        --pricing-table-surface: rgba(15, 23, 42, 0.76);
+        --pricing-table-border: rgba(148, 163, 184, 0.18);
+        --pricing-row-surface: rgba(15, 23, 42, 0.82);
+        --pricing-card-text: #e2e8f0;
+        --pricing-card-muted: #cbd5e1;
+        --pricing-card-shadow: 0 20px 42px rgba(0, 0, 0, 0.34);
+        --pricing-card-border: rgba(148, 163, 184, 0.22);
+        --pricing-card-free-bg: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.9) 100%);
+        --pricing-card-starter-bg: linear-gradient(180deg, rgba(31, 25, 52, 0.96) 0%, rgba(15, 23, 42, 0.92) 100%);
+        --pricing-card-pro-bg: linear-gradient(180deg, rgba(6, 63, 58, 0.96) 0%, rgba(15, 23, 42, 0.92) 100%);
+        --pricing-card-enterprise-bg: linear-gradient(180deg, rgba(9, 72, 63, 0.96) 0%, rgba(15, 23, 42, 0.92) 100%);
+        --pricing-badge-bg: rgba(248, 250, 252, 0.12);
+        --pricing-badge-text: #f8fafc;
+        --pricing-button-bg: rgba(248, 250, 252, 0.1);
+        --pricing-button-hover: rgba(248, 250, 252, 0.18);
+        --pricing-button-text: #f8fafc;
+        --pricing-button-border: rgba(248, 250, 252, 0.14);
+        --pricing-button-pro-bg: rgba(87, 207, 192, 0.95);
+        --pricing-button-pro-hover: #6bded2;
+        --pricing-button-pro-text: #092026;
+        --pricing-check-shadow: 0 2px 4px rgba(87, 207, 192, 0.24);
+      }
       
       .pricing-subtitle p {
         font-size: var(--font-size-2xl, 1.5rem);
@@ -72,98 +120,107 @@
         padding-bottom: 2rem;
         border-bottom: none;
       }
-      .pricing-card {
+      .pricing-main .pricing-card {
         border-radius: 0.5rem;
         padding: var(--space-6, 1.5rem);
         position: relative;
         display: flex;
         flex-direction: column;
         text-align: left;
-        /* Ensure card text is always dark since card backgrounds are light/pastel */
-        color: #1f2a33 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        color: var(--pricing-card-text);
+        background: var(--pricing-card-bg, var(--pricing-card-free-bg));
+        border: 1px solid var(--pricing-card-border);
+        box-shadow: var(--pricing-card-shadow);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
         height: 100%;
         box-sizing: border-box;
-        transition: transform 0.2s ease-in-out;
+        transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        overflow: hidden;
       }
-      .pricing-card:hover {
+      .pricing-main .pricing-card:hover {
         transform: translateY(-4px);
       }
-      /* Specific Tiers Coloring (forced absolute colors for dark mode safety) */
-      .pricing-card.free {
-        background-color: #e5eaef !important;
+      .pricing-main .pricing-card.free {
+        --pricing-card-bg: var(--pricing-card-free-bg);
       }
-      .pricing-card.starter {
-        background-color: #e2d9f3 !important; /* light purple */
+      .pricing-main .pricing-card.starter {
+        --pricing-card-bg: var(--pricing-card-starter-bg);
       }
-      .pricing-card.pro {
-        background-color: #d0f0eb !important; /* light teal */
-        border: 2px solid var(--teal-main);
+      .pricing-main .pricing-card.pro {
+        --pricing-card-bg: var(--pricing-card-pro-bg);
+        --pricing-card-border: rgba(87, 207, 192, 0.72);
       }
-      .pricing-card.enterprise {
-        background-color: #a6e5db !important; /* darker teal */
+      .pricing-main .pricing-card.enterprise {
+        --pricing-card-bg: var(--pricing-card-enterprise-bg);
       }
-      .card-popular-badge {
+      .pricing-main .card-popular-badge {
         position: absolute;
         top: -12px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: #1f2a33 !important; /* Dark text matching button */
-        color: #fff !important;
+        background: var(--pricing-badge-bg);
+        color: var(--pricing-badge-text);
         font-size: 0.75rem;
         padding: 4px 12px;
         border-radius: 12px;
-        font-weight: 600;
+        font-weight: 700;
         white-space: nowrap;
+        border: 1px solid var(--pricing-card-border);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
       }
-      .pricing-card h3 {
+      .pricing-main .pricing-card h3 {
         font-size: 1.25rem;
         margin: 0 0 0.5rem 0;
         color: inherit;
         font-weight: 600;
       }
-      .pricing-card p.card-desc {
+      .pricing-main .pricing-card p.card-desc {
         font-size: 0.875rem;
-        color: #5e6a72 !important; /* Forced dark muted for cards even in dark theme */
+        color: var(--pricing-card-muted);
         margin: 0 0 1.5rem 0;
         min-height: 48px;
         line-height: 1.4;
       }
-      .pricing-card .price {
+      .pricing-main .pricing-card .price {
         font-size: 2.25rem;
         font-weight: 700;
-        color: #1f2a33 !important; /* Strict dark text */
+        color: var(--pricing-card-text);
         margin-bottom: 2rem;
         margin-top: auto;
       }
-      .pricing-card .price span {
+      .pricing-main .pricing-card .price span {
         font-size: 1rem;
         font-weight: 500;
-        color: #5e6a72 !important; /* Forced dark muted for dark theme visibility */
+        color: var(--pricing-card-muted);
       }
-      .pricing-card .btn-pricing {
-        background-color: #1f2a33 !important; /* Forced dark button for contrast */
-        color: #ffffff !important;
-        border: none;
+      .pricing-main .pricing-card .btn-pricing {
+        background: var(--pricing-button-bg);
+        color: var(--pricing-button-text);
+        border: 1px solid var(--pricing-button-border);
         padding: 0.75rem;
         border-radius: 0.375rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
         text-align: center;
         text-decoration: none;
         width: 100%;
         display: block;
         box-sizing: border-box;
       }
-      .pricing-card .btn-pricing:hover {
-        background-color: #3b4b5a !important;
+      .pricing-main .pricing-card .btn-pricing:hover {
+        background: var(--pricing-button-hover);
+        transform: translateY(-1px);
       }
-      .pricing-card.pro .btn-pricing {
-        background-color: var(--teal-500) !important; 
+      .pricing-main .pricing-card.pro .btn-pricing {
+        background: var(--pricing-button-pro-bg);
+        color: var(--pricing-button-pro-text);
+        border-color: transparent;
       }
-      .pricing-card.pro .btn-pricing:hover {
-        background-color: #45bdae !important;
+      .pricing-main .pricing-card.pro .btn-pricing:hover {
+        background: var(--pricing-button-pro-hover);
       }
 
       /* Style for the table body */
@@ -204,16 +261,16 @@
         padding-right: 0;
       }
       
-      .features-table tbody {
-        background: var(--glass); /* Enhanced glassmorphism */
+      .pricing-main .features-table tbody {
+        background: var(--pricing-table-surface);
         -webkit-backdrop-filter: blur(16px);
         backdrop-filter: blur(16px);
         border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--border-color);
+        box-shadow: var(--pricing-card-shadow);
+        border: 1px solid var(--pricing-table-border);
       }
       /* Teal circular background for checkmarks */
-      .check-icon {
+      .pricing-main .check-icon {
         background-color: var(--teal-500);
         color: white;
         border-radius: 50%;
@@ -222,7 +279,7 @@
         justify-content: center;
         width: 24px;
         height: 24px;
-        box-shadow: 0 2px 4px rgba(87, 207, 192, 0.3);
+        box-shadow: var(--pricing-check-shadow);
       }
       .check-icon svg {
         width: 14px;
@@ -233,6 +290,322 @@
         color: var(--muted);
         display: inline-block;
         font-weight: 300;
+      }
+
+      @media (max-width: 1100px) {
+        .pricing-section {
+          gap: 1.25rem;
+        }
+
+        .pricing-hero h1 {
+          font-size: clamp(2.4rem, 5vw, 3rem);
+        }
+
+        .features-table-container {
+          padding-bottom: 1.5rem;
+        }
+
+        .features-table {
+          min-width: 840px;
+          border-spacing: 10px 0;
+        }
+
+        .pricing-main .pricing-card {
+          padding: 1.35rem 1rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .pricing-hero {
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .pricing-section {
+          gap: 1rem;
+        }
+
+        .pricing-subtitle p {
+          max-width: none;
+          text-align: center;
+          font-size: 1.1rem;
+          margin: 0 auto;
+        }
+
+        .features-table-container {
+          margin-top: 1rem;
+          padding-bottom: 1rem;
+        }
+
+        .features-table {
+          min-width: 760px;
+          border-spacing: 8px 0;
+        }
+
+        .features-table th,
+        .features-table td {
+          padding: 1rem 0.75rem;
+          font-size: 0.95rem;
+        }
+
+        .features-table th:first-child,
+        .features-table td:first-child {
+          width: 28%;
+          padding-left: 1rem;
+        }
+
+        .pricing-main .pricing-card .price {
+          font-size: 2rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .pricing-main .pricing-card .btn-pricing {
+          padding: 0.7rem;
+        }
+
+        .pricing-main .card-popular-badge {
+          font-size: 0.68rem;
+          padding: 4px 10px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .pricing-hero h1 {
+          font-size: clamp(2rem, 10vw, 2.7rem);
+        }
+
+        .pricing-subtitle p {
+          font-size: 0.98rem;
+        }
+
+        .features-table-container {
+          margin-top: 0.75rem;
+        }
+
+        .features-table {
+          min-width: 700px;
+          border-spacing: 6px 0;
+        }
+
+        .features-table th,
+        .features-table td {
+          padding: 0.9rem 0.65rem;
+          font-size: 0.9rem;
+        }
+
+        .pricing-main .pricing-card {
+          padding: 1rem 0.85rem;
+          border-radius: 0.75rem;
+        }
+
+        .pricing-main .pricing-card h3 {
+          font-size: 1.05rem;
+        }
+
+        .pricing-main .pricing-card p.card-desc {
+          min-height: 0;
+          font-size: 0.8rem;
+          margin-bottom: 1rem;
+        }
+
+        .pricing-main .pricing-card .price {
+          font-size: 1.8rem;
+        }
+
+        .pricing-main .pricing-card .price span {
+          font-size: 0.9rem;
+        }
+
+        .pricing-main .pricing-card .btn-pricing {
+          font-size: 0.9rem;
+        }
+
+        .pricing-features-row td {
+          padding-bottom: 18px;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .pricing-hero {
+          text-align: center;
+          margin-bottom: 0.5rem;
+        }
+
+        .pricing-section {
+          gap: 1rem;
+        }
+
+        .pricing-subtitle p {
+          max-width: none;
+          margin: 0 auto;
+          text-align: center;
+          font-size: 1.1rem;
+        }
+
+        .features-table-container {
+          margin-top: 0.75rem;
+          overflow-x: visible;
+          padding-bottom: 0;
+          scroll-snap-type: none;
+        }
+
+        .features-table {
+          display: block;
+          width: 100%;
+          min-width: 0;
+          border-spacing: 0;
+          table-layout: auto;
+        }
+
+        .features-table thead,
+        .features-table tbody,
+        .features-table tr,
+        .features-table th,
+        .features-table td {
+          display: block;
+          width: 100%;
+        }
+
+        .features-table th,
+        .features-table td {
+          text-align: left;
+          padding: 0;
+          border-bottom: none;
+        }
+
+        .features-table thead tr:first-child {
+          display: grid;
+          gap: 0.75rem;
+        }
+
+        .pricing-main .pricing-card {
+          padding: 1.15rem 1rem;
+        }
+
+        .pricing-main .pricing-card h3,
+        .pricing-main .pricing-card p.card-desc,
+        .pricing-main .pricing-card .price,
+        .pricing-main .pricing-card .price span,
+        .pricing-main .pricing-card .btn-pricing {
+          text-align: center;
+        }
+
+        .pricing-main .pricing-card .btn-pricing {
+          width: 100%;
+        }
+
+        .features-table thead tr.pricing-features-row {
+          margin-top: 1rem;
+          padding: 0.9rem 1rem 0.25rem;
+          border-radius: 16px 16px 0 0;
+          background: var(--pricing-row-surface);
+          border: 1px solid var(--pricing-table-border);
+          border-bottom: none;
+        }
+
+        .pricing-features-row td:not(:first-child) {
+          display: none;
+        }
+
+        .pricing-features-row td:first-child {
+          width: 100%;
+          padding-left: 0;
+          text-align: left;
+        }
+
+        .features-table tbody {
+          display: grid;
+          gap: 0.85rem;
+          padding: 0;
+          background: transparent;
+          border: none;
+          box-shadow: none;
+        }
+
+        .features-table tbody tr {
+          border: 1px solid var(--pricing-table-border);
+          border-radius: 18px;
+          background: var(--pricing-row-surface);
+          padding: 0.9rem 1rem;
+          box-shadow: var(--pricing-card-shadow);
+        }
+
+        .features-table tbody tr td {
+          padding: 0.38rem 0;
+          text-align: left;
+        }
+
+        .features-table tbody tr td:first-child {
+          font-size: 1rem;
+          font-weight: 700;
+          padding-top: 0;
+          margin-bottom: 0.1rem;
+        }
+
+        .features-table tbody tr td:not(:first-child) {
+          padding-left: 0.25rem;
+          color: var(--muted);
+        }
+
+        .pricing-features-heading {
+          text-align: left;
+        }
+
+        .pricing-features-spacer {
+          display: none !important;
+        }
+
+        .pricing-main .card-popular-badge {
+          position: static;
+          transform: none;
+          display: inline-flex;
+          justify-content: center;
+          margin: 0 auto 0.75rem;
+        }
+      }
+
+      .pricing-mobile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: clamp(1rem, 2vw, 1.5rem);
+        margin-top: 1.25rem;
+        align-items: stretch;
+      }
+
+      .pricing-main .pricing-mobile-card {
+        width: 100%;
+        padding: 1.35rem 1.15rem;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      }
+
+      .pricing-main .pricing-mobile-card .price {
+        margin-bottom: 1rem;
+      }
+
+      .pricing-main .pricing-mobile-features {
+        margin: 0 0 1.25rem;
+        padding-left: 1.05rem;
+        color: var(--text-light);
+        display: grid;
+        gap: 0.55rem;
+        text-align: left;
+      }
+
+      .pricing-main .pricing-mobile-features li {
+        line-height: 1.45;
+      }
+
+      .pricing-main .pricing-mobile-grid .card-popular-badge {
+        position: static;
+        transform: none;
+        display: inline-flex;
+        margin: 0 auto 0.75rem;
+      }
+
+      @media (max-width: 560px) {
+        .pricing-mobile-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -299,6 +672,8 @@
         </div>
       </div>
 
+    </header>
+
     <main class="pricing-main">
       <section class="section">
         <div class="container pricing-section">
@@ -306,125 +681,55 @@
             <h1>Simple pricing</h1>
           </div>
           
-          <div class="features-table-container">
-            <table class="features-table">
-              <thead>
-                <tr>
-                  <th class="pricing-subtitle">
-                    <p>Your Visual Operations Engine Toolkit</p>
-                  </th>
-                  <!-- Free -->
-                  <th>
-                    <div class="pricing-card free">
-                      <h3>Free</h3>
-                      <p class="card-desc">Best for solo users</p>
-                      <div class="price">$0<span>/mo</span></div>
-                      <a href="signup.html" class="btn-pricing">Get started</a>
-                    </div>
-                  </th>
-                  <!-- Starter -->
-                  <th>
-                    <div class="pricing-card starter">
-                      <h3>Starter</h3>
-                      <p class="card-desc">Best for early stage teams</p>
-                      <div class="price">$29<span>/mo</span></div>
-                      <a href="signup.html" class="btn-pricing">Get started</a>
-                    </div>
-                  </th>
-                  <!-- Pro -->
-                  <th>
-                    <div class="pricing-card pro">
-                      <span class="card-popular-badge">Most Popular!</span>
-                      <h3>Pro</h3>
-                      <p class="card-desc">Best for expanding ops and pipelines</p>
-                      <div class="price">$49<span>/seat</span></div>
-                      <a href="signup.html" class="btn-pricing">Get started</a>
-                    </div>
-                  </th>
-                  <!-- Enterprise -->
-                  <th>
-                    <div class="pricing-card enterprise">
-                      <h3>Enterprise</h3>
-                      <p class="card-desc">Best for global, complex use cases</p>
-                      <div class="price">Custom</div>
-                      <a href="mailto:sales@zitboard.com" class="btn-pricing">Get started</a>
-                    </div>
-                  </th>
-                </tr>
-                <tr class="pricing-features-row">
-                  <td class="pricing-features-heading">Key Features</td>
-                  <td class="pricing-features-spacer"></td>
-                  <td class="pricing-features-spacer"></td>
-                  <td class="pricing-features-spacer"></td>
-                  <td class="pricing-features-spacer"></td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Team Members</td>
-                  <td>Up to 3</td>
-                  <td>Unlimited</td>
-                  <td>Unlimited</td>
-                  <td>Unlimited</td>
-                </tr>
-                <tr>
-                  <td>CRM Contacts</td>
-                  <td>500</td>
-                  <td>5,000</td>
-                  <td>Unlimited</td>
-                  <td>Unlimited</td>
-                </tr>
-                <tr>
-                  <td>Core CRM Capabilities</td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>Task Management</td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>AI Recommendations</td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>Advanced Analytics</td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>Plugin Configurations</td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>Analytics Export (CSV/PDF)</td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-                <tr>
-                  <td>Manage Org Members</td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="dash-icon">-</span></td>
-                  <td><span class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span></td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="pricing-mobile-grid" aria-label="Mobile pricing summary">
+            <article class="pricing-card free pricing-mobile-card">
+              <h3>Free</h3>
+              <p class="card-desc">Best for solo users</p>
+              <div class="price">$0<span>/mo</span></div>
+              <ul class="pricing-mobile-features">
+                <li>Up to 3 team members</li>
+                <li>500 CRM contacts</li>
+                <li>Core CRM and task management</li>
+              </ul>
+              <a href="signup.html" class="btn-pricing">Get started</a>
+            </article>
+
+            <article class="pricing-card starter pricing-mobile-card">
+              <h3>Starter</h3>
+              <p class="card-desc">Best for early stage teams</p>
+              <div class="price">$29<span>/mo</span></div>
+              <ul class="pricing-mobile-features">
+                <li>Unlimited team members</li>
+                <li>5,000 CRM contacts</li>
+                <li>AI recommendations</li>
+              </ul>
+              <a href="signup.html" class="btn-pricing">Get started</a>
+            </article>
+
+            <article class="pricing-card pro pricing-mobile-card">
+              <span class="card-popular-badge">Most Popular!</span>
+              <h3>Pro</h3>
+              <p class="card-desc">Best for expanding ops and pipelines</p>
+              <div class="price">$49<span>/seat</span></div>
+              <ul class="pricing-mobile-features">
+                <li>Unlimited team members</li>
+                <li>Advanced analytics</li>
+                <li>Plugin configurations</li>
+              </ul>
+              <a href="signup.html" class="btn-pricing">Get started</a>
+            </article>
+
+            <article class="pricing-card enterprise pricing-mobile-card">
+              <h3>Enterprise</h3>
+              <p class="card-desc">Best for global, complex use cases</p>
+              <div class="price">Custom</div>
+              <ul class="pricing-mobile-features">
+                <li>Analytics export</li>
+                <li>Manage org members</li>
+                <li>Custom implementation support</li>
+              </ul>
+              <a href="mailto:sales@zitboard.com" class="btn-pricing">Get started</a>
+            </article>
           </div>
         </div>
       </section>
