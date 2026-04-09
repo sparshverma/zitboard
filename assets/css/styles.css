@@ -2890,10 +2890,11 @@ input[type="checkbox"]:checked::after { left: 16px; }
 }
 .roi-controls-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 0.5rem;
-  gap: 1rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-bottom: 0.75rem;
+  gap: 0.85rem;
 }
 .roi-term-toggle {
   margin: 0;
@@ -2903,8 +2904,9 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .roi-period-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.3rem;
+  width: 100%;
 }
 .roi-period-caption {
   margin: 0;
@@ -2923,12 +2925,15 @@ input[type="checkbox"]:checked::after { left: 16px; }
   font-weight: 600;
 }
 .roi-rate-label {
-  margin-top: 1.5rem;
+  margin-top: 0.75rem;
   display: block;
 }
 #hourly-rate-value {
-  font-weight: 700;
+  font-weight: 400;
   color: var(--teal-main);
+}
+#team-size-value {
+  font-weight: 400;
 }
 .roi-results {
   display: flex;
@@ -4750,6 +4755,15 @@ input[type="checkbox"]:checked::after { left: 16px; }
 .roi-period-group {
   flex: 0 0 auto;
   align-items: flex-start;
+}
+
+.roi-team-group {
+  flex: 1 1 100%;
+}
+
+#team-size-value,
+#hourly-rate-value {
+  font-weight: 400 !important;
 }
 
 .roi-number {
