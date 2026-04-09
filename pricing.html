@@ -7,7 +7,7 @@
     <title>ZitBoard Pricing | Plans for Every Stage</title>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://www.zitboard.com/pricing.html" />
-    <meta name="description" content="Explore ZitBoard pricing slabs across Free, Starter, Pro, and Enterprise plans with a full feature comparison." />
+    <meta name="description" content="Explore ZitBoard pricing slabs across Free, Starter, Pro, and Enterprise plans with feature highlights for each tier." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -27,11 +27,15 @@
       /* Pricing Layout */
       .pricing-hero {
         text-align: left;
+        max-width: 72rem;
         margin-bottom: var(--space-8, 2rem);
       }
       .pricing-hero h1 {
-        font-size: var(--font-size-4xl, 3rem);
+        font-size: clamp(2.4rem, 4vw, 3.75rem);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
         margin-bottom: var(--space-4, 1rem);
+        max-width: 10ch;
       }
       .pricing-section {
         display: flex;
@@ -91,12 +95,12 @@
       }
       
       .pricing-subtitle p {
-        font-size: var(--font-size-2xl, 1.5rem);
+        font-size: clamp(1rem, 1.5vw, 1.35rem);
         color: var(--text);
-        max-width: 250px;
-        line-height: 1.2;
+        max-width: 44rem;
+        line-height: 1.45;
         margin: 0;
-        font-weight: 700;
+        font-weight: 600;
         text-align: left;
       }
       
@@ -301,6 +305,10 @@
           font-size: clamp(2.4rem, 5vw, 3rem);
         }
 
+        .pricing-mobile-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .features-table-container {
           padding-bottom: 1.5rem;
         }
@@ -370,12 +378,23 @@
       }
 
       @media (max-width: 560px) {
+        .pricing-hero {
+          text-align: center;
+          margin-bottom: 0.25rem;
+        }
+
         .pricing-hero h1 {
+          max-width: none;
+          margin-left: auto;
+          margin-right: auto;
           font-size: clamp(2rem, 10vw, 2.7rem);
         }
 
         .pricing-subtitle p {
+          text-align: center;
           font-size: 0.98rem;
+          max-width: none;
+          margin: 0 auto;
         }
 
         .features-table-container {
@@ -425,7 +444,7 @@
         }
       }
 
-      @media (max-width: 980px) {
+      @media (min-width: 561px) and (max-width: 980px) {
         .pricing-hero {
           text-align: center;
           margin-bottom: 0.5rem;
@@ -566,7 +585,7 @@
 
       .pricing-mobile-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: clamp(1rem, 2vw, 1.5rem);
         margin-top: 1.25rem;
         align-items: stretch;
@@ -602,9 +621,58 @@
         margin: 0 auto 0.75rem;
       }
 
+      @media (max-width: 1100px) {
+        .pricing-mobile-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: clamp(1rem, 2vw, 1.35rem);
+        }
+
+        .pricing-main .pricing-mobile-card {
+          padding: 1.35rem 1rem;
+        }
+
+        .pricing-main .pricing-mobile-card .price {
+          font-size: 2rem;
+          margin-bottom: 1.25rem;
+        }
+
+        .pricing-main .pricing-mobile-card .btn-pricing {
+          padding: 0.7rem;
+        }
+      }
+
       @media (max-width: 560px) {
         .pricing-mobile-grid {
           grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .pricing-main .pricing-card {
+          padding: 1rem 0.85rem;
+          border-radius: 0.75rem;
+        }
+
+        .pricing-main .pricing-card h3 {
+          font-size: 1.05rem;
+        }
+
+        .pricing-main .pricing-card p.card-desc {
+          min-height: 0;
+          font-size: 0.8rem;
+          margin-bottom: 1rem;
+        }
+
+        .pricing-main .pricing-card .price {
+          font-size: 1.8rem;
+        }
+
+        .pricing-main .pricing-card .price span {
+          font-size: 0.9rem;
+        }
+
+        .pricing-main .pricing-card .btn-pricing {
+          font-size: 0.9rem;
+          padding: 0.7rem;
         }
       }
     </style>
@@ -679,6 +747,9 @@
         <div class="container pricing-section">
           <div class="pricing-hero">
             <h1>Simple pricing</h1>
+            <div class="pricing-subtitle">
+              <p>Every paid plan includes the Free feature set, then adds capabilities for the next stage of growth.</p>
+            </div>
           </div>
           
           <div class="pricing-mobile-grid" aria-label="Mobile pricing summary">
@@ -687,9 +758,11 @@
               <p class="card-desc">Best for solo users</p>
               <div class="price">$0<span>/mo</span></div>
               <ul class="pricing-mobile-features">
+                <li>Core CRM and task management</li>
                 <li>Up to 3 team members</li>
                 <li>500 CRM contacts</li>
-                <li>Core CRM and task management</li>
+                <li>CSV import and onboarding wizard</li>
+                <li>Mobile-friendly access</li>
               </ul>
               <a href="signup.html" class="btn-pricing">Get started</a>
             </article>
@@ -699,9 +772,12 @@
               <p class="card-desc">Best for early stage teams</p>
               <div class="price">$29<span>/mo</span></div>
               <ul class="pricing-mobile-features">
+                <li>Everything in Free</li>
                 <li>Unlimited team members</li>
                 <li>5,000 CRM contacts</li>
                 <li>AI recommendations</li>
+                <li>Google Sheets, Slack, and Google Workspace sync</li>
+                <li>1-click native integrations</li>
               </ul>
               <a href="signup.html" class="btn-pricing">Get started</a>
             </article>
@@ -710,11 +786,17 @@
               <span class="card-popular-badge">Most Popular!</span>
               <h3>Pro</h3>
               <p class="card-desc">Best for expanding ops and pipelines</p>
-              <div class="price">$49<span>/seat</span></div>
+              <div class="price">$49<span>/mo</span></div>
               <ul class="pricing-mobile-features">
+                <li>Everything in Free and Starter</li>
                 <li>Unlimited team members</li>
                 <li>Advanced analytics</li>
-                <li>Plugin configurations</li>
+                <li>Customizable dashboards</li>
+                <li>AI lead scoring</li>
+                <li>Workflow automation and auto-assigned tasks</li>
+                <li>Hiring pipeline tracking and forecasting</li>
+                <li>Real-time webhooks, no-code mapping, and plugin configurations</li>
+                <li>Invoicing, subscriptions, and deal contracts</li>
               </ul>
               <a href="signup.html" class="btn-pricing">Get started</a>
             </article>
@@ -722,11 +804,15 @@
             <article class="pricing-card enterprise pricing-mobile-card">
               <h3>Enterprise</h3>
               <p class="card-desc">Best for global, complex use cases</p>
-              <div class="price">Custom</div>
+              <div class="price">$99<span>/mo</span></div>
               <ul class="pricing-mobile-features">
+                <li>Everything in Free, Starter, and Pro</li>
                 <li>Analytics export</li>
                 <li>Manage org members</li>
-                <li>Custom implementation support</li>
+                <li>Shared views, notes, and activity streams</li>
+                <li>SSO, role-based access control, and audit logs</li>
+                <li>Encryption, backups, and compliance-ready infrastructure</li>
+                <li>Custom implementation support and dedicated support</li>
               </ul>
               <a href="mailto:sales@zitboard.com" class="btn-pricing">Get started</a>
             </article>

@@ -1006,7 +1006,7 @@ const faqContentMap = {
   'pricing-plans': [
     {
       q: 'What pricing plans does ZitBoard offer?',
-      a: 'ZitBoard offers three pricing tiers to suit different team sizes: a Free plan for solo users, a Pro plan for growing teams that need advanced analytics and automation, and an Enterprise plan with custom seat limits and dedicated support. All plans include core CRM and task management features.',
+      a: 'ZitBoard offers four pricing tiers to suit different team sizes: Free at $0/month for solo users, Starter at $29/month for early stage teams, Pro at $49/month for growing teams that need advanced analytics and automation, and Enterprise at $99/month for larger organizations that need governance and support. All paid plans include the Free feature set, plus additional capabilities for the next stage of growth.',
     },
     {
       q: 'Can I upgrade or downgrade my ZitBoard plan anytime?',
@@ -1014,7 +1014,7 @@ const faqContentMap = {
     },
     {
       q: 'How many team members can I add to ZitBoard?',
-      a: 'The Free plan supports up to 3 team members. Pro and Enterprise plans use per-seat pricing, allowing you to scale your workspace as your team grows with no hard caps on the Enterprise tier.',
+      a: 'The Free plan supports up to 3 team members. Starter, Pro, and Enterprise all include unlimited team members, while higher tiers add larger contact limits and more advanced product capabilities.',
     },
     {
       q: 'What payment methods does ZitBoard accept?',
