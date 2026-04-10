@@ -20,7 +20,18 @@ function normalizeApiBase(rawBase) {
   return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
 }
 
-const API_BASE = normalizeApiBase('https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api');
+function resolveApiBase() {
+  const isLocalFile = window.location.protocol === 'file:';
+  const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  if (isLocalFile || isLocalHost) {
+    return normalizeApiBase('https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api');
+  }
+
+  return normalizeApiBase('/api');
+}
+
+const API_BASE = resolveApiBase();
 const DEFAULT_TENANT_ID = 'app';
 const DEFAULT_ROLE = 'admin';
 
@@ -36,7 +47,6 @@ function fetchWithTimeout(url, options, timeoutMs) {
 
 function redirectToDashboard(returnTo) {
   const callback = new URL(`${DASHBOARD_URL}/auth/callback`);
-  callback.searchParams.set('apiBase', API_BASE);
   callback.searchParams.set('returnTo', returnTo || '/');
   window.location.replace(callback.toString());
 }
@@ -49,7 +59,6 @@ function redirectToDashboardViaSupabase(session, returnTo) {
 
   window.name = JSON.stringify({
     supabaseAccessToken: session.access_token,
-    apiBase: API_BASE,
     tenantId: DEFAULT_TENANT_ID,
     role: DEFAULT_ROLE,
     returnTo: returnTo || '/',
