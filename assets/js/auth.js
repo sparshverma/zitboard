@@ -34,6 +34,84 @@ function resolveApiBase() {
 const API_BASE = resolveApiBase();
 const DEFAULT_TENANT_ID = 'app';
 const DEFAULT_ROLE = 'admin';
+const SIGNUP_TENANT_MAP_STORAGE_KEY = 'zitboard_signup_tenant_map';
+const PENDING_SIGNUP_TENANT_KEY = 'zitboard_pending_signup_tenant';
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
+function hashTenantSeed(seed) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < seed.length; index += 1) {
+    hash ^= seed.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0).toString(36);
+}
+
+function buildSignupTenantId(email) {
+  const normalizedEmail = normalizeEmail(email);
+  return `signup-${hashTenantSeed(normalizedEmail)}`;
+}
+
+function readSignupTenantMap() {
+  try {
+    return JSON.parse(window.localStorage.getItem(SIGNUP_TENANT_MAP_STORAGE_KEY) || '{}') || {};
+  } catch {
+    return {};
+  }
+}
+
+function rememberTenantForEmail(email, tenantId) {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail || !tenantId) {
+    return;
+  }
+
+  try {
+    const nextMap = readSignupTenantMap();
+    nextMap[normalizedEmail] = tenantId;
+    window.localStorage.setItem(SIGNUP_TENANT_MAP_STORAGE_KEY, JSON.stringify(nextMap));
+  } catch {
+    // Ignore storage failures; auth should still continue.
+  }
+}
+
+function lookupTenantForEmail(email) {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) {
+    return '';
+  }
+
+  try {
+    const tenantMap = readSignupTenantMap();
+    return tenantMap[normalizedEmail] || '';
+  } catch {
+    return '';
+  }
+}
+
+function getOrCreatePendingSignupTenantId() {
+  try {
+    const storedTenantId = window.sessionStorage.getItem(PENDING_SIGNUP_TENANT_KEY);
+    if (storedTenantId) {
+      return storedTenantId;
+    }
+
+    const generatedTenantId = `signup-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    window.sessionStorage.setItem(PENDING_SIGNUP_TENANT_KEY, generatedTenantId);
+    return generatedTenantId;
+  } catch {
+    return `signup-${Date.now().toString(36)}`;
+  }
+}
+
+function resolveLoginTenantId(email) {
+  return lookupTenantForEmail(email) || DEFAULT_TENANT_ID;
+}
 
 function fetchWithTimeout(url, options, timeoutMs) {
   const controller = new AbortController();
@@ -51,7 +129,7 @@ function redirectToDashboard(returnTo) {
   window.location.replace(callback.toString());
 }
 
-function redirectToDashboardViaSupabase(session, returnTo) {
+function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
   if (!session?.access_token) {
     window.location.replace(`${DASHBOARD_URL}/`);
     return;
@@ -59,15 +137,17 @@ function redirectToDashboardViaSupabase(session, returnTo) {
 
   window.name = JSON.stringify({
     supabaseAccessToken: session.access_token,
-    tenantId: DEFAULT_TENANT_ID,
+    tenantId: tenantId || DEFAULT_TENANT_ID,
     role: DEFAULT_ROLE,
     returnTo: returnTo || '/',
+    supabaseUrl: SUPABASE_URL,
+    supabaseAnonKey: SUPABASE_ANON_KEY,
   });
 
   window.location.replace(`${DASHBOARD_URL}/auth/callback`);
 }
 
-async function bridgeSupabaseSession(session, returnTo) {
+async function bridgeSupabaseSession(session, returnTo, tenantId) {
   if (!session?.access_token) {
     return false;
   }
@@ -79,8 +159,10 @@ async function bridgeSupabaseSession(session, returnTo) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         accessToken: session.access_token,
-        tenantId: DEFAULT_TENANT_ID,
+        tenantId: tenantId || DEFAULT_TENANT_ID,
         role: DEFAULT_ROLE,
+        supabaseUrl: SUPABASE_URL,
+        supabaseAnonKey: SUPABASE_ANON_KEY,
       }),
     }, 10000);
 
@@ -89,7 +171,11 @@ async function bridgeSupabaseSession(session, returnTo) {
       throw new Error(`Bridge failed (${response.status}) ${errorText}`);
     }
 
-    await response.json().catch(() => null);
+    const responseBody = await response.json().catch(() => null);
+    if (responseBody?.email) {
+      rememberTenantForEmail(responseBody.email, tenantId || DEFAULT_TENANT_ID);
+    }
+
     redirectToDashboard(returnTo || '/');
     return true;
   } catch (err) {
@@ -104,6 +190,7 @@ async function handleAuthResponse(response, context) {
   const mode = context?.mode || 'login';
   const password = context?.password || '';
   const email = context?.email || '';
+  const tenantId = context?.tenantId || DEFAULT_TENANT_ID;
 
   if (error) {
     const alreadyRegistered =
@@ -114,7 +201,7 @@ async function handleAuthResponse(response, context) {
 
     if (alreadyRegistered) {
       const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
-      await handleAuthResponse(signInResponse, { mode: 'login' });
+      await handleAuthResponse(signInResponse, { mode: 'login', tenantId: resolveLoginTenantId(email) });
       return;
     }
 
@@ -123,9 +210,9 @@ async function handleAuthResponse(response, context) {
   }
   
   if (data?.session) {
-    const bridged = await bridgeSupabaseSession(data.session, '/');
+    const bridged = await bridgeSupabaseSession(data.session, '/', tenantId);
     if (!bridged) {
-      redirectToDashboardViaSupabase(data.session, '/');
+      redirectToDashboardViaSupabase(data.session, '/', tenantId);
     }
     return;
   }
@@ -135,7 +222,11 @@ async function handleAuthResponse(response, context) {
     if (email) {
       const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
       if (signInResponse.data?.session) {
-        await handleAuthResponse(signInResponse, { mode: 'login' });
+        await handleAuthResponse(signInResponse, {
+          mode: 'login',
+          email,
+          tenantId: resolveLoginTenantId(email),
+        });
         return;
       }
 
@@ -167,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!email || !password) return alert("Please enter both email and password.");
       
       const response = await supabaseClient.auth.signInWithPassword({ email, password });
-      await handleAuthResponse(response, { mode: 'login' });
+      await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
     });
   }
 
@@ -183,6 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!email || !password) return alert("Please provide email and password.");
 
+      const tenantId = buildSignupTenantId(email);
+      rememberTenantForEmail(email, tenantId);
+
       const response = await supabaseClient.auth.signUp({ 
         email, 
         password,
@@ -192,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
-      await handleAuthResponse(response, { mode: 'signup', password, email });
+      await handleAuthResponse(response, { mode: 'signup', password, email, tenantId });
     });
   }
 
@@ -245,7 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
 
           if (provider === 'google' || provider === 'microsoft' || provider === 'twitter') {
-            const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(DEFAULT_TENANT_ID)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}`;
+            const tenantId = window.location.pathname.includes('signup') ? getOrCreatePendingSignupTenantId() : DEFAULT_TENANT_ID;
+            const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(tenantId)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}`;
             window.location.assign(oauthStartUrl);
             return;
           }

@@ -1,60 +1,93 @@
-# ZitBoard Cookie Implementation Plan
+# ZitBoard Signup, Onboarding, and Cookie Recovery Plan
 
 ## Objective
-Implement cookies in ZitBoard in a way that is secure, consent-aware, and minimally invasive to the current static site.
 
-## Guiding Decisions
-- Use server-set cookies for authentication only.
-- Keep theme and similar UI state in localStorage unless the server must read it.
-- Block analytics and any non-essential storage until explicit consent.
-- Keep cookie scope narrow: host-only, Path=/, no Domain, Secure, SameSite=Lax, and HttpOnly for session cookies.
+Restore the public signup flow so a new user can create a session, reach onboarding, and keep the cookie implementation aligned with the live deployment.
 
-## Task Checklist
+## Current Findings
 
-### 1. Secure Login Session Cookie
-- [x] Define the auth/session contract for the ZitBoard callback flow.
-- [x] Replace token-in-URL handoff in [assets/js/auth.js](../assets/js/auth.js) with a server-side callback that sets the session cookie.
-- [x] Set the session cookie as HttpOnly, Secure, SameSite=Lax, Path=/, host-only, with short idle and absolute expiry.
-- [x] Add logout handling that clears the cookie on the server and invalidates the session.
-- [x] Remove any auth tokens from client-side storage and query strings.
-- [ ] Regenerate the session on login and privilege changes.
-- [ ] Add validation for expired or invalid sessions and redirect to login.
+- The public signup page in [assets/js/auth.js](../assets/js/auth.js) hardcodes the target tenant to `app`.
+- Live signup reaches [app.zitboard.dev/auth/callback](https://app.zitboard.dev/auth/callback), but the Supabase bridge currently fails in production.
+- Direct calls to `/api/auth/dev-login` return JWTs, but the live response does not expose `Set-Cookie` headers, so the browser never persists the session.
+- The onboarding gate in [Dashboard/apps/web/src/components/OnboardingGate.tsx](../../Dashboard/apps/web/src/components/OnboardingGate.tsx) sends missing or incomplete sessions back to `/onboarding`.
+- A fresh tenant returns `not_started`, while the current `app` tenant is already `completed`, so a new signup into `app` does not naturally land in onboarding.
 
-### 2. Cookie Consent Banner
-- [x] Create a reusable consent banner component that loads on all public pages.
-- [x] Ensure Accept and Reject are equally prominent.
-- [x] Add a Customize option for analytics and other non-essential purposes.
-- [x] Default all non-essential storage to off until consent is granted.
-- [x] Persist the consent choice in a dedicated preference cookie or localStorage entry.
-- [x] Add a visible control to reopen consent settings from the privacy page or footer.
-- [x] Gate analytics scripts and events so they do not run before consent.
-- [x] Add a copy block listing purposes and any third parties.
+## Implementation Plan
 
-### 3. Preference Storage
-- [x] Keep theme persistence in localStorage unless a backend requirement appears.
-- [ ] If a server-visible preference is needed, use a small cookie with Max-Age, Secure, SameSite=Lax, Path=/, and no Domain.
-- [x] Keep preference data separate from auth and consent data.
-- [x] Verify the theme bootstrap still loads before paint.
+### 1. Restore Session Issuance
 
-### 4. Privacy and Policy Updates
-- [ ] Add or update cookie wording in privacy and security pages.
-- [ ] Document which cookies are strictly necessary, optional, or preference-only.
-- [ ] Add an explanation of how to withdraw consent and delete non-essential cookies.
-- [ ] Ensure the footer or privacy page links to the cookie notice or settings entry point.
+- Verify the deployed auth service emits `dashboard_access_token` and `dashboard_refresh_token` cookies for login and signup responses.
+- Confirm the rewrite from [ZitBoard/vercel.json](../vercel.json) preserves `Set-Cookie` headers end to end.
+- Keep the session cookie contract explicit: `HttpOnly`, `Secure`, `Path=/`, and the correct cross-subdomain scope for the app/public site setup.
+- Add a smoke test for the auth endpoints that checks both the JSON payload and the browser-visible cookie state.
 
-### 5. Validation
-- [ ] Verify first visit does not set non-essential cookies before consent.
-- [ ] Verify login sets only the intended session cookie.
-- [ ] Verify logout clears the session cookie and access state.
-- [ ] Verify the reject-consent path keeps analytics disabled.
-- [ ] Verify the accept-consent path enables only the approved categories.
-- [ ] Check mobile behavior, keyboard support, and focus order for the banner.
-- [ ] Confirm no sensitive value is readable by document.cookie or localStorage.
-- [ ] Run an accessibility and performance pass after integration.
+Acceptance criteria:
+
+- A successful login or dev-login creates a session visible to the browser.
+- `/api/auth/me` succeeds without manually injecting a bearer token.
+- Logout clears the session and forces the auth gate again.
+
+### 2. Repair the Signup Bridge
+
+- Reconfigure `supabase-login` so the production signup path can complete the backend bridge instead of aborting.
+- If Supabase is not the long-term signup source, replace that bridge with a single direct auth/session issuance path.
+- Keep [assets/js/auth.js](../assets/js/auth.js) from silently falling back to `/` when the bridge fails; surface a clear user-facing error instead.
+
+Acceptance criteria:
+
+- A new signup returns a usable session or a specific, actionable error.
+- The callback page no longer hides bridge failures behind a generic redirect.
+
+### 3. Fix the Onboarding Destination
+
+- Stop routing public signups into the already-completed `app` tenant unless that is intentional.
+- Either create a fresh tenant for first-time signups or reset onboarding state for the new-user path.
+- Keep the current routing rule intact: completed tenants land on the dashboard, incomplete tenants land on onboarding.
+
+Acceptance criteria:
+
+- A fresh user reaches onboarding on the first successful signup.
+- The existing `app` tenant still lands on the dashboard once onboarding is complete.
+
+### 4. Complete the Cookie Implementation Plan
+
+#### Already complete in source
+
+- Consent banner loads on the public site and separates consent from the auth flow.
+- Theme persistence stays in localStorage.
+- Non-essential storage is gated behind consent.
+- The backend defines session cookies and logout clearing logic.
+
+#### Still incomplete in production or documentation
+
+- Session cookie emission must be verified live.
+- The public privacy and security copy still needs to describe the cookie classes clearly.
+- The validation pass still needs to cover first visit, accept, reject, login, logout, and keyboard accessibility.
+
+Acceptance criteria:
+
+- No non-essential cookie or analytics script runs before consent.
+- Session cookies are only present after a successful auth flow.
+- The privacy/security pages match the actual cookie behavior.
+
+## Cookie Plan Completion Status
+
+### Verified complete
+
+- Consent banner and preference storage are implemented.
+- Theme preference remains in localStorage.
+- Cookie/state separation between consent, preference, and auth is in place.
+
+### Verified incomplete
+
+- Live auth responses still do not persist a session cookie in the browser.
+- The signup bridge still fails in production.
+- Public signup still targets the already-completed `app` tenant.
+- Privacy/security documentation still needs a final cookie audit pass.
 
 ## Done When
-- Session auth is cookie-based and server-managed.
-- Consent is explicit, granular, and reversible.
-- Preferences remain lightweight and non-invasive.
-- No non-essential cookie or script loads before consent.
-- The site still works cleanly across the existing public pages.
+
+- A brand-new signup lands on onboarding instead of dropping back to auth.
+- The browser carries the session cookie after login without manual intervention.
+- The completed cookie plan is reflected in both the code path and the docs.
+- Consent, preferences, and auth remain separated and reversible.
