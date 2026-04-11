@@ -14,6 +14,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
+const DASHBOARD_API_BASE = `${DASHBOARD_URL}/api`; // Bridge calls go directly to dashboard domain for cookie alignment
 
 function normalizeApiBase(rawBase) {
   const trimmed = String(rawBase || '').replace(/\/+$/, '');
@@ -151,7 +152,7 @@ async function bridgeSupabaseSession(session, returnTo, tenantId) {
   }
 
   try {
-    const response = await fetchWithTimeout(`${API_BASE}/auth/supabase-login`, {
+    const response = await fetchWithTimeout(`${DASHBOARD_API_BASE}/auth/supabase-login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -159,6 +160,8 @@ async function bridgeSupabaseSession(session, returnTo, tenantId) {
         accessToken: session.access_token,
         tenantId: tenantId || DEFAULT_TENANT_ID,
         role: DEFAULT_ROLE,
+        supabaseUrl: SUPABASE_URL,
+        supabaseAnonKey: SUPABASE_ANON_KEY,
       }),
     }, 10000);
 
