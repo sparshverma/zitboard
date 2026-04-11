@@ -140,8 +140,6 @@ function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
     tenantId: tenantId || DEFAULT_TENANT_ID,
     role: DEFAULT_ROLE,
     returnTo: returnTo || '/',
-    supabaseUrl: SUPABASE_URL,
-    supabaseAnonKey: SUPABASE_ANON_KEY,
   });
 
   window.location.replace(`${DASHBOARD_URL}/auth/callback`);
@@ -161,8 +159,6 @@ async function bridgeSupabaseSession(session, returnTo, tenantId) {
         accessToken: session.access_token,
         tenantId: tenantId || DEFAULT_TENANT_ID,
         role: DEFAULT_ROLE,
-        supabaseUrl: SUPABASE_URL,
-        supabaseAnonKey: SUPABASE_ANON_KEY,
       }),
     }, 10000);
 
