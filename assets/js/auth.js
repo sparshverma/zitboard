@@ -209,10 +209,7 @@ async function handleAuthResponse(response, context) {
   }
   
   if (data?.session) {
-    const bridged = await bridgeSupabaseSession(data.session, '/', tenantId);
-    if (!bridged) {
-      redirectToDashboardViaSupabase(data.session, '/', tenantId);
-    }
+    redirectToDashboardViaSupabase(data.session, '/', tenantId);
     return;
   }
 
