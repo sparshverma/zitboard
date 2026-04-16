@@ -4,13 +4,25 @@
  * for the ZitBoard front-end, designed to share session with Dashboard Next.js app.
  */
 
-// We expect these configuration keys to be set either securely via environment replacement on build
-// or injected here. For production, never expose sensitive admin keys, only the `ANON_KEY`.
-const SUPABASE_URL = 'https://mwoixpkmqfqintiecsui.supabase.co'; // Replace with actual URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13b2l4cGttcWZxaW50aWVjc3VpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5Mjk4NDEsImV4cCI6MjA4OTUwNTg0MX0.SXYefSORzFwFR1f2_Qi1MU39Uxi_jlgdeVBH1Ht9b_4'; // Replace with actual Anon Key
+// Read public Supabase configuration from meta tags or global config injected at runtime.
+function readMetaConfig(name) {
+  return document.querySelector(`meta[name="${name}"]`)?.getAttribute('content')?.trim() || '';
+}
 
-// Initialize the Supabase client
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL =
+  readMetaConfig('supabase-url') ||
+  window.ZITBOARD_SUPABASE_URL ||
+  '';
+
+const SUPABASE_ANON_KEY =
+  readMetaConfig('supabase-anon-key') ||
+  window.ZITBOARD_SUPABASE_ANON_KEY ||
+  '';
+
+const supabaseClient =
+  SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
@@ -242,6 +254,11 @@ async function handleAuthResponse(response, context) {
 // 1. Setup Standard Email/Password Forms
 // ---------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  if (!supabaseClient) {
+    console.error('Missing Supabase runtime config. Set meta tags "supabase-url" and "supabase-anon-key".');
+    return;
+  }
+
   
   // Login Form
   const loginForm = document.querySelector('#loginForm, #signupForm, #forgotForm, form');
