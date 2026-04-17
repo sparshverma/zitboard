@@ -9,20 +9,15 @@ function readMetaConfig(name) {
   return document.querySelector(`meta[name="${name}"]`)?.getAttribute('content')?.trim() || '';
 }
 
-const SUPABASE_URL =
+let SUPABASE_URL =
   readMetaConfig('supabase-url') ||
   window.ZITBOARD_SUPABASE_URL ||
   '';
 
-const SUPABASE_ANON_KEY =
+let SUPABASE_ANON_KEY =
   readMetaConfig('supabase-anon-key') ||
   window.ZITBOARD_SUPABASE_ANON_KEY ||
   '';
-
-const supabaseClient =
-  SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : null;
 
 // Redirect target for successful login (Dashboard App)
 const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
@@ -45,10 +40,72 @@ function resolveApiBase() {
 }
 
 const API_BASE = resolveApiBase();
+const PUBLIC_AUTH_CONFIG_ENDPOINT = `${API_BASE}/auth/public-config`;
 const DEFAULT_TENANT_ID = 'app';
 const DEFAULT_ROLE = 'admin';
 const SIGNUP_TENANT_MAP_STORAGE_KEY = 'zitboard_signup_tenant_map';
 const PENDING_SIGNUP_TENANT_KEY = 'zitboard_pending_signup_tenant';
+
+function createSupabaseClient(url, anonKey) {
+  if (!url || !anonKey || !window.supabase) {
+    return null;
+  }
+
+  try {
+    return window.supabase.createClient(url, anonKey);
+  } catch (error) {
+    console.error('Failed to initialize Supabase client.', error);
+    return null;
+  }
+}
+
+let supabaseClient = createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function hydrateSupabaseConfigFromBackend() {
+  try {
+    const response = await fetchWithTimeout(
+      PUBLIC_AUTH_CONFIG_ENDPOINT,
+      {
+        method: 'GET',
+        credentials: 'omit',
+      },
+      10000,
+    );
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const payload = await response.json().catch(() => null);
+    const nextUrl = String(payload?.supabaseUrl || '').trim();
+    const nextAnonKey = String(payload?.supabaseAnonKey || '').trim();
+
+    if (!nextUrl || !nextAnonKey) {
+      return false;
+    }
+
+    SUPABASE_URL = nextUrl;
+    SUPABASE_ANON_KEY = nextAnonKey;
+    return true;
+  } catch (error) {
+    console.error('Failed to hydrate Supabase runtime config.', error);
+    return false;
+  }
+}
+
+async function ensureSupabaseClientReady() {
+  if (supabaseClient) {
+    return true;
+  }
+
+  const hydrated = await hydrateSupabaseConfigFromBackend();
+  if (!hydrated) {
+    return false;
+  }
+
+  supabaseClient = createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return !!supabaseClient;
+}
 
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
@@ -253,11 +310,20 @@ async function handleAuthResponse(response, context) {
 // ---------------------------------------------
 // 1. Setup Standard Email/Password Forms
 // ---------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-  if (!supabaseClient) {
+document.addEventListener('DOMContentLoaded', async () => {
+  const hasSupabaseClient = await ensureSupabaseClientReady();
+  if (!hasSupabaseClient) {
     console.error('Missing Supabase runtime config. Set meta tags "supabase-url" and "supabase-anon-key".');
-    return;
   }
+
+  const requireEmailAuth = () => {
+    if (supabaseClient) {
+      return true;
+    }
+
+    alert('Email/password auth is temporarily unavailable. Please use Google, Microsoft, or Twitter login.');
+    return false;
+  };
 
   
   // Login Form
@@ -269,6 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = loginForm.querySelector('input[type="password"]').value;
       
       if (!email || !password) return alert("Please enter both email and password.");
+      if (!requireEmailAuth()) return;
       
       const response = await supabaseClient.auth.signInWithPassword({ email, password });
       await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
@@ -286,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = loginForm.querySelector('input[type="password"]').value;
       
       if (!email || !password) return alert("Please provide email and password.");
+      if (!requireEmailAuth()) return;
 
       const tenantId = buildSignupTenantId(email);
       rememberTenantForEmail(email, tenantId);
@@ -310,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = loginForm.querySelector('input[type="email"]').value;
       
       if (!email) return alert("Please enter your email.");
+      if (!requireEmailAuth()) return;
 
       const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password.html`,
@@ -355,6 +424,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const tenantId = window.location.pathname.includes('signup') ? getOrCreatePendingSignupTenantId() : DEFAULT_TENANT_ID;
             const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(tenantId)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}`;
             window.location.assign(oauthStartUrl);
+            return;
+          }
+
+          if (!supabaseClient) {
+            alert('This provider is temporarily unavailable. Please try again later.');
             return;
           }
 
