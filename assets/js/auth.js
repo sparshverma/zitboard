@@ -404,21 +404,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const originalHtml = btn.innerHTML;
       const btnText = btn.innerText.trim().toLowerCase();
+      const ariaLabel = String(btn.getAttribute('aria-label') || '').toLowerCase();
+      const providerHint = `${btnText} ${ariaLabel}`.trim();
+      const isIconOnly = btn.dataset.iconOnly === 'true' || btn.classList.contains('auth-social-btn');
       let provider = (btn.dataset.provider || '').toLowerCase() || null;
 
       if (!provider) {
-        if (btnText.includes('google')) provider = 'google';
-        else if (btnText.includes('microsoft')) provider = 'microsoft';
-        else if (btnText.includes('twitter')) provider = 'twitter';
+        if (providerHint.includes('google')) provider = 'google';
+        else if (providerHint.includes('microsoft')) provider = 'microsoft';
+        else if (providerHint.includes('twitter')) provider = 'twitter';
       }
 
       if (provider) {
         try {
           // Premium UX: Loading state
           btn.disabled = true;
-          btn.style.opacity = '0.7';
-          btn.style.cursor = 'not-allowed';
-          btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
+          btn.classList.add('is-loading');
+          btn.setAttribute('aria-busy', 'true');
+          if (isIconOnly) {
+            btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>`;
+          } else {
+            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Connecting...`;
+          }
 
           if (provider === 'google' || provider === 'microsoft' || provider === 'twitter') {
             const tenantId = window.location.pathname.includes('signup') ? getOrCreatePendingSignupTenantId() : DEFAULT_TENANT_ID;
@@ -453,8 +460,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         } finally {
           // Restore button if redirect failed or errored
           btn.disabled = false;
-          btn.style.opacity = '1';
-          btn.style.cursor = 'pointer';
+          btn.classList.remove('is-loading');
+          btn.removeAttribute('aria-busy');
           btn.innerHTML = originalHtml;
         }
       }
