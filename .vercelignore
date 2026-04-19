@@ -1,5 +1,6 @@
 .git
 *.jpeg
 *.jpg
+!bg_auth_mobile.jpg
 scripts/
 temp*
