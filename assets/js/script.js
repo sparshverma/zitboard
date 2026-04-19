@@ -35,6 +35,18 @@ let analyticsScriptsLoaded = false;
 let consentBannerElement = null;
 let consentPanelElement = null;
 let consentSettingsButton = null;
+let consentQuickActionsElement = null;
+let consentCloseTimer = null;
+
+const CONSENT_BANNER_ANIMATION_MS = 240;
+const reducedMotionQuery =
+  typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+
+function shouldReduceMotion() {
+  return Boolean(reducedMotionQuery && reducedMotionQuery.matches);
+}
 
 function readCookieValue(name) {
   const cookie = document.cookie || '';
@@ -166,36 +178,83 @@ function syncConsentUi() {
   }
 
   if (consentSettingsButton) {
-    consentSettingsButton.hidden = !consentState;
+    const bannerVisible = Boolean(consentBannerElement && !consentBannerElement.hidden);
+    consentSettingsButton.hidden = bannerVisible || !consentState;
+  }
+}
+
+function clearConsentCloseTimer() {
+  if (consentCloseTimer) {
+    window.clearTimeout(consentCloseTimer);
+    consentCloseTimer = null;
+  }
+}
+
+function setConsentView(mode = 'quick') {
+  if (!consentBannerElement) {
+    return;
+  }
+
+  const showQuick = mode === 'quick';
+  consentBannerElement.dataset.mode = mode;
+
+  if (consentQuickActionsElement) {
+    consentQuickActionsElement.classList.toggle('is-visible', showQuick);
+    consentQuickActionsElement.classList.toggle('is-hidden', !showQuick);
+    consentQuickActionsElement.setAttribute('aria-hidden', String(!showQuick));
+  }
+
+  if (consentPanelElement) {
+    consentPanelElement.classList.toggle('is-visible', !showQuick);
+    consentPanelElement.classList.toggle('is-hidden', showQuick);
+    consentPanelElement.setAttribute('aria-hidden', String(showQuick));
   }
 }
 
 function closeConsentBanner() {
-  if (consentPanelElement) {
-    consentPanelElement.hidden = true;
+  if (!consentBannerElement) {
+    return;
   }
 
-  if (consentBannerElement) {
+  clearConsentCloseTimer();
+
+  const finalizeClose = () => {
     consentBannerElement.hidden = true;
+    consentBannerElement.classList.remove('is-open', 'is-closing');
+    setConsentView('quick');
+    syncConsentUi();
+  };
+
+  if (shouldReduceMotion()) {
+    finalizeClose();
+    return;
   }
 
-  if (consentSettingsButton) {
-    consentSettingsButton.hidden = !consentState;
-  }
+  consentBannerElement.classList.remove('is-open');
+  consentBannerElement.classList.add('is-closing');
+  consentCloseTimer = window.setTimeout(finalizeClose, CONSENT_BANNER_ANIMATION_MS);
 }
 
-function openConsentBanner() {
-  if (consentBannerElement) {
-    consentBannerElement.hidden = false;
+function openConsentBanner(mode = 'quick') {
+  if (!consentBannerElement) {
+    return;
   }
 
-  if (consentPanelElement) {
-    consentPanelElement.hidden = false;
+  clearConsentCloseTimer();
+  setConsentView(mode);
+  consentBannerElement.hidden = false;
+  consentBannerElement.classList.remove('is-closing');
+
+  if (shouldReduceMotion()) {
+    consentBannerElement.classList.add('is-open');
+    syncConsentUi();
+    return;
   }
 
-  if (consentSettingsButton) {
-    consentSettingsButton.hidden = true;
-  }
+  window.requestAnimationFrame(() => {
+    consentBannerElement.classList.add('is-open');
+    syncConsentUi();
+  });
 }
 
 function applyConsentChoice(nextState) {
@@ -224,21 +283,20 @@ function buildConsentBanner() {
   banner.setAttribute('data-zitboard-consent-banner', 'true');
   banner.setAttribute('role', 'dialog');
   banner.setAttribute('aria-label', 'Cookie preferences');
+  banner.hidden = true;
 
   banner.innerHTML = `
     <div class="cookie-banner__content">
       <p class="cookie-banner__eyebrow">Cookies</p>
       <h2>Control how ZitBoard uses cookies.</h2>
-      <p>Essential cookies keep the site and login working. Analytics cookies help us measure usage and improve the experience.</p>
-      <p class="cookie-banner__note">Essential cookies are always on. Analytics and marketing are optional.</p>
-      <a class="cookie-banner__link" href="privacy.html">Read the privacy notice</a>
+      <p>Essential cookies keep the site and login working. Choose how ZitBoard handles analytics and marketing cookies.</p>
     </div>
-    <div class="cookie-banner__actions">
-      <button type="button" class="cookie-banner__button cookie-banner__button--primary" data-consent-action="accept">Accept all</button>
-      <button type="button" class="cookie-banner__button" data-consent-action="reject">Reject non-essential</button>
-      <button type="button" class="cookie-banner__button cookie-banner__button--ghost" data-consent-action="manage">Manage settings</button>
+    <div class="cookie-banner__quick cookie-banner__view is-visible" data-consent-view="quick">
+      <button type="button" class="cookie-banner__button cookie-banner__button--primary" data-consent-action="accept">Accept</button>
+      <button type="button" class="cookie-banner__button" data-consent-action="reject">Reject</button>
+      <button type="button" class="cookie-banner__button cookie-banner__button--ghost" data-consent-action="manage">Manage Cookies</button>
     </div>
-    <div class="cookie-banner__panel" hidden>
+    <div class="cookie-banner__panel cookie-banner__view is-hidden" data-consent-view="manage" aria-hidden="true">
       <label class="cookie-toggle">
         <input type="checkbox" data-consent-toggle="analytics" />
         <span>Analytics cookies</span>
@@ -262,20 +320,15 @@ function buildConsentBanner() {
 
     const action = actionNode.getAttribute('data-consent-action');
     if (action === 'manage') {
-      if (consentPanelElement) {
-        consentPanelElement.hidden = false;
-      }
-      openConsentBanner();
+      setConsentView('manage');
       return;
     }
 
     if (action === 'close') {
-      if (consentPanelElement) {
-        consentPanelElement.hidden = true;
-      }
-
       if (consentState) {
         closeConsentBanner();
+      } else {
+        setConsentView('quick');
       }
       return;
     }
@@ -305,15 +358,17 @@ function buildConsentBanner() {
   const settingsButton = document.createElement('button');
   settingsButton.type = 'button';
   settingsButton.className = 'cookie-settings-fab';
-  settingsButton.textContent = 'Cookie settings';
+  settingsButton.innerHTML = '<span class="cookie-settings-fab__icon" aria-hidden="true">🍪</span>';
   settingsButton.setAttribute('aria-label', 'Open cookie settings');
+  settingsButton.setAttribute('title', 'Cookie settings');
   settingsButton.addEventListener('click', () => {
-    openConsentBanner();
+    openConsentBanner('quick');
   });
 
   document.body.appendChild(settingsButton);
 
   consentBannerElement = banner;
+  consentQuickActionsElement = banner.querySelector('[data-consent-view="quick"]');
   consentPanelElement = banner.querySelector('.cookie-banner__panel');
   consentSettingsButton = settingsButton;
 }
@@ -327,13 +382,17 @@ function initializeConsentBanner() {
     loadAnalyticsScripts();
   }
 
-  if (consentBannerElement) {
-    consentBannerElement.hidden = Boolean(consentState);
+  if (consentState) {
+    setConsentView('quick');
+    if (consentBannerElement) {
+      consentBannerElement.hidden = true;
+      consentBannerElement.classList.remove('is-open', 'is-closing');
+    }
+  } else {
+    openConsentBanner('quick');
   }
 
-  if (consentSettingsButton) {
-    consentSettingsButton.hidden = !consentState;
-  }
+  syncConsentUi();
 }
 
 function animateCounter(el) {
