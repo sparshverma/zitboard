@@ -1006,7 +1006,7 @@ const faqContentMap = {
   'pricing-plans': [
     {
       q: 'What pricing plans does ZitBoard offer?',
-      a: 'ZitBoard offers four pricing tiers to suit different team sizes: Free at $0/month for solo users, Starter at $29/month for early stage teams, Pro at $49/month for growing teams that need advanced analytics and automation, and Enterprise at $99/month for larger organizations that need governance and support. All paid plans include the Free feature set, plus additional capabilities for the next stage of growth.',
+      a: 'ZitBoard offers four pricing tiers to suit different team sizes: Free for solo users, Starter at $19/Month for early stage teams, Pro at $39/Month for growing teams that need advanced analytics and automation, and Enterprise at $99/Month for larger organizations that need governance and support. All paid plans include the Free feature set, plus additional capabilities for the next stage of growth.',
     },
     {
       q: 'Can I upgrade or downgrade my ZitBoard plan anytime?',
@@ -1022,7 +1022,7 @@ const faqContentMap = {
     },
     {
       q: 'Does ZitBoard offer a free trial?',
-      a: 'Yes. ZitBoard offers a 14-day free trial of the Pro plan with no credit card required. The trial gives you full access to advanced analytics, task automation, and integrations so you can evaluate the platform before committing.',
+      a: 'Yes. Every new account starts with a 7-day free trial as soon as the account is created. During the trial you can use premium capabilities. After day 7, core free features remain available and upgrading unlocks premium features again.',
     },
   ],
   'features-integrations': [
