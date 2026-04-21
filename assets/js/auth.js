@@ -241,7 +241,7 @@ async function bridgeSupabaseSession(session, returnTo, tenantId) {
 
     const responseBody = await response.json().catch(() => null);
     if (responseBody?.email) {
-      rememberTenantForEmail(responseBody.email, tenantId || DEFAULT_TENANT_ID);
+      rememberTenantForEmail(responseBody.email, responseBody.tenantId || tenantId || DEFAULT_TENANT_ID);
     }
 
     redirectToDashboard(returnTo || '/');
