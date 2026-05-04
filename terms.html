@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/webp" href="logo_nobg.webp" />
+    <title>ZitBoard Terms and Conditions</title>
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href="https://www.zitboard.com/terms" />
+    <meta name="description" content="Terms and Conditions governing your use of the ZitBoard platform and services." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="assets/js/theme-bootstrap.js"></script>
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260420-1" />
+    <style>
+      /* Canvas Background */
+      #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      /* Prevent horizontal scroll on all devices */
+      .terms-section {
+        overflow-x: hidden;
+        max-width: 100vw;
+      }
+
+      /* Override container width for terms page */
+      .terms-container-wide {
+        box-sizing: border-box;
+        width: min(1560px, 96vw) !important;
+        max-width: 100% !important;
+        padding-left: 2vw;
+        padding-right: 2vw;
+      }
+
+      /* Page Header — premium text-forward technique, no panel/card */
+      .terms-page-header {
+        position: relative;
+        z-index: 10;
+        padding: 2.5rem 0 2rem;
+        margin-bottom: 1rem;
+        max-width: 680px;
+      }
+
+      .terms-eyebrow {
+        display: inline-flex;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        color: #5d7392;
+        margin-bottom: 0.85rem;
+      }
+
+      .terms-heading {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(2.2rem, 4vw, 3.5rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        color: #1a2433;
+        margin: 0 0 0.85rem;
+        -webkit-text-fill-color: #1a2433;
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+      }
+
+      .terms-subheading {
+        font-size: 1.05rem;
+        color: #4a5a6a;
+        line-height: 1.65;
+        margin: 0;
+        max-width: 54ch;
+        font-weight: 500;
+      }
+
+      /* Dark mode — pure white text + layered depth shadows + teal eyebrow glow */
+      [data-theme="dark"] .terms-eyebrow {
+        color: #7cf5dd;
+        text-shadow:
+          0 0 18px rgba(124, 245, 221, 0.7),
+          0 0 36px rgba(124, 245, 221, 0.3);
+      }
+
+      [data-theme="dark"] .terms-heading {
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+        text-shadow:
+          0 0 60px rgba(255, 255, 255, 0.18),
+          0 2px 4px rgba(0, 0, 0, 0.9),
+          0 6px 24px rgba(0, 0, 0, 0.7),
+          0 12px 48px rgba(0, 0, 0, 0.4);
+      }
+
+      [data-theme="dark"] .terms-subheading {
+        color: rgba(203, 213, 225, 0.92);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Terms Layout with Sidebar */
+      .terms-wrapper {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem 0;
+        align-items: flex-start;
+      }
+
+      /* Table of Contents Sidebar */
+      .terms-toc {
+        position: sticky;
+        top: 100px;
+        width: 260px;
+        flex-shrink: 0;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 1.25rem;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+      }
+
+      .terms-toc h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+
+      .terms-toc ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .terms-toc li {
+        margin-bottom: 0.35rem;
+        font-size: 0.85rem;
+      }
+
+      .terms-toc a {
+        color: var(--muted);
+        text-decoration: none;
+        display: block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+      }
+
+      .terms-toc a:hover {
+        color: var(--teal-500);
+        background: rgba(124, 245, 221, 0.1);
+      }
+
+      .terms-toc a.active {
+        color: var(--teal-500);
+        background: rgba(124, 245, 221, 0.15);
+        font-weight: 500;
+      }
+
+      /* Dark mode optimizations for TOC */
+      [data-theme="dark"] .terms-toc {
+        background: rgba(15, 23, 42, 0.7);
+        border-color: rgba(148, 163, 184, 0.2);
+      }
+
+      [data-theme="dark"] .terms-toc h3 {
+        color: #f8fafc;
+      }
+
+      [data-theme="dark"] .terms-toc a {
+        color: #94a3b8;
+      }
+
+      [data-theme="dark"] .terms-toc a:hover {
+        color: #7cf5dd;
+        background: rgba(124, 245, 221, 0.15);
+      }
+
+      [data-theme="dark"] .terms-toc a.active {
+        color: #7cf5dd;
+        background: rgba(124, 245, 221, 0.25);
+      }
+
+      /* Terms Content */
+      .terms-content-wrapper {
+        flex: 1;
+        min-width: 0;
+        background: rgba(255, 255, 255, 0.82);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 16px;
+        padding: 2.5rem 2.75rem;
+      }
+
+      .terms-content {
+        font-family: 'Manrope', sans-serif;
+        line-height: 1.8;
+        color: #1f2a33;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+
+      .terms-content h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        scroll-margin-top: 100px;
+      }
+
+      .terms-content h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-top: 1.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--text);
+        scroll-margin-top: 100px;
+      }
+
+      .terms-content h4 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+        scroll-margin-top: 100px;
+      }
+
+      .terms-content p {
+        margin-bottom: 1rem;
+      }
+
+      .terms-content ul, .terms-content ol {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+      }
+
+      .terms-content li {
+        margin-bottom: 0.5rem;
+      }
+
+      .terms-content strong {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .terms-content blockquote {
+        border-left: 3px solid var(--teal-500);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        font-style: italic;
+        color: var(--muted);
+      }
+
+      .terms-content a {
+        color: var(--teal-500);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .terms-content a:hover {
+        color: var(--purple-600);
+        text-decoration: underline;
+      }
+
+      .terms-content hr {
+        border: none;
+        border-top: 1px solid var(--line);
+        margin: 2rem 0;
+      }
+
+      /* Mobile & Responsive */
+      @media (max-width: 1100px) {
+        .terms-toc {
+          width: 220px;
+        }
+        .terms-content-wrapper {
+          padding: 2rem;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .terms-wrapper {
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .terms-toc {
+          position: relative;
+          top: 0;
+          width: 100%;
+          max-height: 260px;
+          margin-bottom: 0;
+        }
+
+        .terms-toc ul {
+          columns: 2;
+          gap: 0.5rem;
+        }
+
+        .terms-content-wrapper {
+          padding: 1.75rem 1.5rem;
+        }
+
+        .terms-page-header {
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .terms-container-wide {
+          box-sizing: border-box !important;
+          width: 100% !important;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+
+        .terms-toc {
+          max-height: none;
+        }
+
+        .terms-toc ul {
+          columns: 1;
+        }
+
+        .terms-content-wrapper {
+          padding: 1.25rem 1rem;
+          border-radius: 12px;
+        }
+
+        .terms-page-header {
+          max-width: 100%;
+          padding: 1.5rem 0 1rem;
+        }
+
+        .terms-heading {
+          font-size: clamp(1.8rem, 8vw, 2.4rem);
+        }
+
+        .terms-content h2 {
+          font-size: 1.2rem;
+        }
+
+        .terms-content h3 {
+          font-size: 1rem;
+        }
+      }
+
+      /* Dark Mode — content wrapper glass background */
+      [data-theme="dark"] .terms-content-wrapper {
+        background: rgba(11, 17, 32, 0.82);
+        border-color: rgba(255, 255, 255, 0.08);
+      }
+
+      [data-theme="dark"] .terms-content {
+        color: #e2e8f0;
+      }
+
+      [data-theme="dark"] .terms-content p,
+      [data-theme="dark"] .terms-content li,
+      [data-theme="dark"] .terms-content ol,
+      [data-theme="dark"] .terms-content ul {
+        color: #cbd5e1;
+      }
+
+      [data-theme="dark"] .terms-content h2,
+      [data-theme="dark"] .terms-content h3,
+      [data-theme="dark"] .terms-content h4 {
+        color: #f1f5f9;
+      }
+
+      [data-theme="dark"] .terms-content strong {
+        color: #f8fafc;
+      }
+
+      [data-theme="dark"] .terms-content a {
+        color: #7cf5dd;
+      }
+
+      [data-theme="dark"] .terms-content a:hover {
+        color: #aef3e6;
+      }
+
+      [data-theme="dark"] .terms-content blockquote {
+        border-left-color: #7cf5dd;
+        background: rgba(124, 245, 221, 0.06);
+        color: #94a3b8;
+      }
+
+      [data-theme="dark"] .terms-content hr {
+        border-top-color: rgba(148, 163, 184, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <canvas id="bg-canvas"></canvas>
+    <div class="mesh-overlay"></div>
+
+    <header class="dynamic-island" aria-label="Primary Navigation">
+      <div class="island-content">
+        <div class="island-group group-left">
+          <a href="index.html#features">Features</a>
+          <a href="index.html#why">Why Us</a>
+          <a href="index.html#results">Results</a>
+          <a href="product.html">Product</a>
+          <a href="integrations.html">Integrations</a>
+        </div>
+        
+        <a class="island-logo" href="index.html" aria-label="Home">
+          <img src="logo_nobg.webp" alt="ZitBoard Logo" class="header-logo-img">
+        </a>
+        
+        <div class="island-group group-right">
+          <a href="index.html#faq">FAQ</a>
+          <a href="index.html#testimonials">Testimonials</a>
+          <a href="pricing.html">Pricing</a>
+          <div class="island-actions">
+            <button class="theme-toggle btn-icon" aria-label="Toggle Dark Mode">
+              <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <svg class="icon-moon icon-moon-hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+            <a class="nav-demo-btn cta-track" data-cta="nav_login" href="login.html">Login / Sign Up</a>
+          </div>
+        </div>
+
+        <button class="mobile-menu-toggle" aria-label="Open Mobile Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="three-dots">
+            <circle cx="5" cy="12" r="2" fill="currentColor" />
+            <circle cx="12" cy="12" r="2" fill="currentColor" />
+            <circle cx="19" cy="12" r="2" fill="currentColor" />
+          </svg>
+        </button>
+
+        <span class="mobile-brand" aria-hidden="true">ZitBoard</span>
+      </div>
+
+      <div class="mobile-dropdown">
+        <a href="index.html">Home</a>
+        <a href="product.html">Product</a>
+        <a href="integrations.html">Integrations</a>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#why">Why Us</a>
+        <a href="index.html#results">Results</a>
+        <a href="index.html#testimonials">Testimonials</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="status.html">Status</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="security.html">Security</a>
+        <div class="mobile-dropdown-actions">
+          <a class="nav-demo-btn mobile-login-btn cta-track" data-cta="nav_login_mobile" href="login.html">Login / Sign Up</a>
+          <button class="theme-toggle btn-icon" aria-label="Toggle Dark Mode">
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon icon-moon-hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="section terms-section">
+        <div class="container terms-container-wide">
+          <div class="terms-page-header">
+            <p class="eyebrow terms-eyebrow">LEGAL</p>
+            <h1 class="terms-heading">Terms and Conditions</h1>
+            <p class="terms-subheading">Please read these terms carefully before using the ZitBoard platform and services.</p>
+          </div>
+
+          <div class="terms-wrapper">
+            <div class="terms-toc">
+              <h3>Table of Contents</h3>
+              <ul>
+                <li><a href="#sec1">1. Definitions</a></li>
+                <li><a href="#sec2">2. Eligibility</a></li>
+                <li><a href="#sec3">3. The Service</a></li>
+                <li><a href="#sec4">4. Accounts</a></li>
+                <li><a href="#sec5">5. Acceptable Use</a></li>
+                <li><a href="#sec6">6. Billing</a></li>
+                <li><a href="#sec7">7. Trials & Beta</a></li>
+                <li><a href="#sec8">8. Third-Party</a></li>
+                <li><a href="#sec9">9. Data & Privacy</a></li>
+                <li><a href="#sec10">10. Security</a></li>
+                <li><a href="#sec11">11. IP Rights</a></li>
+                <li><a href="#sec12">12. Support</a></li>
+                <li><a href="#sec13">13. Termination</a></li>
+                <li><a href="#sec14">14. Disclaimers</a></li>
+                <li><a href="#sec15">15. Liability</a></li>
+                <li><a href="#sec16">16. Indemnification</a></li>
+                <li><a href="#sec17">17. Compliance</a></li>
+                <li><a href="#sec18">18. Changes</a></li>
+                <li><a href="#sec19">19. Disputes</a></li>
+                <li><a href="#sec20">20. Misc</a></li>
+              </ul>
+            </div>
+
+            <div class="terms-content-wrapper">
+              <div class="terms-content">
+              <p>These Terms and Conditions ("Terms") constitute a legal agreement between you and <strong>ZitBoard Technologies Inc.</strong> ("ZitBoard," "we," "us," or "our"), governing your access to and use of the ZitBoard platform, websites, applications, and related services (collectively, the "Service").</p>
+
+              <p>By accessing or using the Service, you agree to be bound by these Terms. If you do not agree to these Terms, do not access or use the Service.</p>
+
+              <hr>
+
+              <h2 id="sec1">1. Definitions</h2>
+              
+              <p><strong>"Service"</strong> means the ZitBoard platform and all related features, including but not limited to: sales CRM workflow tools, hiring pipeline management, predictive analytics dashboards, automation capabilities, third-party integrations, APIs, webhooks, and associated website functionality.</p>
+
+              <p><strong>"Account"</strong> means a registered user profile created to access and use the Service.</p>
+
+              <p><strong>"Customer Data"</strong> means all data, content, files, records, and materials submitted to the Service by you or on your behalf, including personal information of your employees, candidates, and customers.</p>
+
+              <p><strong>"Subscription"</strong> means a paid plan providing access to Service features for a recurring billing term.</p>
+
+              <p><strong>"User"</strong> means any individual who accesses or uses the Service under your Account, including employees, contractors, and authorized representatives.</p>
+
+              <h2 id="sec2">2. Eligibility and Authority</h2>
+
+              <h3>2.1 Age and Capacity</h3>
+              <p>You must be at least 18 years old, or the age of majority in your jurisdiction, and possess the legal capacity to enter into binding agreements.</p>
+
+              <h3>2.2 Organizational Use</h3>
+              <p>If you register for or use the Service on behalf of a company, organization, or other legal entity, you represent and warrant that you have full legal authority to bind that entity to these Terms. In such cases, "you" refers to both the individual user and the entity they represent.</p>
+
+              <h3>2.3 Prohibited Users</h3>
+              <p>You may not use the Service if you are located in, or a national or resident of, any country subject to applicable trade sanctions or embargoes.</p>
+
+              <h2 id="sec3">3. The Service</h2>
+
+              <h3>3.1 Service Description</h3>
+              <p>ZitBoard provides a multi-tenant software-as-a-service platform designed for business use, offering integrated workflows for:</p>
+              <ul>
+                <li><strong>Sales CRM and Pipeline Management:</strong> Lead tracking, deal management, forecasting, and sales analytics.</li>
+                <li><strong>Hiring Pipeline and Candidate Workflow:</strong> Applicant tracking, interview scheduling, candidate scoring, and recruitment analytics.</li>
+                <li><strong>Business Intelligence and Analytics:</strong> Dashboard views, predictive AI scoring, reporting, and data visualization.</li>
+                <li><strong>Automation and Workflow Engine:</strong> Trigger-based actions, email automation, task assignment, and process orchestration.</li>
+                <li><strong>Integrations and Connectivity:</strong> Native and API-based connections to third-party CRM, HRIS, communication, and productivity tools.</li>
+              </ul>
+
+              <h3>3.2 Service Evolution</h3>
+              <p>We continuously improve the Service and may update, modify, or discontinue features from time to time. We will use commercially reasonable efforts to provide notice of material changes that significantly affect your use of the Service.</p>
+
+              <h3>3.3 Service Availability</h3>
+              <p>While we strive for 100% uptime, the Service may occasionally be unavailable for maintenance, updates, or factors beyond our control. We do not guarantee uninterrupted access to the Service.</p>
+
+              <h2 id="sec4">4. Accounts and Security</h2>
+
+              <h3>4.1 Account Registration</h3>
+              <p>You must provide accurate, current, and complete information during registration and maintain the accuracy of such information throughout your use of the Service.</p>
+
+              <h3>4.2 Account Security</h3>
+              <p>You are solely responsible for:</p>
+              <ul>
+                <li>Maintaining the confidentiality of your account credentials, including passwords and API keys.</li>
+                <li>All activity that occurs under your Account, whether authorized by you or not.</li>
+                <li>Ensuring all Users under your Account comply with these Terms.</li>
+                <li>Promptly notifying us of any unauthorized access, security breach, or suspicious activity at <a href="mailto:security@zitboard.com">security@zitboard.com</a>.</li>
+              </ul>
+
+              <h3>4.3 Multi-Factor Authentication</h3>
+              <p>We may require or recommend multi-factor authentication (MFA) for certain accounts or features to enhance security. You agree to comply with all security measures we implement.</p>
+
+              <h3>4.4 Account Ownership</h3>
+              <p>Accounts are non-transferable without our prior written consent. The entity that created the Account retains ownership of the Account and all associated Customer Data.</p>
+
+              <h2 id="sec5">5. Acceptable Use</h2>
+
+              <h3>5.1 Permitted Use</h3>
+              <p>You may use the Service solely for lawful business purposes in accordance with these Terms and all applicable laws and regulations.</p>
+
+              <h3>5.2 Prohibited Conduct</h3>
+              <p>You expressly agree NOT to:</p>
+              <ul>
+                <li><strong>Violate Laws:</strong> Use the Service in violation of any applicable local, state, national, or international law, regulation, or governmental order.</li>
+                <li><strong>Disrupt Service:</strong> Interfere with or disrupt the Service, servers, networks, or systems connected to the Service.</li>
+                <li><strong>Unauthorized Access:</strong> Attempt to gain unauthorized access to other accounts, systems, or data.</li>
+                <li><strong>Reverse Engineering:</strong> Reverse engineer, decompile, disassemble, or attempt to derive source code from the Service.</li>
+                <li><strong>Harmful Content:</strong> Use the Service to store, transmit, or process unlawful, infringing, fraudulent, defamatory, obscene, abusive, or harmful content.</li>
+                <li><strong>Competitive Intelligence:</strong> Use the Service to build a competing product or service by copying core functionality or workflows.</li>
+                <li><strong>Circumvent Limits:</strong> Circumvent plan limits, user limits, storage quotas, rate limits, or any technical restrictions.</li>
+                <li><strong>Data Scraping:</strong> Systematically extract data from the Service without our express written consent.</li>
+                <li><strong>Impersonation:</strong> Impersonate any person or entity, or falsely state your affiliation with any person or entity.</li>
+              </ul>
+
+              <h3>5.3 Enforcement</h3>
+              <p>We reserve the right to investigate suspected violations of these Terms and may suspend or terminate access immediately if we reasonably believe you have violated these Acceptable Use provisions.</p>
+
+              <h2 id="sec6">6. Subscriptions, Billing, and Payments</h2>
+
+              <h3>6.1 Available Plans</h3>
+              <p>ZitBoard offers multiple subscription tiers, which may include Free, Starter, Pro, and Enterprise plans. Each plan has specific features, usage limits, and pricing as described on our Pricing page.</p>
+
+              <h3>6.2 Billing Terms</h3>
+              <ul>
+                <li><strong>Payment Schedule:</strong> Paid subscriptions are billed in advance on a recurring basis (monthly or annual).</li>
+                <li><strong>Payment Authorization:</strong> By providing payment information, you authorize us to charge your payment method for all fees, taxes, and authorized overages.</li>
+                <li><strong>Currency:</strong> All fees are quoted and payable in United States Dollars (USD) unless otherwise agreed in writing.</li>
+                <li><strong>Taxes:</strong> You are responsible for all applicable taxes, duties, and governmental charges related to your use of the Service.</li>
+              </ul>
+
+              <h3>6.3 Refund Policy</h3>
+              <p>Unless required by applicable law: subscription fees are non-cancelable for the current billing period; amounts paid are generally non-refundable.</p>
+
+              <h3>6.4 Plan Changes</h3>
+              <p><strong>Upgrades:</strong> Take effect immediately with prorated charges. <strong>Downgrades:</strong> Take effect at the start of the next billing period.</p>
+
+              <h3>6.5 Pricing Changes</h3>
+              <p>For material pricing increases, we will provide at least 30 days' advance notice through the Service, email, or posting updated terms.</p>
+
+              <h3>6.6 Failed Payments</h3>
+              <p>If payment fails, we may suspend or terminate your access to paid features. You remain responsible for all accrued charges.</p>
+
+              <h2 id="sec7">7. Trials and Beta Features</h2>
+
+              <h3>7.1 Free Trials</h3>
+              <p>Trials are provided "as is" without warranties and may be limited in duration, features, or data capacity. At trial expiration, you must subscribe to continue using paid features.</p>
+
+              <h3>7.2 Beta Features</h3>
+              <p>Beta features are experimental, may contain bugs, and may be changed or discontinued at any time without notice. You use beta features at your own risk.</p>
+
+              <h2 id="sec8">8. Third-Party Services and Integrations</h2>
+
+              <h3>8.1 Third-Party Services</h3>
+              <p>The Service may integrate with third-party services (e.g., Salesforce, Slack, Greenhouse). Your use of these services is governed by your agreement with those third parties.</p>
+
+              <h3>8.2 Third-Party Terms</h3>
+              <p>We are not responsible for the content, functionality, availability, or policies of Third-Party Services.</p>
+
+              <h3>8.3 Data Transfer Authorization</h3>
+              <p>When you enable an integration, you authorize us to transfer Customer Data as necessary to provide the integration functionality.</p>
+
+              <h3>8.4 No Warranty for Integrations</h3>
+              <p>We do not warrant that any integration will be compatible, available, or continue to be supported.</p>
+
+              <h2 id="sec9">9. Customer Data, Privacy, and Data Protection</h2>
+
+              <h3>9.1 Data Ownership</h3>
+              <p>As between you and ZitBoard, you retain all right, title, and interest in and to your Customer Data.</p>
+
+              <h3>9.2 Our License to Customer Data</h3>
+              <p>You grant us a limited, non-exclusive license to host, process, transmit, display, and copy Customer Data solely to operate, maintain, secure, and improve the Service and fulfill our obligations.</p>
+
+              <h3>9.3 Your Data Responsibilities</h3>
+              <p>You represent and warrant that you have obtained all necessary rights, consents, and permissions to submit Customer Data, and that your processing complies with applicable data protection laws.</p>
+
+              <h3>9.4 Privacy Policy</h3>
+              <p>Our collection and use of personal information is governed by our <a href="privacy.html">Privacy Policy</a>, incorporated by reference.</p>
+
+              <h3>9.5 Data Processing Agreement</h3>
+              <p>For business customers subject to GDPR or similar regulations, our standard DPA is available upon request.</p>
+
+              <h3>9.6 Consent Management</h3>
+              <p>For website analytics and non-essential tracking, we implement consent controls and only run tracking scripts after you provide consent.</p>
+
+              <h2 id="sec10">10. Security and Data Protection</h2>
+
+              <h3>10.1 Security Measures</h3>
+              <p>We implement commercially reasonable administrative, technical, and organizational security measures, including encryption in transit and at rest, access controls, and regular security assessments.</p>
+
+              <h3>10.2 Security Limitations</h3>
+              <p>You acknowledge that no security system is impenetrable. We cannot guarantee the Service will be completely secure or immune from unauthorized access.</p>
+
+              <h3>10.3 Breach Notification</h3>
+              <p>If we become aware of a security breach affecting your Customer Data, we will notify you in accordance with applicable law.</p>
+
+              <h3>10.4 Tenant Data Separation</h3>
+              <p>As a multi-tenant platform, we implement logical and technical controls to maintain separation between different customers' data.</p>
+
+              <h2 id="sec11">11. Intellectual Property Rights</h2>
+
+              <h3>11.1 ZitBoard Ownership</h3>
+              <p>ZitBoard and its licensors retain all right, title, and interest in and to the Service, including all software, algorithms, user interfaces, documentation, content, designs, trademarks, and trade secrets.</p>
+
+              <h3>11.2 No Implied Rights</h3>
+              <p>No rights are granted to you by implication, estoppel, or otherwise, except as expressly set forth in these Terms.</p>
+
+              <h3>11.3 Feedback</h3>
+              <p>If you provide feedback, you grant us a worldwide, irrevocable, perpetual, royalty-free license to use and incorporate such feedback without obligation.</p>
+
+              <h3>11.4 Aggregated Data</h3>
+              <p>We may compile anonymized statistical insights ("Aggregated Data") which is our exclusive property and may be used for any lawful purpose.</p>
+
+              <h2 id="sec12">12. Support and Professional Services</h2>
+
+              <h3>12.1 Support Services</h3>
+              <p>We provide customer support through various channels with availability and response times varying by plan tier.</p>
+
+              <h3>12.2 Service Level Commitments</h3>
+              <p>Unless otherwise agreed in a separate written agreement, we do not provide guaranteed uptime or SLA commitments.</p>
+
+              <h3>12.3 Professional Services</h3>
+              <p>Custom development, training, or consulting engagements are governed by separate written agreements.</p>
+
+              <h2 id="sec13">13. Suspension and Termination</h2>
+
+              <h3>13.1 Termination by You</h3>
+              <p>You may stop using the Service at any time. Cancellation takes effect at the end of the current billing period.</p>
+
+              <h3>13.2 Termination by ZitBoard</h3>
+              <p>We may suspend or terminate your access immediately if you materially breach these Terms, present a security risk, have overdue payments, or engage in fraudulent activity.</p>
+
+              <h3>13.3 Effect of Termination</h3>
+              <p>Upon termination, your right to access ceases, you remain liable for accrued charges, and we may delete or anonymize your data per our retention policies.</p>
+
+              <h3>13.4 Data Retrieval</h3>
+              <p>Prior to closure, you may export your data using the Service's export features. We are not obligated to provide exports after termination unless required by law.</p>
+
+              <h2 id="sec14">14. Disclaimers</h2>
+
+              <h3>14.1 "As Is" and "As Available"</h3>
+              <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE.</p>
+
+              <h3>14.2 No Implied Warranties</h3>
+              <p>WE EXPRESSLY DISCLAIM ALL IMPLIED WARRANTIES, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.</p>
+
+              <h3>14.3 Specific Disclaimers</h3>
+              <p>We do not warrant that the Service will be uninterrupted, timely, secure, error-free, or that results will be accurate or reliable.</p>
+
+              <h3>14.4 AI and Predictive Features</h3>
+              <p>AI-powered features are provided for informational purposes only and do not constitute professional advice. You are solely responsible for decisions based on Service outputs.</p>
+
+              <h2 id="sec15">15. Limitation of Liability</h2>
+
+              <h3>15.1 Exclusion of Consequential Damages</h3>
+              <p>ZITBOARD WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, OR EXEMPLARY DAMAGES, INCLUDING LOSS OF PROFITS, REVENUE, BUSINESS, GOODWILL, DATA, OR OTHER INTANGIBLE LOSSES.</p>
+
+              <h3>15.2 Liability Cap</h3>
+              <p>ZITBOARD'S TOTAL AGGREGATE LIABILITY WILL NOT EXCEED THE GREATER OF: (A) THE TOTAL AMOUNT PAID BY YOU DURING THE 12 MONTHS PRECEDING THE CLAIM, OR (B) USD $100.00.</p>
+
+              <h3>15.3 Essential Purpose</h3>
+              <p>These limitations apply regardless of the form of action and even if any limited remedy fails its essential purpose.</p>
+
+              <h3>15.4 Jurisdictional Exceptions</h3>
+              <p>Some jurisdictions do not allow certain limitations. If applicable law prohibits any limitations, they will apply to the maximum extent permitted.</p>
+
+              <h2 id="sec16">16. Indemnification</h2>
+
+              <p>You agree to defend, indemnify, and hold harmless ZitBoard and its affiliates, officers, directors, employees, and agents from any third-party claims, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or relating to:</p>
+              <ul>
+                <li>Your use of the Service.</li>
+                <li>Your Customer Data.</li>
+                <li>Your violation of these Terms or applicable laws.</li>
+                <li>Your violation of any third-party rights.</li>
+              </ul>
+
+              <h2 id="sec17">17. Compliance with Laws and Trade Controls</h2>
+
+              <h3>17.1 General Compliance</h3>
+              <p>Each party will comply with all applicable laws relevant to its obligations under these Terms.</p>
+
+              <h3>17.2 Trade Controls and Sanctions</h3>
+              <p>You represent that you are not subject to trade sanctions and will not use or export the Service in violation of export control or sanctions laws.</p>
+
+              <h3>17.3 Anti-Bribery</h3>
+              <p>You agree to comply with anti-bribery and anti-corruption laws, including the FCPA and UK Bribery Act.</p>
+
+              <h2 id="sec18">18. Changes to the Service and Terms</h2>
+
+              <h3>18.1 Service Changes</h3>
+              <p>We may modify, update, suspend, or discontinue the Service at any time, with or without notice.</p>
+
+              <h3>18.2 Changes to Terms</h3>
+              <p>We may modify these Terms from time to time. Material changes will be posted with a new effective date and notice provided.</p>
+
+              <h3>18.3 Acceptance of Changes</h3>
+              <p>Your continued use after the effective date constitutes acceptance of revised Terms. If you disagree, stop using the Service.</p>
+
+              <h3>18.4 Material Changes</h3>
+              <p>For material changes significantly affecting your rights, we will provide at least 30 days' advance notice.</p>
+
+              <h2 id="sec19">19. Governing Law and Dispute Resolution</h2>
+
+              <h3>19.1 Governing Law</h3>
+              <p>These Terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles.</p>
+
+              <h3>19.2 Jurisdiction and Venue</h3>
+              <p>Any legal action will be instituted exclusively in the federal or state courts located in New Castle County, Delaware.</p>
+
+              <h3>19.3 Class Action Waiver</h3>
+              <p>You agree that dispute resolution will be conducted only on an individual basis, not as a class action.</p>
+
+              <h3>19.4 Informal Resolution</h3>
+              <p>Before initiating formal legal proceedings, the parties agree to attempt informal resolution by providing 30 days' notice.</p>
+
+              <h3>19.5 Injunctive Relief</h3>
+              <p>Either party may seek injunctive or equitable relief in any jurisdiction to prevent irreparable harm.</p>
+
+              <h2 id="sec20">20. Miscellaneous</h2>
+
+              <h3>20.1 Entire Agreement</h3>
+              <p>These Terms, together with the Privacy Policy, constitute the entire agreement between you and ZitBoard.</p>
+
+              <h3>20.2 Severability</h3>
+              <p>If any provision is held unenforceable, it will be modified or severed, and the remaining provisions will remain in effect.</p>
+
+              <h3>20.3 Waiver</h3>
+              <p>Failure to enforce any provision is not a waiver. Any waiver must be in writing and signed by an authorized representative.</p>
+
+              <h3>20.4 Assignment</h3>
+              <p>You may not assign these Terms without our prior written consent. We may assign these Terms freely.</p>
+
+              <h3>20.5 Force Majeure</h3>
+              <p>We are not liable for failures caused by circumstances beyond our reasonable control.</p>
+
+              <h3>20.6 Independent Contractors</h3>
+              <p>The parties are independent contractors. Nothing creates a partnership, joint venture, or employment relationship.</p>
+
+              <h3>20.7 Notices</h3>
+              <p>To you: through the Service, email, or website posting. To us: legal@zitboard.com or our mailing address.</p>
+
+              <h3>20.8 Electronic Communications</h3>
+              <p>You consent to receiving electronic communications from us, which satisfy any legal writing requirements.</p>
+
+              <h3>20.9 Headings</h3>
+              <p>Section headings are for convenience only and have no legal effect.</p>
+
+              <h3>20.10 Open Source</h3>
+              <p>The Service may include open-source components subject to their respective licenses.</p>
+
+              <h3>20.11 Government Users</h3>
+              <p>For U.S. government entities, the Service is a "Commercial Item" and use is subject to these Terms.</p>
+
+              <hr>
+
+              <p style="text-align: center; font-size: 0.9rem; color: var(--muted); margin-top: 2rem;">
+                Thank you for using ZitBoard.
+              </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-links-grid">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a href="index.html#features">Platform Features</a>
+            <a href="product.html">Full Capabilities</a>
+            <a href="integrations.html">Integrations & Plugins</a>
+            <a href="pricing.html">Pricing Plans</a>
+          </div>
+          <div class="footer-col">
+            <h4>Resources</h4>
+            <a href="index.html#results">Case Studies</a>
+            <a href="index.html#why">Why ZitBoard?</a>
+            <a href="index.html#faq">FAQ</a>
+            <a href="index.html#testimonials">Testimonials</a>
+            <a href="status.html">System Status</a>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="mailto:demo@zitboard.com">Contact Us</a>
+            <a href="security.html">Security</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© 2026 ZitBoard. Multi-tenant intelligence for revenue and talent.</p>
+        </div>
+
+        <div class="footer-watermark">
+          <img src="logo_nobg.webp" alt="ZitBoard Logo" class="footer-logo-img">
+          ZitBoard
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/pricing-background.js"></script>
+  </body>
+</html>
