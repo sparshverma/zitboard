@@ -351,8 +351,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       const lastName = loginForm.querySelector('input[placeholder="Last name"]')?.value || '';
       const email = loginForm.querySelector('input[type="email"]').value;
       const password = loginForm.querySelector('input[type="password"]').value;
-      
+      const termsCheckbox = loginForm.querySelector('#termsCheckbox');
+
       if (!email || !password) return alert("Please provide email and password.");
+
+      if (termsCheckbox && !termsCheckbox.checked) {
+        termsCheckbox.classList.add('input-error');
+        termsCheckbox.focus();
+        termsCheckbox.addEventListener('change', () => termsCheckbox.classList.remove('input-error'), { once: true });
+        return alert('Please accept the Terms and Conditions to create an account.');
+      }
+
       if (!requireEmailAuth()) return;
 
       const tenantId = buildSignupTenantId(email);
@@ -363,7 +372,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         password,
         options: {
           data: {
-            full_name: `${firstName} ${lastName}`.trim()
+            full_name: `${firstName} ${lastName}`.trim(),
+            terms_accepted: true,
+            terms_accepted_at: new Date().toISOString()
           }
         }
       });
@@ -428,8 +439,26 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
 
           if (provider === 'google' || provider === 'microsoft' || provider === 'twitter') {
-            const tenantId = window.location.pathname.includes('signup') ? getOrCreatePendingSignupTenantId() : DEFAULT_TENANT_ID;
-            const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(tenantId)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}`;
+            const isSignupPage = window.location.pathname.includes('signup');
+
+            if (isSignupPage) {
+              const termsCheckbox = document.querySelector('#termsCheckbox');
+              if (termsCheckbox && !termsCheckbox.checked) {
+                termsCheckbox.classList.add('input-error');
+                termsCheckbox.focus();
+                termsCheckbox.addEventListener('change', () => termsCheckbox.classList.remove('input-error'), { once: true });
+                btn.disabled = false;
+                btn.classList.remove('is-loading');
+                btn.removeAttribute('aria-busy');
+                btn.innerHTML = originalHtml;
+                alert('Please accept the Terms and Conditions to continue.');
+                return;
+              }
+            }
+
+            const tenantId = isSignupPage ? getOrCreatePendingSignupTenantId() : DEFAULT_TENANT_ID;
+            const termsAcceptedAt = isSignupPage ? encodeURIComponent(new Date().toISOString()) : '';
+            const oauthStartUrl = `${API_BASE}/auth/oauth/${provider}/start?tenantId=${encodeURIComponent(tenantId)}&role=${encodeURIComponent(DEFAULT_ROLE)}&returnTo=${encodeURIComponent('/')}${isSignupPage ? `&termsAccepted=true&termsAcceptedAt=${termsAcceptedAt}` : ''}`;
             window.location.assign(oauthStartUrl);
             return;
           }
