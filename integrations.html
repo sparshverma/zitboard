@@ -4,17 +4,282 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/webp" href="logo_nobg.webp" />
-    <title>ZitBoard Integrations | Plugin Ecosystem</title>
+    <title>Integrations &amp; Plugins | ZitBoard</title>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://www.zitboard.com/integrations" />
-    <meta name="description" content="Connect ZitBoard with Google Sheets, REST APIs, webhooks, and custom data adapters through plugin architecture." />
+    <meta name="description" content="Connect ZitBoard with Salesforce, HubSpot, Greenhouse, Slack, Zoom, Google Sheets, and more. Agency agents act on your data automatically." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script src="assets/js/theme-bootstrap.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css?v=20260420-1" />
-</head>
+    <style>
+      #bg-canvas {
+        position: fixed; top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: -1; pointer-events: none;
+      }
+
+      .terms-section { overflow-x: clip; max-width: 100vw; }
+
+      .terms-container-wide {
+        box-sizing: border-box;
+        width: min(1560px, 96vw) !important;
+        max-width: 100% !important;
+        padding-left: 2vw; padding-right: 2vw;
+      }
+
+      /* Page Header */
+      .terms-page-header {
+        position: relative; z-index: 10;
+        padding: 2.5rem 0 2rem; margin-bottom: 1rem; max-width: 720px;
+      }
+      .terms-eyebrow {
+        display: inline-flex; font-size: 0.72rem; font-weight: 700;
+        letter-spacing: 0.13em; color: #5d7392; margin-bottom: 0.85rem;
+      }
+      .terms-heading {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 800;
+        letter-spacing: -0.03em; line-height: 1.05;
+        color: #1a2433; margin: 0 0 0.85rem;
+        -webkit-text-fill-color: #1a2433; background: none;
+        -webkit-background-clip: unset; background-clip: unset;
+      }
+      .terms-subheading {
+        font-size: 1.05rem; color: #4a5a6a; line-height: 1.65;
+        margin: 0; max-width: 58ch; font-weight: 500;
+      }
+      [data-theme="dark"] .terms-eyebrow {
+        color: #7cf5dd;
+        text-shadow: 0 0 18px rgba(124,245,221,.7), 0 0 36px rgba(124,245,221,.3);
+      }
+      [data-theme="dark"] .terms-heading {
+        color: #ffffff; -webkit-text-fill-color: #ffffff;
+        text-shadow: 0 0 60px rgba(255,255,255,.18), 0 2px 4px rgba(0,0,0,.9),
+                     0 6px 24px rgba(0,0,0,.7), 0 12px 48px rgba(0,0,0,.4);
+      }
+      [data-theme="dark"] .terms-subheading {
+        color: rgba(203,213,225,.92); text-shadow: 0 1px 6px rgba(0,0,0,.8);
+      }
+
+      /* Sidebar Layout */
+      .terms-wrapper {
+        display: flex; gap: 2.5rem; padding: 2rem 0; align-items: flex-start;
+      }
+      .terms-toc {
+        position: sticky; top: 100px; width: 260px; flex-shrink: 0;
+        background: var(--glass); -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px); border: 1px solid var(--line);
+        border-radius: 12px; padding: 1.25rem;
+        max-height: calc(100vh - 120px); overflow-y: auto;
+      }
+      .terms-toc h3 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; font-family: 'Space Grotesk', sans-serif; }
+      .terms-toc ul { list-style: none; padding: 0; margin: 0; }
+      .terms-toc li { margin-bottom: 0.35rem; font-size: 0.85rem; }
+      .terms-toc a { color: var(--muted); text-decoration: none; display: block; padding: 0.25rem 0.5rem; border-radius: 6px; transition: all 0.2s; }
+      .terms-toc a:hover { color: var(--teal-500); background: rgba(124,245,221,.1); }
+      .terms-toc a.active { color: var(--teal-500); background: rgba(124,245,221,.15); font-weight: 500; }
+      [data-theme="dark"] .terms-toc { background: rgba(15,23,42,.7); border-color: rgba(148,163,184,.2); }
+      [data-theme="dark"] .terms-toc h3 { color: #f8fafc; }
+      [data-theme="dark"] .terms-toc a { color: #94a3b8; }
+      [data-theme="dark"] .terms-toc a:hover, [data-theme="dark"] .terms-toc a.active { color: #7cf5dd; background: rgba(124,245,221,.15); }
+      [data-theme="dark"] .terms-toc a.active { background: rgba(124,245,221,.25); }
+
+      /* Content Panel */
+      .terms-content-wrapper {
+        flex: 1; min-width: 0;
+        background: rgba(255,255,255,.82);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,0,0,.08); border-radius: 16px;
+        padding: 2.5rem 2.75rem;
+      }
+      .terms-content { font-family: 'Manrope', sans-serif; line-height: 1.8; color: #1f2a33; overflow-wrap: break-word; word-break: break-word; }
+      .terms-content h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text); letter-spacing: -0.02em; scroll-margin-top: 100px; }
+      .terms-content h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--text); scroll-margin-top: 100px; }
+      .terms-content h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--text); }
+      .terms-content p { margin-bottom: 1rem; }
+      .terms-content ul, .terms-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+      .terms-content li { margin-bottom: 0.5rem; }
+      .terms-content strong { font-weight: 600; color: var(--text); }
+      .terms-content blockquote { border-left: 3px solid var(--teal-500); padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: var(--muted); }
+      .terms-content hr { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
+      .terms-content a { color: var(--teal-500); text-decoration: none; transition: color 0.2s; }
+      .terms-content a:hover { color: var(--purple-600); text-decoration: underline; }
+      [data-theme="dark"] .terms-content-wrapper { background: rgba(11,17,32,.82); border-color: rgba(255,255,255,.08); }
+      [data-theme="dark"] .terms-content { color: #e2e8f0; }
+      [data-theme="dark"] .terms-content p, [data-theme="dark"] .terms-content li { color: #cbd5e1; }
+      [data-theme="dark"] .terms-content h2, [data-theme="dark"] .terms-content h3, [data-theme="dark"] .terms-content h4 { color: #f1f5f9; }
+      [data-theme="dark"] .terms-content strong { color: #f8fafc; }
+      [data-theme="dark"] .terms-content a { color: #7cf5dd; }
+      [data-theme="dark"] .terms-content a:hover { color: #aef3e6; }
+      [data-theme="dark"] .terms-content blockquote { border-left-color: #7cf5dd; background: rgba(124,245,221,.06); color: #94a3b8; }
+      [data-theme="dark"] .terms-content hr { border-top-color: rgba(148,163,184,.15); }
+
+      /* Plugin Cards */
+      .plugin-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1rem; margin: 1.25rem 0 1.5rem;
+      }
+      .plugin-card {
+        border: 1px solid rgba(0,0,0,.09); border-radius: 12px;
+        padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;
+        background: rgba(255,255,255,.6); transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .plugin-card:hover { border-color: rgba(124,245,221,.5); box-shadow: 0 4px 18px rgba(124,245,221,.1); }
+      .plugin-card-top { display: flex; align-items: center; gap: 0.75rem; }
+      .plugin-badge {
+        width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Space Grotesk', sans-serif; font-size: 0.72rem;
+        font-weight: 700; letter-spacing: 0.04em; color: #fff;
+      }
+      .badge-sf  { background: linear-gradient(135deg, #00a1e0, #0070c0); }
+      .badge-hs  { background: linear-gradient(135deg, #ff7a59, #d94c2b); }
+      .badge-gs  { background: linear-gradient(135deg, #34a853, #137333); }
+      .badge-gh  { background: linear-gradient(135deg, #24d185, #0f9b58); }
+      .badge-wd  { background: linear-gradient(135deg, #f5a623, #d4810f); }
+      .badge-gf  { background: linear-gradient(135deg, #4285f4, #1a56db); }
+      .badge-sl  { background: linear-gradient(135deg, #4a154b, #822b8a); }
+      .badge-zm  { background: linear-gradient(135deg, #2d8cff, #0b5dcb); }
+      .badge-em  { background: linear-gradient(135deg, #64748b, #334155); }
+      .badge-wh  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+      .badge-sdk { background: linear-gradient(135deg, #0ea5e9, #0369a1); }
+      .plugin-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--text); }
+      .plugin-tag { font-size: 0.7rem; color: var(--muted); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-top: -0.2rem; }
+      .plugin-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; margin: 0; }
+      [data-theme="dark"] .plugin-card { background: rgba(15,23,42,.5); border-color: rgba(148,163,184,.15); }
+      [data-theme="dark"] .plugin-card:hover { border-color: rgba(124,245,221,.35); box-shadow: 0 4px 18px rgba(124,245,221,.08); }
+      [data-theme="dark"] .plugin-name { color: #f1f5f9; }
+      [data-theme="dark"] .plugin-desc { color: #94a3b8; }
+
+      /* Agent Pipeline Flow Steps */
+      .flow-steps {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 0; margin: 1.5rem 0; position: relative;
+      }
+      .flow-step {
+        position: relative; padding: 1.25rem 1rem 1.25rem 1.5rem;
+        border: 1px solid rgba(0,0,0,.09); background: rgba(255,255,255,.5);
+        display: flex; flex-direction: column; gap: 0.4rem;
+      }
+      .flow-step:first-child { border-radius: 12px 0 0 12px; }
+      .flow-step:last-child  { border-radius: 0 12px 12px 0; }
+      .flow-step:not(:last-child) { border-right: none; }
+      .flow-step::after {
+        content: '→'; position: absolute; right: -12px; top: 50%;
+        transform: translateY(-50%); font-size: 1.2rem;
+        color: var(--teal-500); z-index: 2; background: inherit;
+        padding: 0 2px;
+      }
+      .flow-step:last-child::after { display: none; }
+      .flow-num {
+        font-family: 'Space Grotesk', sans-serif; font-size: 0.68rem;
+        font-weight: 700; letter-spacing: 0.1em; color: var(--teal-500);
+        text-transform: uppercase;
+      }
+      .flow-title { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+      .flow-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+      [data-theme="dark"] .flow-step { background: rgba(15,23,42,.5); border-color: rgba(148,163,184,.15); }
+      [data-theme="dark"] .flow-step::after { background: rgba(15,23,42,.5); }
+      [data-theme="dark"] .flow-title { color: #f1f5f9; }
+
+      /* Agent Cards */
+      .agent-card {
+        border-radius: 12px; padding: 1.4rem 1.5rem;
+        margin-bottom: 1rem; border-left: 3px solid;
+        background: rgba(255,255,255,.5);
+        border-top: 1px solid rgba(0,0,0,.07);
+        border-right: 1px solid rgba(0,0,0,.07); border-bottom: 1px solid rgba(0,0,0,.07);
+      }
+      .agent-deal    { border-left-color: #00a1e0; }
+      .agent-hiring  { border-left-color: #24d185; }
+      .agent-forecast{ border-left-color: #8b5cf6; }
+      .agent-card h3 { margin-top: 0; margin-bottom: 0.5rem; scroll-margin-top: 100px; }
+      .agent-card p  { margin-bottom: 0; font-size: 0.9rem; }
+      [data-theme="dark"] .agent-card { background: rgba(15,23,42,.5); border-top-color: rgba(148,163,184,.12); border-right-color: rgba(148,163,184,.12); border-bottom-color: rgba(148,163,184,.12); }
+
+      /* Screenshot Placeholder */
+      .screenshot-slot {
+        width: 100%; border: 2px dashed rgba(124,245,221,.45);
+        border-radius: 12px; padding: 2.5rem 1.5rem;
+        text-align: center; margin: 1.75rem 0;
+        background: rgba(124,245,221,.04); color: var(--muted);
+        font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif;
+        font-weight: 500; letter-spacing: 0.04em;
+        display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      }
+      .screenshot-slot svg { opacity: 0.4; }
+      .screenshot-slot span { opacity: 0.7; }
+      [data-theme="dark"] .screenshot-slot { border-color: rgba(124,245,221,.25); background: rgba(124,245,221,.03); }
+
+      /* CTA Block */
+      .integ-cta {
+        margin-top: 2rem; padding: 2rem 2rem;
+        border-radius: 14px; text-align: center;
+        background: linear-gradient(135deg, rgba(124,245,221,.12), rgba(139,92,246,.08));
+        border: 1px solid rgba(124,245,221,.25);
+      }
+      .integ-cta h3 { margin-top: 0; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; }
+      .integ-cta p { color: var(--muted); margin-bottom: 1.25rem; font-size: 0.95rem; }
+      .integ-cta .btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 50px; background: linear-gradient(135deg, #20b26c, #0ea5e9); color: #fff; font-weight: 600; text-decoration: none; font-size: 0.95rem; font-family: 'Space Grotesk', sans-serif; transition: transform 0.2s, box-shadow 0.2s; }
+      .integ-cta .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(32,178,108,.3); text-decoration: none; color: #fff; }
+      [data-theme="dark"] .integ-cta h3 { color: #f1f5f9; }
+      [data-theme="dark"] .integ-cta { background: linear-gradient(135deg, rgba(124,245,221,.1), rgba(139,92,246,.07)); border-color: rgba(124,245,221,.2); }
+
+      /* Setup Steps */
+      .setup-steps { counter-reset: setup; margin: 1.25rem 0; list-style: none; padding: 0; }
+      .setup-steps li { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.1rem; counter-increment: setup; }
+      .setup-steps li::before {
+        content: counter(setup);
+        min-width: 30px; height: 30px; border-radius: 50%;
+        background: linear-gradient(135deg, #20b26c, #0ea5e9);
+        color: #fff; font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 0.85rem;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.1rem;
+      }
+      .setup-steps li strong { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; margin-bottom: 0.2rem; color: var(--text); }
+      .setup-steps li span { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+      [data-theme="dark"] .setup-steps li strong { color: #f1f5f9; }
+
+      /* Responsive */
+      @media (max-width: 1100px) {
+        .terms-toc { width: 220px; }
+        .terms-content-wrapper { padding: 2rem; }
+        .flow-steps { grid-template-columns: repeat(2, 1fr); }
+        .flow-step:first-child { border-radius: 12px 0 0 0; }
+        .flow-step:nth-child(2) { border-radius: 0 12px 0 0; border-right: 1px solid rgba(0,0,0,.09); }
+        .flow-step:nth-child(3) { border-radius: 0 0 0 12px; border-top: none; }
+        .flow-step:last-child  { border-radius: 0 0 12px 0; border-right: 1px solid rgba(0,0,0,.09); }
+        .flow-step::after { display: none; }
+      }
+      @media (max-width: 900px) {
+        .terms-wrapper { flex-direction: column; gap: 1.5rem; }
+        .terms-toc { position: relative; top: 0; width: 100%; max-height: 260px; }
+        .terms-toc ul { columns: 2; gap: 0.5rem; }
+        .terms-content-wrapper { padding: 1.75rem 1.5rem; }
+        .plugin-grid { grid-template-columns: 1fr; }
+        .flow-steps { grid-template-columns: 1fr; }
+        .flow-step, .flow-step:first-child, .flow-step:nth-child(2), .flow-step:nth-child(3), .flow-step:last-child { border-radius: 0; border-right: 1px solid rgba(0,0,0,.09); border-top: none; }
+        .flow-step:first-child { border-radius: 12px 12px 0 0; border-top: 1px solid rgba(0,0,0,.09); }
+        .flow-step:last-child  { border-radius: 0 0 12px 12px; }
+      }
+      @media (max-width: 640px) {
+        .terms-container-wide { width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+        .terms-toc { max-height: none; }
+        .terms-toc ul { columns: 1; }
+        .terms-content-wrapper { padding: 1.25rem 1rem; border-radius: 12px; }
+        .terms-page-header { max-width: 100%; padding: 1.5rem 0 1rem; }
+        .terms-heading { font-size: clamp(1.8rem, 8vw, 2.4rem); }
+        .integ-cta { padding: 1.5rem 1rem; }
+      }
+    </style>
+  </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <canvas id="bg-canvas"></canvas>
+    <div class="mesh-overlay"></div>
+
     <header class="dynamic-island" aria-label="Primary Navigation">
       <div class="island-content">
         <div class="island-group group-left">
@@ -24,11 +289,9 @@
           <a href="product.html">Product</a>
           <a href="integrations.html">Integrations</a>
         </div>
-        
         <a class="island-logo" href="index.html" aria-label="Home">
           <img src="logo_nobg.webp" alt="ZitBoard Logo" class="header-logo-img">
         </a>
-        
         <div class="island-group group-right">
           <a href="index.html#faq">FAQ</a>
           <a href="index.html#testimonials">Testimonials</a>
@@ -41,7 +304,6 @@
             <a class="nav-demo-btn cta-track" data-cta="nav_login" href="login.html">Login / Sign Up</a>
           </div>
         </div>
-
         <button class="mobile-menu-toggle" aria-label="Open Mobile Menu">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="three-dots">
             <circle cx="5" cy="12" r="2" fill="currentColor" />
@@ -49,10 +311,8 @@
             <circle cx="19" cy="12" r="2" fill="currentColor" />
           </svg>
         </button>
-
         <span class="mobile-brand" aria-hidden="true">ZitBoard</span>
       </div>
-
       <div class="mobile-dropdown">
         <a href="index.html">Home</a>
         <a href="product.html">Product</a>
@@ -76,29 +336,372 @@
       </div>
     </header>
 
-    <main>
-      <section class="section">
-        <div class="container">
-          <p class="eyebrow">INTEGRATIONS</p>
-          <h1>Extensible by default with adapters, webhooks, and APIs.</h1>
-          <p>Connect source systems without changing the core engine using composable plugin contracts.</p>
-        </div>
-      </section>
+    <main id="main-content">
+      <section class="section terms-section">
+        <div class="container terms-container-wide">
 
-      <section class="section">
-        <div class="container feature-grid">
-          <article class="feature-card">
-            <h3>Google Sheets + Forms</h3>
-            <p>Sync recruitment entries and convert candidate data into actionable stages.</p>
-          </article>
-          <article class="feature-card">
-            <h3>REST and Webhooks</h3>
-            <p>Stream leads and events from external CRMs, product telemetry, and partner systems.</p>
-          </article>
-          <article class="feature-card">
-            <h3>Custom Plugin SDK</h3>
-            <p>Create adapters for niche workflows and map custom fields into the unified dashboard model.</p>
-          </article>
+          <div class="terms-page-header">
+            <p class="eyebrow terms-eyebrow">INTEGRATIONS &amp; PLUGINS</p>
+            <h1 class="terms-heading">Connect everything.<br>Automate anything.</h1>
+            <p class="terms-subheading">Plug your existing tools into ZitBoard once. Agency agents take it from there — scoring every record, routing every action, and writing intelligence back into the systems your team already uses.</p>
+          </div>
+
+          <div class="terms-wrapper">
+
+            <nav class="terms-toc" aria-label="Page sections">
+              <h3>Contents</h3>
+              <ul>
+                <li><a href="#sec1">1. Overview</a></li>
+                <li><a href="#sec2">2. Agent Pipeline</a></li>
+                <li><a href="#sec3">3. Sales &amp; Revenue</a></li>
+                <li><a href="#sec4">4. Hiring &amp; Talent</a></li>
+                <li><a href="#sec5">5. Communication</a></li>
+                <li><a href="#sec6">6. REST API &amp; Webhooks</a></li>
+                <li><a href="#sec7">7. Custom Plugin SDK</a></li>
+                <li><a href="#sec8">8. Agency Agents</a></li>
+                <li><a href="#sec9">9. Setup Guide</a></li>
+                <li><a href="#sec10">10. FAQ</a></li>
+              </ul>
+            </nav>
+
+            <div class="terms-content-wrapper">
+              <div class="terms-content">
+
+                <!-- ─── SECTION 1 ─── -->
+                <h2 id="sec1">1. Overview</h2>
+                <blockquote>Connect your tools once. ZitBoard's agency agents handle the rest — scoring, routing, alerting, and acting while you focus on the decisions that matter.</blockquote>
+                <p>ZitBoard is not a passive dashboard. It is an active operating layer sitting between your source systems and your team. Every plugin you connect becomes a live data stream feeding specialised agency agents running inside your tenant. Those agents ingest your data, normalise it to a unified schema, score every record using the predictive decision core, and trigger the next best action — automatically and on your behalf.</p>
+                <p>The result: your CRM, ATS, spreadsheets, and communication tools stop being siloed inputs that someone has to manually check. They become an always-on intelligence network operated by agents that work continuously, without prompting.</p>
+                <ul>
+                  <li><strong>Zero migration required.</strong> ZitBoard reads from your existing tools and writes enriched data back into them. Your source of truth stays where it is.</li>
+                  <li><strong>No-code setup for native connectors.</strong> Authenticate, map fields, and your agent is live in under 5 minutes.</li>
+                  <li><strong>Full auditability.</strong> Every agent action is logged, reversible, and configurable from platform settings.</li>
+                </ul>
+
+                <hr>
+
+                <!-- ─── SECTION 2 ─── -->
+                <h2 id="sec2">2. How the Agent Pipeline Works</h2>
+                <p>Every piece of data you connect flows through four automatic stages before any agent acts on it. No manual handoffs. No scripts to maintain.</p>
+
+                <div class="flow-steps">
+                  <div class="flow-step">
+                    <span class="flow-num">Step 01</span>
+                    <span class="flow-title">Ingest</span>
+                    <span class="flow-desc">A connector, webhook, or SDK adapter pulls data from your source system on a schedule or in real time.</span>
+                  </div>
+                  <div class="flow-step">
+                    <span class="flow-num">Step 02</span>
+                    <span class="flow-title">Normalise</span>
+                    <span class="flow-desc">Raw fields are mapped to ZitBoard's unified schema. Custom field mapping is available for non-standard sources.</span>
+                  </div>
+                  <div class="flow-step">
+                    <span class="flow-num">Step 03</span>
+                    <span class="flow-title">Score</span>
+                    <span class="flow-desc">The predictive decision core assigns a confidence score and fit classification to every lead, deal, and candidate.</span>
+                  </div>
+                  <div class="flow-step">
+                    <span class="flow-num">Step 04</span>
+                    <span class="flow-title">Act</span>
+                    <span class="flow-desc">The appropriate agent moves stages, routes records, sends alerts, or writes intelligence back to your source system.</span>
+                  </div>
+                </div>
+
+                <!-- Screenshot Slot 1: Dashboard pipeline overview -->
+                <div class="screenshot-slot" aria-label="Screenshot placeholder — dashboard pipeline view">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  <span>Screenshot — Dashboard pipeline view &amp; agent activity feed</span>
+                </div>
+
+                <hr>
+
+                <!-- ─── SECTION 3 ─── -->
+                <h2 id="sec3">3. Sales &amp; Revenue Plugins</h2>
+                <p>Connect your sales stack. The Deal Agent reads, scores, and acts on every opportunity across all connected revenue tools.</p>
+
+                <div class="plugin-grid">
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-sf">SF</div>
+                      <div>
+                        <div class="plugin-name">Salesforce</div>
+                        <div class="plugin-tag">CRM · Bi-directional</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Syncs Leads, Contacts, Opportunities, Accounts, and Activities. The Deal Agent writes <code>zitboard_score</code> and <code>zitboard_stage_health</code> back into Salesforce fields — so reps see ZitBoard intelligence inside the tool they already use.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-hs">HS</div>
+                      <div>
+                        <div class="plugin-name">HubSpot</div>
+                        <div class="plugin-tag">CRM · Bi-directional</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Ingests Contacts, Deals, Companies, email engagement, and form submissions. The agent scores contact readiness using engagement signals and deal-stage age, automatically advancing hot deals and flagging cold ones for nurture.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-gs">GS</div>
+                      <div>
+                        <div class="plugin-name">Google Sheets</div>
+                        <div class="plugin-tag">Spreadsheet · Bi-directional</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Reads named ranges or entire worksheets on a trigger or schedule. The agent scores each row and appends <code>ZB_Score</code>, <code>ZB_Stage</code>, and <code>ZB_Last_Updated</code> columns back in real time — giving sheet-first teams an AI layer with zero migration.</p>
+                  </div>
+                </div>
+
+                <h3>What the Deal Agent does with your sales data</h3>
+                <p>Once your sales plugins are connected, the Deal Agent runs a continuous scoring loop across all connected sources. It evaluates deal age, rep activity cadence, email engagement, stage velocity, and historical win-rate patterns to assign every open opportunity a composite readiness score. Deals above your configured threshold are moved to the next stage automatically. Deals that have been stagnant for longer than your SLA window trigger an alert to the assigned rep — with context and a recommended next step, not just a notification.</p>
+                <p><strong>Business impact:</strong> Revenue leaders stop manually reviewing every deal. The agent surfaces only the deals that need human attention, with a reason and a clear action.</p>
+
+                <!-- Screenshot Slot 2: Salesforce sync / Deal Agent in action -->
+                <div class="screenshot-slot" aria-label="Screenshot placeholder — Salesforce sync and Deal Agent scoring panel">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  <span>Screenshot — Salesforce sync status &amp; Deal Agent scoring panel</span>
+                </div>
+
+                <hr>
+
+                <!-- ─── SECTION 4 ─── -->
+                <h2 id="sec4">4. Hiring &amp; Talent Plugins</h2>
+                <p>Connect your talent stack. The Hiring Agent evaluates every candidate against every active requisition and routes the best matches forward automatically.</p>
+
+                <div class="plugin-grid">
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-gh">GH</div>
+                      <div>
+                        <div class="plugin-name">Greenhouse</div>
+                        <div class="plugin-tag">ATS · Bi-directional</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Pulls active requisitions, applications, scorecards, and interview stage data. The agent scores candidates per role using scorecard attributes and time-in-stage patterns, advancing top candidates and alerting recruiters to stale records.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-wd">WD</div>
+                      <div>
+                        <div class="plugin-name">Workday</div>
+                        <div class="plugin-tag">HRIS · Read / Alert</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Connects via SOAP/REST to ingest headcount data, open positions, org structure, and compensation bands. The Hiring Agent validates candidate compensation fit against band data before the offer stage — eliminating late-stage offer failures.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-gf">GF</div>
+                      <div>
+                        <div class="plugin-name">Google Forms</div>
+                        <div class="plugin-tag">Intake · Real-time</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Each new form submission triggers a real-time event. The Hiring Agent instantly scores the response against active job criteria, creates a candidate record in ZitBoard, and routes it to the correct requisition pipeline — before any human touches it.</p>
+                  </div>
+                </div>
+
+                <h3>What the Hiring Agent does with your talent data</h3>
+                <p>The Hiring Agent runs a continuous scoring loop across all connected talent sources. It evaluates candidate attributes against role requirements, cross-references scorecard signals, monitors time-in-stage SLAs, and validates compensation band alignment. High-fit candidates are automatically advanced. Stale candidates trigger recruiter alerts. Compensation mismatches are flagged before the offer is extended.</p>
+                <p><strong>Business impact:</strong> Qualified candidates stop disappearing into pipeline backlogs. Offer failures caused by compensation mismatch drop to near zero. Recruiters spend time on conversations, not spreadsheet management.</p>
+
+                <hr>
+
+                <!-- ─── SECTION 5 ─── -->
+                <h2 id="sec5">5. Communication Plugins</h2>
+                <p>Connect your communication layer so agents can reach your team — and your team can act — without leaving the tools they already have open.</p>
+
+                <div class="plugin-grid">
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-sl">SL</div>
+                      <div>
+                        <div class="plugin-name">Slack</div>
+                        <div class="plugin-tag">Messaging · Outbound alerts</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">All three agents post structured action cards to configured channels. Cards include context, score, and one-click approve / snooze / reassign actions — so your team acts from Slack without opening the dashboard.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-zm">ZM</div>
+                      <div>
+                        <div class="plugin-name">Zoom</div>
+                        <div class="plugin-tag">Meetings · Ingest</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Post-meeting summaries are ingested and attached to the relevant deal or candidate record. The Deal Agent analyses summaries for buying signals; the Hiring Agent uses interview metadata as a scoring input.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-em">EM</div>
+                      <div>
+                        <div class="plugin-name">Email</div>
+                        <div class="plugin-tag">Gmail / Outlook · Sequence monitoring</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">The Deal Agent monitors reply activity for leads in active sequences. A reply within 48 hours is treated as a high-intent signal and increases the deal score. No-reply after 3 attempts triggers an automatic stage change and reassignment alert.</p>
+                  </div>
+                </div>
+
+                <!-- Screenshot Slot 3: Slack action cards from agents -->
+                <div class="screenshot-slot" aria-label="Screenshot placeholder — Slack agent notification cards">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  <span>Screenshot — Slack agent notification cards with inline actions</span>
+                </div>
+
+                <hr>
+
+                <!-- ─── SECTION 6 ─── -->
+                <h2 id="sec6">6. REST API &amp; Webhooks</h2>
+                <p>For any source system not covered by a native connector, ZitBoard provides first-class API and webhook primitives that give your engineering team full control over data flow.</p>
+
+                <div class="plugin-grid">
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-wh">WH</div>
+                      <div>
+                        <div class="plugin-name">Inbound Webhooks</div>
+                        <div class="plugin-tag">Real-time · Any source</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">POST structured JSON to a tenant-scoped HTTPS endpoint. ZitBoard normalises the payload, routes it to the correct agent pipeline, and begins scoring immediately. No polling required.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-wh">OB</div>
+                      <div>
+                        <div class="plugin-name">Outbound Webhooks</div>
+                        <div class="plugin-tag">Real-time · Any target</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">ZitBoard POSTs enriched, scored records to any endpoint you configure when an agent completes an action cycle. Build downstream automations, trigger n8n/Zapier flows, or populate data warehouses.</p>
+                  </div>
+                  <div class="plugin-card">
+                    <div class="plugin-card-top">
+                      <div class="plugin-badge badge-sdk">API</div>
+                      <div>
+                        <div class="plugin-name">REST Read/Write API</div>
+                        <div class="plugin-tag">Full CRUD · Token-scoped</div>
+                      </div>
+                    </div>
+                    <p class="plugin-desc">Full CRUD access to leads, deals, candidates, and scored records. Use it to build custom sync logic, reporting pipelines, or integration bridges to legacy systems. All calls are authenticated via short-lived tokens scoped to your tenant.</p>
+                  </div>
+                </div>
+
+                <hr>
+
+                <!-- ─── SECTION 7 ─── -->
+                <h2 id="sec7">7. Custom Plugin SDK</h2>
+                <p>For organisations with proprietary or niche source systems, ZitBoard's Plugin SDK lets your engineering team build a first-class adapter that behaves identically to a native connector.</p>
+                <ol>
+                  <li><strong>Define a connector manifest</strong> — declare your source schema, field map, sync triggers, and write-back targets in a structured JSON manifest.</li>
+                  <li><strong>Implement the adapter interfaces</strong> — two primary interfaces: <code>fetch()</code> to pull data from your source, and <code>writeBack()</code> to push enriched data back. TypeScript types are provided.</li>
+                  <li><strong>Deploy as a container or function</strong> — your adapter runs in your own infrastructure and communicates with ZitBoard via the secure inbound webhook endpoint. No inbound access to your environment is required.</li>
+                  <li><strong>Register and activate</strong> — register your adapter manifest in platform settings. It immediately appears as a native integration and your chosen agents begin processing its output.</li>
+                </ol>
+                <p>SDK documentation, TypeScript definitions, and a reference implementation for a custom CRM adapter are available to Enterprise plan customers on request. Contact <a href="mailto:demo@zitboard.com">demo@zitboard.com</a> to get started.</p>
+
+                <hr>
+
+                <!-- ─── SECTION 8 ─── -->
+                <h2 id="sec8">8. Agency Agents</h2>
+                <p>Three specialised AI agents operate inside your ZitBoard tenant. They run continuously, act on scored data, and are configurable from platform settings without engineering support.</p>
+
+                <div class="agent-card agent-deal">
+                  <h3>Deal Agent</h3>
+                  <p>Monitors your revenue pipeline across all connected sales plugins. Evaluates deal age, rep activity, email engagement, and stage velocity to assign a composite readiness score to every open opportunity. Moves deals forward when they meet your threshold, flags stalling deals with a recommended action, and writes scores back to source CRM fields so reps see intelligence in Salesforce or HubSpot — not just in ZitBoard. Posts alert cards to your configured Slack channel for every deal requiring human review.</p>
+                </div>
+
+                <div class="agent-card agent-hiring">
+                  <h3>Hiring Agent</h3>
+                  <p>Monitors your recruitment pipeline across all connected talent plugins. Scores candidates against active requisitions using scorecard attributes, time-in-stage data, and historical hire patterns. Advances high-fit candidates automatically, triggers recruiter alerts for stale or high-priority records, and validates compensation band alignment before the offer stage. Processes inbound Google Form submissions in real time — creating structured candidate records before a recruiter ever logs in.</p>
+                </div>
+
+                <div class="agent-card agent-forecast">
+                  <h3>Forecast Agent</h3>
+                  <p>Synthesises signals from the Deal Agent, Hiring Agent, and external data inputs to produce pipeline velocity scores, headcount readiness projections, and SLA health alerts. Posts daily summary cards to configured Slack channels and keeps the BI dashboard updated in real time. Detects forecast deviations — deals moving faster or slower than the model predicts — and surfaces them as priority items for leadership review before they become problems.</p>
+                </div>
+
+                <p>All three agents operate within your tenant boundary. They read and write only your data. Agent actions are logged in the platform audit trail and can be paused, set to "alert-only" mode, or rolled back from platform settings at any time.</p>
+
+                <hr>
+
+                <!-- ─── SECTION 9 ─── -->
+                <h2 id="sec9">9. Connecting Your First Plugin</h2>
+                <p>Native connectors require no engineering involvement. You can be live in under 5 minutes.</p>
+
+                <ol class="setup-steps">
+                  <li>
+                    <div>
+                      <strong>Navigate to Settings → Integrations</strong>
+                      <span>In your ZitBoard dashboard, open the left sidebar, go to Settings, and select the Integrations tab. You will see all available native connectors listed by category.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Authenticate with your source system</strong>
+                      <span>Click "Connect" on the plugin you want to add and complete the OAuth flow, or paste your API key. ZitBoard stores credentials in the encrypted secrets vault — they are never exposed in the UI or logs.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Map your fields</strong>
+                      <span>Use the visual field mapper to align your source columns to ZitBoard's unified schema. For standard CRMs and ATSs, default mappings are pre-filled and require no changes for most teams.</span>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Your agent goes live</strong>
+                      <span>Save your configuration. The assigned agent picks up your data on the next sync cycle — typically within 60 seconds. You will see scored records appearing in the dashboard immediately.</span>
+                    </div>
+                  </li>
+                </ol>
+
+                <!-- Screenshot Slot 4: Settings → Integrations setup flow -->
+                <div class="screenshot-slot" aria-label="Screenshot placeholder — Settings integrations setup flow">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                  <span>Screenshot — Settings → Integrations panel &amp; field mapper</span>
+                </div>
+
+                <hr>
+
+                <!-- ─── SECTION 10 ─── -->
+                <h2 id="sec10">10. Frequently Asked Questions</h2>
+
+                <h3>Do I need to migrate my data into ZitBoard?</h3>
+                <p>No. ZitBoard reads from your existing tools and writes enriched data back into them. Your source of truth stays where it is — ZitBoard adds an intelligence and automation layer on top without replacing any system you currently use.</p>
+
+                <h3>How often do agents sync data?</h3>
+                <p>The default sync cadence is every 15 minutes for CRM and ATS connectors, and real-time for inbound webhooks. Enterprise plans support configurable real-time streaming with sub-minute latency for all connected sources.</p>
+
+                <h3>Can I control what agents are allowed to do?</h3>
+                <p>Yes. Every agent action type — stage moves, write-backs, Slack posts, email triggers — is individually configurable. Each can be set to <strong>alert-only mode</strong>, where the agent recommends an action but does not execute it without explicit human approval from within the dashboard or a Slack card.</p>
+
+                <h3>What if my source system isn't listed?</h3>
+                <p>Use the inbound webhook endpoint for immediate connectivity with any system that can send HTTP POST requests, or contact us about building a custom adapter using the Plugin SDK. Most modern business tools — even legacy ERP systems — can be connected via webhook within an afternoon.</p>
+
+                <h3>Is the data that agents process stored in ZitBoard?</h3>
+                <p>Processed records and AI scores are stored within your tenant to power the dashboard and agent logic. Raw source data is not duplicated beyond what is strictly necessary for scoring. See the <a href="privacy-and-security.html">Privacy and Security</a> page for full data handling, retention, and deletion details.</p>
+
+                <h3>Can multiple agents run on the same connected plugin?</h3>
+                <p>Yes. For example, Google Sheets can feed both the Deal Agent (for a sales tracking sheet) and the Hiring Agent (for a candidate intake sheet) simultaneously. Each agent operates on the rows that match its configured data type, leaving other rows untouched.</p>
+
+                <h3>What support is available during setup?</h3>
+                <p>All plans include setup documentation and email support. Growth and Enterprise plans include dedicated onboarding support and a live setup session. Contact <a href="mailto:demo@zitboard.com">demo@zitboard.com</a> to arrange a walkthrough.</p>
+
+                <hr>
+
+                <div class="integ-cta">
+                  <h3>Ready to connect your first integration?</h3>
+                  <p>Sign up and have your first agent live in under 5 minutes — no engineering support required.</p>
+                  <a href="login.html" class="btn">Get Started Now</a>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
     </main>
@@ -110,7 +713,7 @@
             <h4>Product</h4>
             <a href="index.html#features">Platform Features</a>
             <a href="product.html">Full Capabilities</a>
-            <a href="integrations.html">Integrations & Plugins</a>
+            <a href="integrations.html">Integrations &amp; Plugins</a>
             <a href="pricing.html">Pricing Plans</a>
           </div>
           <div class="footer-col">
@@ -128,18 +731,46 @@
             <a href="terms.html">Terms</a>
           </div>
         </div>
-
         <div class="footer-bottom">
           <p>© 2026 ZitBoard. Multi-tenant intelligence for revenue and talent.</p>
         </div>
-
         <div class="footer-watermark">
           <img src="logo_nobg.webp" alt="ZitBoard Logo" class="footer-logo-img">
           ZitBoard
         </div>
       </div>
     </footer>
+
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/pricing-background.js"></script>
+    <script>
+      (function () {
+        const headings = document.querySelectorAll('.terms-content h2[id], .terms-content h3[id]');
+        if (!headings.length) return;
+        let activeLinkEl = null;
+        function setActive(id) {
+          if (activeLinkEl) activeLinkEl.classList.remove('active');
+          const link = document.querySelector('.terms-toc a[href="#' + id + '"]');
+          if (link) {
+            link.classList.add('active');
+            activeLinkEl = link;
+            const toc = document.querySelector('.terms-toc');
+            if (toc) {
+              const linkTop = link.offsetTop;
+              const tocHeight = toc.clientHeight;
+              const scrollPos = toc.scrollTop;
+              if (linkTop < scrollPos + 40 || linkTop > scrollPos + tocHeight - 60) {
+                toc.scrollTo({ top: linkTop - tocHeight / 2, behavior: 'smooth' });
+              }
+            }
+          }
+        }
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) { if (entry.isIntersecting) setActive(entry.target.id); });
+        }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+        headings.forEach(function (h) { observer.observe(h); });
+        if (headings.length) setActive(headings[0].id);
+      })();
+    </script>
   </body>
 </html>
-
