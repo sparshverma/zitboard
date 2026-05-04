@@ -25,9 +25,11 @@
         pointer-events: none;
       }
 
-      /* Prevent horizontal scroll on all devices */
+      /* Prevent horizontal scroll — overflow:clip clips visually WITHOUT creating a scroll
+         container, so position:sticky on the TOC sidebar continues to work correctly.
+         overflow:hidden would silently break sticky by creating a new scroll ancestor. */
       .terms-section {
-        overflow-x: hidden;
+        overflow-x: clip;
         max-width: 100vw;
       }
 
@@ -887,5 +889,56 @@
 
     <script src="assets/js/script.js"></script>
     <script src="assets/js/pricing-background.js"></script>
+    <script>
+      /* TOC Scrollspy — IntersectionObserver pattern (MDN / Stripe Docs style)
+         Highlights the active TOC link as the corresponding section scrolls into view. */
+      (function () {
+        const tocLinks = document.querySelectorAll('.terms-toc a[href^="#"]');
+        if (!tocLinks.length) return;
+
+        const headings = document.querySelectorAll('.terms-content h2[id], .terms-content h3[id]');
+        if (!headings.length) return;
+
+        let activeLinkEl = null;
+
+        function setActive(id) {
+          if (activeLinkEl) activeLinkEl.classList.remove('active');
+          const link = document.querySelector('.terms-toc a[href="#' + id + '"]');
+          if (link) {
+            link.classList.add('active');
+            activeLinkEl = link;
+            /* Scroll the TOC so the active item stays in view on long documents */
+            const toc = document.querySelector('.terms-toc');
+            if (toc) {
+              const linkTop = link.offsetTop;
+              const tocHeight = toc.clientHeight;
+              const scrollPos = toc.scrollTop;
+              if (linkTop < scrollPos + 40 || linkTop > scrollPos + tocHeight - 60) {
+                toc.scrollTo({ top: linkTop - tocHeight / 2, behavior: 'smooth' });
+              }
+            }
+          }
+        }
+
+        const observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                setActive(entry.target.id);
+              }
+            });
+          },
+          {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+          }
+        );
+
+        headings.forEach(function (h) { observer.observe(h); });
+
+        /* Highlight first item on load */
+        if (headings.length) setActive(headings[0].id);
+      })();
+    </script>
   </body>
 </html>
