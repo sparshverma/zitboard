@@ -7,12 +7,533 @@
     <title>ZitBoard Product | Unified Operations Engine</title>
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://www.zitboard.com/product" />
-    <meta name="description" content="Explore ZitBoard product modules for CRM, hiring pipeline, predictive scoring, and BI automation." />
+    <meta name="description" content="Three unified cores — CRM, Hiring, and Predictive AI — in one command layer. The ZitBoard operations engine." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script src="assets/js/theme-bootstrap.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css?v=20260420-1" />
+  <style>
+    /* ── Product Page Scoped Styles ── */
+
+    /* Canvas bubble background */
+    #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+    main { position: relative; z-index: 1; }
+    #crm-core    { background: radial-gradient(ellipse 100% 55% at 25% 50%, rgba(0,161,224,.025) 0%, transparent 65%); }
+    #hiring-core { background: radial-gradient(ellipse 100% 55% at 75% 50%, rgba(36,209,133,.025) 0%, transparent 65%); }
+    #ai-core     { background: radial-gradient(ellipse 100% 55% at 50% 40%, rgba(139,92,246,.025) 0%, transparent 65%); }
+
+    /* Hero */
+    .prd-hero {
+      position: relative; min-height: 88vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+      padding: 130px 24px 80px; overflow: hidden;
+    }
+    .prd-hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(124,245,221,.13) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(139,92,246,.08) 0%, transparent 60%);
+    }
+    .prd-eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: #7cf5dd; margin-bottom: 1.5rem;
+      opacity: 0; animation: prd-fade-up .6s .2s ease both;
+    }
+    [data-theme="light"] .prd-eyebrow { color: #0f7f86; }
+    .prd-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .prd-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 700; letter-spacing: -.03em; line-height: 1.1;
+      max-width: 860px; margin: 0 auto 1.5rem;
+      opacity: 0; animation: prd-fade-up .7s .35s ease both;
+    }
+    .prd-headline em {
+      font-style: normal;
+      background: linear-gradient(135deg, #7cf5dd, #8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .prd-sub {
+      font-size: 1.15rem; color: var(--muted); max-width: 600px;
+      margin: 0 auto 2.5rem; line-height: 1.75;
+      opacity: 0; animation: prd-fade-up .7s .5s ease both;
+    }
+    .prd-hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: prd-fade-up .7s .65s ease both;
+    }
+
+    /* Floating chips */
+    .hero-chips { position: absolute; inset: 0; pointer-events: none; }
+    .hero-chip {
+      position: absolute; padding: .4rem .95rem;
+      background: rgba(255,255,255,.06); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.09); border-radius: 99px;
+      font-size: .77rem; font-weight: 600; white-space: nowrap; color: var(--text);
+    }
+    [data-theme="light"] .hero-chip { background: rgba(255,255,255,.78); border-color: rgba(0,0,0,.08); color: #1e293b; }
+    .hero-chip:nth-child(1) { top: 28%; left: 7%;  animation: prd-chip-in .6s .9s ease both, prd-float 4s 1.5s ease-in-out infinite; }
+    .hero-chip:nth-child(2) { top: 22%; right: 8%; animation: prd-chip-in .6s 1.1s ease both, prd-float 4s 0s ease-in-out infinite; }
+    .hero-chip:nth-child(3) { bottom: 30%; left: 9%; animation: prd-chip-in .6s 1.3s ease both, prd-float 4s 2.6s ease-in-out infinite; }
+    .hero-chip:nth-child(4) { bottom: 24%; right: 7%; animation: prd-chip-in .6s 1.5s ease both, prd-float 4s 1.3s ease-in-out infinite; }
+
+    /* CSS Dashboard Mockup */
+    .hero-dash {
+      position: relative; margin: 3rem auto 0;
+      width: min(700px, calc(100% - 32px)); border-radius: 16px;
+      background: rgba(10,16,32,.88); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      border: 1px solid rgba(148,163,184,.15);
+      padding: 1.5rem 1.75rem; box-shadow: 0 40px 100px rgba(0,0,0,.4);
+      opacity: 0; animation: prd-fade-up .8s .8s ease both;
+    }
+    [data-theme="light"] .hero-dash {
+      background: rgba(255,255,255,.95); border-color: rgba(0,0,0,.09);
+      box-shadow: 0 24px 80px rgba(0,0,0,.12);
+    }
+    .dash-top-row { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.25rem; }
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dash-dot:nth-child(1) { background: #ff5f57; }
+    .dash-dot:nth-child(2) { background: #ffbd2e; }
+    .dash-dot:nth-child(3) { background: #28c840; }
+    .dash-top-label { font-size: .7rem; color: var(--muted); margin-left: .5rem; font-family: 'Space Grotesk',sans-serif; }
+    .dash-modules { display: grid; grid-template-columns: repeat(3,1fr); gap: .75rem; margin-bottom: 1rem; }
+    .dash-mod {
+      padding: .75rem; border-radius: 8px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+    }
+    [data-theme="light"] .dash-mod { background: rgba(0,0,0,.03); border-color: rgba(0,0,0,.07); }
+    .dash-mod-label { font-size: .63rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: .5rem; }
+    .dash-bar-wrap { display: flex; flex-direction: column; gap: .4rem; }
+    .dash-bar {
+      height: 6px; border-radius: 3px;
+      transform-origin: left; transform: scaleX(0);
+      animation: prd-grow-bar 1.2s var(--bd, .9s) cubic-bezier(.2,0,.2,1) both;
+    }
+    .b1 { background: linear-gradient(90deg,#7cf5dd,#20b26c); width: 78%; }
+    .b2 { background: linear-gradient(90deg,#7cf5dd,#20b26c); width: 55%; --bd: 1.05s; }
+    .b3 { background: linear-gradient(90deg,#24d185,#7cf5dd); width: 88%; --bd: 1.0s; }
+    .b4 { background: linear-gradient(90deg,#24d185,#7cf5dd); width: 43%; --bd: 1.15s; }
+    .b5 { background: linear-gradient(90deg,#8b5cf6,#c084fc); width: 91%; --bd: 1.1s; }
+    .b6 { background: linear-gradient(90deg,#8b5cf6,#c084fc); width: 67%; --bd: 1.25s; }
+    .dash-score-row { display: grid; grid-template-columns: repeat(4,1fr); gap: .6rem; }
+    .dash-score {
+      padding: .6rem .5rem; border-radius: 8px; text-align: center;
+      background: rgba(124,245,221,.06); border: 1px solid rgba(124,245,221,.15);
+    }
+    .dash-score-val { font-family: 'Space Grotesk',sans-serif; font-size: 1.35rem; font-weight: 700; color: #7cf5dd; }
+    .dash-score-lbl { font-size: .6rem; color: var(--muted); margin-top: .2rem; }
+
+    /* Trust bar */
+    .prd-trust { overflow: hidden; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .prd-trust-label { text-align: center; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 1rem; }
+    .trust-track { display: flex; width: max-content; animation: prd-marquee 26s linear infinite; gap: 3rem; align-items: center; }
+    .trust-logo { font-family: 'Space Grotesk',sans-serif; font-size: .85rem; font-weight: 600; color: var(--muted); white-space: nowrap; opacity: .65; }
+    .trust-sep { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); opacity: .3; flex-shrink: 0; }
+
+    /* Module Tabs — glassmorphism floating pill (sticky only within #modules-zone) */
+    #modules-zone { position: relative; }
+    .prd-tabs-rail {
+      position: sticky; top: 68px; z-index: 40;
+      display: flex; justify-content: center; align-items: center;
+      padding: .85rem 1rem; background: transparent; border: none; pointer-events: none;
+    }
+    .prd-tabs-pill {
+      display: inline-flex; gap: .2rem;
+      background: rgba(8,14,28,.5);
+      -webkit-backdrop-filter: blur(28px) saturate(1.8);
+      backdrop-filter: blur(28px) saturate(1.8);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 99px; padding: .32rem .38rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+      pointer-events: all;
+    }
+    [data-theme="light"] .prd-tabs-pill {
+      background: rgba(255,255,255,.78);
+      border-color: rgba(0,0,0,.07);
+      box-shadow: 0 8px 28px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.95);
+    }
+    .prd-tab {
+      padding: .42rem 1.1rem; border-radius: 99px; font-size: .83rem; font-weight: 600;
+      border: none; color: var(--muted); cursor: pointer;
+      transition: color .2s, background .2s; background: transparent; font-family: inherit; white-space: nowrap;
+    }
+    .prd-tab:hover { color: var(--text); background: rgba(255,255,255,.07); }
+    [data-theme="light"] .prd-tab:hover { color: #0f172a; background: rgba(0,0,0,.05); }
+    .prd-tab.active { background: rgba(124,245,221,.13); color: #7cf5dd; }
+    [data-theme="light"] .prd-tab.active { color: #0d9488; background: rgba(13,148,136,.1); }
+
+    /* Scrollytelling module */
+    .prd-module { padding: 7rem 0; border-bottom: 1px solid var(--border); }
+    .prd-module .container { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .module-sticky { position: sticky; top: 140px; }
+    .module-badge {
+      display: inline-block; padding: .3rem .85rem;
+      border-radius: 99px; font-size: .72rem; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .badge-crm  { background: rgba(0,161,224,.12); color: #00a1e0; border: 1px solid rgba(0,161,224,.25); }
+    .badge-hire { background: rgba(36,209,133,.12); color: #24d185; border: 1px solid rgba(36,209,133,.25); }
+    .badge-ai   { background: rgba(139,92,246,.12); color: #8b5cf6; border: 1px solid rgba(139,92,246,.25); }
+    .module-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem,3vw,2.5rem); font-weight: 700;
+      letter-spacing: -.025em; line-height: 1.2; margin-bottom: 1rem;
+    }
+    .module-desc { color: var(--muted); line-height: 1.75; margin-bottom: 2rem; }
+    .module-mini-vis {
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border); padding: 1.25rem;
+    }
+
+    /* Kanban (JS viewport-triggered) */
+    .kanban { display: grid; grid-template-columns: repeat(3,1fr); gap: .5rem; }
+    .kanban-col { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: .65rem; }
+    [data-theme="light"] .kanban-col { background: rgba(0,0,0,.025); border-color: rgba(0,0,0,.07); }
+    .kanban-col-head { font-size: .6rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: .5rem; }
+    .kanban-card { height: 26px; border-radius: 6px; margin-bottom: .38rem; opacity: 0; transform: translateY(6px) scale(.97); transition: opacity .35s, transform .35s; }
+    .kanban-card.kc-vis { opacity: 1; transform: none; }
+    .kc1 { background: rgba(0,161,224,.32); width: 90%; }
+    .kc2 { background: rgba(0,161,224,.17); width: 75%; }
+    .kc3 { background: rgba(36,209,133,.32); width: 85%; }
+    .kc4 { background: rgba(36,209,133,.17); width: 65%; }
+    .kc5 { background: rgba(139,92,246,.32); width: 80%; }
+    .kc-move-indicator { height: 2px; border-radius: 99px; margin-bottom: .38rem; background: linear-gradient(90deg, transparent, #7cf5dd 40%, transparent); opacity: 0; width: 100%; }
+    .kc-move-indicator.kc-pulse { animation: prd-pulse-line 2.4s ease-in-out infinite; }
+    @keyframes prd-pulse-line { 0%,100%{opacity:0;transform:scaleX(.3)} 40%,60%{opacity:1;transform:scaleX(1)} }
+
+    /* Hire pipeline (JS viewport-triggered) */
+    .hire-pipeline { display: flex; flex-direction: column; gap: .7rem; padding: 1.1rem; background: rgba(36,209,133,.04); border: 1px solid rgba(36,209,133,.14); border-radius: 13px; }
+    .hire-stage { display: flex; align-items: center; gap: .75rem; opacity: 0; transform: translateX(-14px); transition: opacity .4s, transform .4s; }
+    .hire-stage.hs-vis { opacity: 1; transform: none; }
+    .hire-stage-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: rgba(36,209,133,.25); border: 2px solid rgba(36,209,133,.4); transition: background .5s .15s, box-shadow .5s .15s; }
+    .hire-stage.hs-vis .hire-stage-dot { background: #24d185; box-shadow: 0 0 10px rgba(36,209,133,.5); }
+    .hire-stage-wrap { flex: 1; }
+    .hire-stage-label { font-size: .8rem; font-weight: 600; display: flex; justify-content: space-between; margin-bottom: .28rem; }
+    .hire-stage-count { font-weight: 400; color: var(--muted); font-size: .74rem; }
+    .hire-stage-bar { height: 4px; background: rgba(36,209,133,.1); border-radius: 2px; overflow: hidden; }
+    .hire-stage-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,#24d185,#7cf5dd); transform-origin: left; transform: scaleX(0); transition: transform .65s .25s; }
+    .hire-stage.hs-vis .hire-stage-fill { transform: scaleX(1); }
+    .hs-fill-100 { width: 100%; } .hs-fill-62 { width: 62%; } .hs-fill-37 { width: 37%; } .hs-fill-12 { width: 12%; }
+
+    /* AI Score Arc (JS viewport-triggered) */
+    .ai-vis-wrap { padding: 1.25rem; background: rgba(139,92,246,.04); border: 1px solid rgba(139,92,246,.16); border-radius: 14px; }
+    .ai-vis-label { font-size: .63rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .9rem; }
+    .ai-vis-main { display: flex; align-items: center; gap: 1.25rem; }
+    .ai-arc-svg { flex-shrink: 0; overflow: visible; }
+    .ai-arc-track { stroke: rgba(139,92,246,.15); }
+    .ai-arc-fill { stroke: url(#ai-grad); stroke-linecap: round; stroke-dasharray: 0 201; transition: stroke-dasharray 1.5s cubic-bezier(.2,.8,.3,1); }
+    .ai-arc-fill.arc-vis { stroke-dasharray: 175 201; }
+    .ai-arc-num { fill: #8b5cf6; font-family: 'Space Grotesk',sans-serif; font-size: 16px; font-weight: 700; opacity: 0; transition: opacity .4s .9s; }
+    [data-theme="light"] .ai-arc-num { fill: #7c3aed; }
+    .ai-arc-num.arc-vis { opacity: 1; }
+    .ai-vis-signals-col { display: flex; flex-direction: column; gap: .55rem; }
+    .ai-signal { display: flex; align-items: center; gap: .5rem; font-size: .78rem; opacity: 0; transform: translateX(10px); transition: opacity .4s, transform .4s; transition-delay: var(--sd, 0s); }
+    .ai-signal.sig-vis { opacity: 1; transform: none; }
+    .ai-signal-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .ai-signal-label { color: var(--muted); }
+    .ai-signal-val { margin-left: auto; font-weight: 700; color: #8b5cf6; font-family: 'Space Grotesk',sans-serif; font-size: .8rem; }
+    [data-theme="light"] .ai-signal-val { color: #7c3aed; }
+
+    /* Feature rows */
+    .feat-rows { display: flex; flex-direction: column; gap: 1.25rem; }
+    .feat-row {
+      padding: 1.4rem 1.5rem; border-radius: 12px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      opacity: 0; transform: translateX(30px);
+      transition: opacity .5s, transform .5s;
+    }
+    [data-theme="light"] .feat-row { background: rgba(0,0,0,.02); }
+    .feat-row.vis { opacity: 1; transform: none; }
+    .feat-row h4 { margin: 0 0 .4rem; font-size: 1rem; font-weight: 700; }
+    .feat-row p { margin: 0; font-size: .88rem; color: var(--muted); line-height: 1.65; }
+    .feat-icon { font-size: 1.4rem; margin-bottom: .55rem; display: block; }
+
+    /* Agent flow */
+    .prd-agents { padding: 7rem 0; background: rgba(255,255,255,.015); }
+    [data-theme="light"] .prd-agents { background: rgba(0,0,0,.015); }
+    .agents-head { text-align: center; margin-bottom: 4rem; }
+    .agents-row { display: flex; align-items: stretch; justify-content: center; }
+    .agent-tile {
+      flex: 1; max-width: 280px; padding: 2rem 1.75rem;
+      border-radius: 12px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.03); text-align: center;
+      opacity: 0; transform: translateY(28px); transition: opacity .5s, transform .5s;
+    }
+    [data-theme="light"] .agent-tile { background: rgba(0,0,0,.02); }
+    .agent-tile.vis { opacity: 1; transform: none; }
+    .at-crm  { border-top: 3px solid #00a1e0; transition-delay: .05s; }
+    .at-hire { border-top: 3px solid #24d185; transition-delay: .22s; }
+    .at-pred { border-top: 3px solid #8b5cf6; transition-delay: .38s; }
+    .agent-icon { font-size: 2.2rem; margin-bottom: 1rem; display: block; }
+    .agent-name { font-family: 'Space Grotesk',sans-serif; font-weight: 700; margin-bottom: .5rem; font-size: 1.05rem; }
+    .agent-desc { font-size: .85rem; color: var(--muted); line-height: 1.65; }
+    .agent-conn { display: flex; align-items: center; padding: 0 .25rem; color: var(--muted); }
+
+    /* ── Platform Capabilities — spotlight card grid ──────────── */
+    .prd-bento { padding: 7rem 0; }
+    .cap-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: .85rem; margin-top: 3.5rem;
+    }
+    /* Per-card accent palette — custom properties for rgba() use */
+    .cap-a1{--accent:#7cf5dd;--ar:124;--ag:245;--ab:221}
+    .cap-a2{--accent:#00a1e0;--ar:0;  --ag:161;--ab:224}
+    .cap-a3{--accent:#8b5cf6;--ar:139;--ag:92; --ab:246}
+    .cap-a4{--accent:#24d185;--ar:36; --ag:209;--ab:133}
+    .cap-a5{--accent:#f59e0b;--ar:245;--ag:158;--ab:11 }
+    .cap-a6{--accent:#ef4444;--ar:239;--ag:68; --ab:68 }
+    [data-theme="light"] .cap-a5{--accent:#d97706}
+    [data-theme="light"] .cap-a6{--accent:#dc2626}
+
+    /* Card base */
+    .cap-card {
+      position: relative; overflow: hidden; cursor: default;
+      border-radius: 16px; padding: 1.6rem;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      opacity: 0; transform: translateY(24px) scale(.98);
+      transition: opacity .5s ease, transform .5s ease,
+                  border-color .3s ease, background .3s ease, box-shadow .3s ease;
+    }
+    [data-theme="light"] .cap-card { background: rgba(0,0,0,.025); }
+    .cap-card.vis { opacity: 1; transform: none; }
+
+    /* Hover lift */
+    .cap-card:hover {
+      border-color: rgba(var(--ar),var(--ag),var(--ab),.45);
+      background: rgba(var(--ar),var(--ag),var(--ab),.04);
+      box-shadow: 0 12px 40px rgba(0,0,0,.2),
+                  inset 0 0 0 1px rgba(var(--ar),var(--ag),var(--ab),.18);
+      transform: translateY(-3px) scale(1.008);
+    }
+    [data-theme="light"] .cap-card:hover {
+      background: rgba(var(--ar),var(--ag),var(--ab),.06);
+      box-shadow: 0 8px 28px rgba(0,0,0,.1),
+                  inset 0 0 0 1px rgba(var(--ar),var(--ag),var(--ab),.22);
+    }
+
+    /* Sibling dimming — focus the hovered card (CSS :has) */
+    .cap-grid:has(.cap-card:hover) .cap-card:not(:hover) {
+      opacity: .5; transition: opacity .25s ease;
+    }
+
+    /* Top accent glow edge */
+    .cap-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 8%; right: 8%; height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity .3s ease;
+    }
+    .cap-card:hover::before { opacity: 1; }
+
+    /* Shimmer sweep */
+    .cap-card::after {
+      content: ''; position: absolute; inset: 0;
+      pointer-events: none; border-radius: inherit;
+      background: linear-gradient(105deg,
+        transparent 30%, rgba(255,255,255,.048) 50%, transparent 70%);
+      transform: translateX(-120%);
+      transition: transform .55s ease;
+    }
+    .cap-card:hover::after { transform: translateX(120%); }
+
+    /* Icon badge */
+    .cap-icon-wrap {
+      width: 42px; height: 42px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(var(--ar),var(--ag),var(--ab),.1);
+      border: 1px solid rgba(var(--ar),var(--ag),var(--ab),.22);
+      font-size: 1.2rem; margin-bottom: 1rem; flex-shrink: 0;
+      transition: background .3s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .cap-card:hover .cap-icon-wrap {
+      background: rgba(var(--ar),var(--ag),var(--ab),.17);
+      transform: scale(1.12) rotate(-5deg);
+    }
+
+    /* Title */
+    .cap-title {
+      font-family: 'Space Grotesk',sans-serif;
+      font-size: .95rem; font-weight: 700; line-height: 1.3; color: var(--text);
+    }
+
+    /* One-liner detail — hidden, slides up on hover */
+    .cap-detail {
+      font-size: .81rem; color: var(--muted); line-height: 1.6;
+      max-height: 0; overflow: hidden; opacity: 0;
+      transform: translateY(5px); padding-top: 0;
+      transition: max-height .42s cubic-bezier(.2,1,.3,1),
+                  opacity .3s ease .06s,
+                  transform .3s ease .06s,
+                  padding-top .3s ease;
+    }
+    .cap-card:hover .cap-detail {
+      max-height: 4.5rem; opacity: 1; transform: none; padding-top: .55rem;
+    }
+
+    /* Category tag */
+    .cap-tag {
+      display: inline-block; font-size: .6rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent); opacity: .7; margin-top: .85rem;
+      transition: opacity .2s ease;
+    }
+    .cap-card:hover .cap-tag { opacity: 1; }
+
+    /* Stats */
+    .prd-stats { padding: 6rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; text-align: center; }
+    .stat-num {
+      font-family: 'Space Grotesk',sans-serif; font-size: clamp(2.4rem,4vw,3.8rem); font-weight: 700;
+      background: linear-gradient(135deg,#7cf5dd,#8b5cf6);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: .85rem; color: var(--muted); margin-top: .5rem; line-height: 1.5; }
+
+    /* The Difference — fullscreen scroll-step */
+    .prd-compare { position: relative; height: 600vh; }
+    .compare-sticky {
+      position: sticky; top: 0; height: 100vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .compare-top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .compare-top-eyebrow { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--muted); }
+    .compare-top-right { display: flex; align-items: center; gap: 1.2rem; }
+    .compare-top-counter { font-family: 'Space Grotesk',sans-serif; font-size: .82rem; font-weight: 600; color: var(--muted); min-width: 38px; text-align: right; }
+    .compare-top-dots { display: flex; gap: .45rem; align-items: center; }
+    .compare-top-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--border); transition: background .28s, transform .28s;
+      cursor: pointer; border: none; padding: 0;
+    }
+    .compare-top-dot.active { background: #7cf5dd; transform: scale(1.6); }
+    [data-theme="light"] .compare-top-dot.active { background: #0d9488; }
+    .compare-halves {
+      flex: 1; display: grid; grid-template-columns: 1fr 1px 1fr; min-height: 0;
+    }
+    .compare-half {
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: center; text-align: center;
+      padding: 3rem clamp(1.5rem, 4vw, 5rem); position: relative; overflow: hidden;
+    }
+    .compare-half-before { background: radial-gradient(ellipse 80% 70% at 30% 50%, rgba(239,68,68,.04) 0%, transparent 70%); }
+    .compare-half-after  { background: radial-gradient(ellipse 80% 70% at 70% 50%, rgba(124,245,221,.04) 0%, transparent 70%); }
+    [data-theme="light"] .compare-half-before { background: radial-gradient(ellipse 80% 70% at 30% 50%, rgba(239,68,68,.05) 0%, transparent 70%); }
+    [data-theme="light"] .compare-half-after  { background: radial-gradient(ellipse 80% 70% at 70% 50%, rgba(13,148,136,.05) 0%, transparent 70%); }
+    .compare-center-line { background: var(--border); position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .compare-vs-badge {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Space Grotesk',sans-serif; font-size: .68rem; font-weight: 700;
+      color: var(--muted); background: var(--bg); border: 1px solid var(--border);
+      padding: .3rem .45rem; border-radius: 5px; white-space: nowrap; z-index: 2;
+    }
+    .compare-half-label {
+      font-size: .72rem; text-transform: uppercase; letter-spacing: .12em;
+      font-weight: 700; margin-bottom: 2rem; display: flex; align-items: center; gap: .45rem;
+    }
+    .compare-half-before .compare-half-label { color: #ef4444; }
+    .compare-half-after  .compare-half-label { color: #7cf5dd; }
+    [data-theme="light"] .compare-half-after .compare-half-label { color: #0d9488; }
+    .compare-sign { font-size: 1.1rem; }
+    /* Pile-up rows */
+    .compare-pile { display: flex; flex-direction: column; align-items: center; gap: .55rem; width: 100%; max-height: 72vh; overflow: hidden; }
+    .ci-row {
+      font-family: 'Space Grotesk',sans-serif;
+      font-size: clamp(1.05rem, 2vw, 1.65rem); font-weight: 600;
+      line-height: 1.4; max-width: 400px; text-align: center;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1),
+                  font-size .45s ease, color .45s ease, padding .35s ease;
+      padding: .2rem 0; flex-shrink: 0;
+    }
+    /* Current (newest) item */
+    .ci-row.ci-current { opacity: 1; transform: none; }
+    .compare-half-before .ci-row.ci-current { color: rgba(239,68,68,.7); }
+    [data-theme="light"] .compare-half-before .ci-row.ci-current { color: rgba(185,28,28,.75); }
+    .compare-half-after .ci-row.ci-current { color: #7cf5dd; }
+    [data-theme="light"] .compare-half-after .ci-row.ci-current { color: #0d9488; }
+    /* Past (accumulated) items */
+    .ci-row.ci-past {
+      opacity: 0.32; transform: none;
+      font-size: clamp(.78rem, 1.3vw, 1.05rem); padding: 0;
+    }
+    .compare-half-before .ci-row.ci-past { color: rgba(239,68,68,.55); }
+    [data-theme="light"] .compare-half-before .ci-row.ci-past { color: rgba(185,28,28,.5); }
+    .compare-half-after .ci-row.ci-past { color: rgba(124,245,221,.55); }
+    [data-theme="light"] .compare-half-after .ci-row.ci-past { color: rgba(13,148,136,.5); }
+    /* Separator between pile items */
+    .ci-row.ci-past + .ci-row.ci-past::before,
+    .ci-row.ci-past + .ci-row.ci-current::before {
+      content: ''; display: block; height: 1px;
+      background: var(--border); margin-bottom: .55rem; width: 48px;
+    }
+    .compare-scroll-hint {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      font-size: .72rem; color: var(--muted); opacity: .5;
+      display: flex; align-items: center; gap: .4rem;
+      pointer-events: none; animation: prd-float 2s ease-in-out infinite; white-space: nowrap;
+      transition: opacity .4s;
+    }
+
+
+    /* Final CTA */
+    .prd-cta {
+      padding: 8rem 2rem; text-align: center;
+      background:
+        radial-gradient(ellipse 80% 70% at 50% 50%, rgba(124,245,221,.08) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 60% at 80% 30%, rgba(139,92,246,.07) 0%, transparent 60%);
+    }
+    .prd-cta h2 {
+      font-family: 'Space Grotesk',sans-serif;
+      font-size: clamp(2rem,4vw,3.2rem); font-weight: 700;
+      letter-spacing: -.025em; max-width: 680px; margin: 0 auto 1rem; line-height: 1.2;
+    }
+    .prd-cta h2 em { font-style: normal; background: linear-gradient(135deg,#7cf5dd,#8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .prd-cta p { color: var(--muted); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.7; }
+    .prd-cta-eyebrow { display: flex; justify-content: center; align-items: center; gap: .5rem; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #7cf5dd; margin-bottom: 1.5rem; }
+    [data-theme="light"] .prd-cta-eyebrow { color: #0f7f86; }
+
+    /* Section heading helper */
+    .sec-head { text-align: center; margin-bottom: 0; }
+    .sec-head h2 { font-family: 'Space Grotesk',sans-serif; font-size: clamp(1.8rem,3.5vw,2.7rem); font-weight: 700; letter-spacing: -.025em; margin-bottom: .75rem; line-height: 1.2; }
+    .sec-head p { color: var(--muted); max-width: 540px; margin: 0 auto; line-height: 1.7; }
+    .sec-head .eyebrow { margin-bottom: 1rem; }
+
+
+    /* Keyframes */
+    @keyframes prd-fade-up  { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+    @keyframes prd-chip-in  { from { opacity:0; transform:translateY(10px) scale(.95); } to { opacity:1; transform:none; } }
+    @keyframes prd-float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    @keyframes prd-grow-bar { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+    @keyframes prd-marquee  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .prd-module .container { grid-template-columns: 1fr; gap: 2.5rem; }
+      .module-sticky { position: static; }
+      .cap-grid { grid-template-columns: repeat(2,1fr); }
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .compare-halves { grid-template-columns: 1fr; grid-template-rows: 1fr 1px 1fr; }
+      .compare-center-line { width: 100%; height: 1px; }
+      .compare-half { padding: 2rem 1.5rem; }
+      .ci-row { font-size: clamp(1rem, 4vw, 1.35rem); }
+      .agents-row { flex-direction: column; align-items: center; gap: 1rem; }
+      .agent-conn { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-chip { display: none; }
+      .cap-grid { grid-template-columns: 1fr; }
+      .prd-tabs-rail { gap: .3rem; }
+      .prd-tab { font-size: .78rem; padding: .4rem .85rem; }
+      .dash-score-row { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
 </head>
   <body>
     <header class="dynamic-island" aria-label="Primary Navigation">
@@ -75,31 +596,347 @@
       </div>
     </header>
 
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div class="mesh-overlay" aria-hidden="true"></div>
+
     <main>
-      <section class="section">
-        <div class="container">
-          <p class="eyebrow">PRODUCT OVERVIEW</p>
-          <h1>Modular intelligence across sales, hiring, and AI action loops.</h1>
-          <p>ZitBoard combines pipeline execution, model-driven scoring, and insight-triggered tasks in one command layer.</p>
+
+      <!-- ① HERO -->
+      <section class="prd-hero">
+        <div class="hero-chips" aria-hidden="true">
+          <span class="hero-chip">⚡ 87% forecast accuracy</span>
+          <span class="hero-chip">🎯 14 → 1 dashboards</span>
+          <span class="hero-chip">🤖 Real-time AI scoring</span>
+          <span class="hero-chip">🔄 Live bi-directional sync</span>
+        </div>
+        <p class="prd-eyebrow"><span class="prd-eyebrow-dot"></span>Product Overview<span class="prd-eyebrow-dot"></span></p>
+        <h1 class="prd-headline">One Command Layer for<br><em>Sales, Hiring, and AI.</em></h1>
+        <p class="prd-sub">Pipeline execution. Model-driven scoring. Insight-triggered tasks.<br>Three modules. One unified intelligence engine.</p>
+        <div class="prd-hero-actions">
+          <a class="btn btn-primary cta-track" data-cta="product_hero_cta" href="login.html">Get Started Free</a>
+          <a class="btn btn-ghost" href="#module-tabs">Explore Modules ↓</a>
+        </div>
+        <div class="hero-dash" role="img" aria-label="ZitBoard dashboard preview">
+          <div class="dash-top-row">
+            <div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div>
+            <span class="dash-top-label">ZitBoard — Command Center</span>
+          </div>
+          <div class="dash-modules">
+            <div class="dash-mod">
+              <div class="dash-mod-label">CRM Core</div>
+              <div class="dash-bar-wrap">
+                <div class="dash-bar b1"></div>
+                <div class="dash-bar b2"></div>
+              </div>
+            </div>
+            <div class="dash-mod">
+              <div class="dash-mod-label">Hiring Core</div>
+              <div class="dash-bar-wrap">
+                <div class="dash-bar b3"></div>
+                <div class="dash-bar b4"></div>
+              </div>
+            </div>
+            <div class="dash-mod">
+              <div class="dash-mod-label">Predictive AI</div>
+              <div class="dash-bar-wrap">
+                <div class="dash-bar b5"></div>
+                <div class="dash-bar b6"></div>
+              </div>
+            </div>
+          </div>
+          <div class="dash-score-row">
+            <div class="dash-score"><div class="dash-score-val">91</div><div class="dash-score-lbl">Deal Score</div></div>
+            <div class="dash-score"><div class="dash-score-val">78%</div><div class="dash-score-lbl">Stage Health</div></div>
+            <div class="dash-score"><div class="dash-score-val">4.2×</div><div class="dash-score-lbl">Velocity</div></div>
+            <div class="dash-score"><div class="dash-score-val">87</div><div class="dash-score-lbl">Candidate Fit</div></div>
+          </div>
         </div>
       </section>
 
-      <section class="section">
-        <div class="container feature-grid">
-          <article class="feature-card">
-            <h3>CRM Operations Core</h3>
-            <p>Lead and deal lifecycle management with visual Kanban movement and event ingestion.</p>
-          </article>
-          <article class="feature-card">
-            <h3>Hiring Operations Core</h3>
-            <p>Candidate flow management from sheet sync to stage bottleneck tracking.</p>
-          </article>
-          <article class="feature-card">
-            <h3>Predictive Decision Core</h3>
-            <p>Live scoring APIs with explainable confidence layers and retraining hooks.</p>
-          </article>
+      <!-- ② TRUST BAR -->
+      <div class="prd-trust">
+        <p class="prd-trust-label">Connects to the tools your team already uses</p>
+        <div style="overflow:hidden;">
+          <div class="trust-track">
+            <span class="trust-logo">Salesforce</span><span class="trust-sep"></span>
+            <span class="trust-logo">HubSpot</span><span class="trust-sep"></span>
+            <span class="trust-logo">Google Sheets</span><span class="trust-sep"></span>
+            <span class="trust-logo">Greenhouse</span><span class="trust-sep"></span>
+            <span class="trust-logo">Workday</span><span class="trust-sep"></span>
+            <span class="trust-logo">Slack</span><span class="trust-sep"></span>
+            <span class="trust-logo">Zoom</span><span class="trust-sep"></span>
+            <span class="trust-logo">REST API</span><span class="trust-sep"></span>
+            <span class="trust-logo">Webhooks</span><span class="trust-sep"></span>
+            <span class="trust-logo">Salesforce</span><span class="trust-sep"></span>
+            <span class="trust-logo">HubSpot</span><span class="trust-sep"></span>
+            <span class="trust-logo">Google Sheets</span><span class="trust-sep"></span>
+            <span class="trust-logo">Greenhouse</span><span class="trust-sep"></span>
+            <span class="trust-logo">Workday</span><span class="trust-sep"></span>
+            <span class="trust-logo">Slack</span><span class="trust-sep"></span>
+            <span class="trust-logo">Zoom</span><span class="trust-sep"></span>
+            <span class="trust-logo">REST API</span><span class="trust-sep"></span>
+            <span class="trust-logo">Webhooks</span><span class="trust-sep"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ MODULE TABS — glassmorphism pill, sticky only within modules-zone -->
+      <div id="modules-zone">
+      <div class="prd-tabs-rail" id="module-tabs">
+        <div class="prd-tabs-pill" role="tablist" aria-label="Product modules">
+          <button class="prd-tab active" data-tab="crm-core" role="tab" aria-selected="true">CRM Operations</button>
+          <button class="prd-tab" data-tab="hiring-core" role="tab" aria-selected="false">Hiring Operations</button>
+          <button class="prd-tab" data-tab="ai-core" role="tab" aria-selected="false">Predictive AI</button>
+        </div>
+      </div>
+
+      <!-- ④a MODULE: CRM -->
+      <section class="prd-module" id="crm-core">
+        <div class="container">
+          <div class="module-sticky">
+            <span class="module-badge badge-crm">CRM Core</span>
+            <h2 class="module-title">Close more deals with a pipeline that thinks for itself.</h2>
+            <p class="module-desc">Full lead and deal lifecycle management — visual Kanban movement, event ingestion, and AI stage-health scores written back directly into your CRM.</p>
+            <div class="module-mini-vis">
+              <div class="kanban" aria-hidden="true">
+                <div class="kanban-col">
+                  <div class="kanban-col-head">Prospecting</div>
+                  <div class="kanban-card kc1"></div>
+                  <div class="kanban-card kc2"></div>
+                </div>
+                <div class="kanban-col">
+                  <div class="kanban-col-head">Qualified</div>
+                  <div class="kc-move-indicator"></div>
+                  <div class="kanban-card kc3"></div>
+                  <div class="kanban-card kc4"></div>
+                </div>
+                <div class="kanban-col">
+                  <div class="kanban-col-head">Closing</div>
+                  <div class="kanban-card kc5"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feat-rows">
+            <div class="feat-row" data-fi="0"><span class="feat-icon">🔁</span><h4>Lead &amp; Deal Lifecycle</h4><p>Visual Kanban board with drag-to-move deal cards and automatic event ingestion from email, calendar, and CRM APIs.</p></div>
+            <div class="feat-row" data-fi="1"><span class="feat-icon">📊</span><h4>AI Stage-Health Scoring</h4><p>The Deal Agent writes <code>zitboard_score</code> and <code>zitboard_stage_health</code> back to your CRM — reps see ZitBoard intelligence inside the tool they already use.</p></div>
+            <div class="feat-row" data-fi="2"><span class="feat-icon">⏱️</span><h4>Pipeline Velocity &amp; Stall Detection</h4><p>Days-in-stage counter flags deals going cold before they fall out of forecast. Velocity scores update in real time as deal signals change.</p></div>
+            <div class="feat-row" data-fi="3"><span class="feat-icon">⚡</span><h4>Deal Agent Auto-Actions</h4><p>Score drops below threshold? The Deal Agent auto-creates a follow-up task, updates forecast weighting, and notifies the rep via Slack — no human trigger required.</p></div>
+          </div>
         </div>
       </section>
+
+      <!-- ④b MODULE: HIRING -->
+      <section class="prd-module" id="hiring-core">
+        <div class="container">
+          <div class="module-sticky">
+            <span class="module-badge badge-hire">Hiring Core</span>
+            <h2 class="module-title">From sourced to signed — without the spreadsheet chaos.</h2>
+            <p class="module-desc">Candidate flow management from Google Sheets sync to stage bottleneck detection, powered by the Hiring Agent that ranks, alerts, and moves candidates automatically.</p>
+            <div class="hire-pipeline" id="hire-pipeline">
+              <div class="hire-stage"><div class="hire-stage-dot"></div><div class="hire-stage-wrap"><div class="hire-stage-label">Applied <span class="hire-stage-count">· 8 candidates</span></div><div class="hire-stage-bar"><div class="hire-stage-fill hs-fill-100"></div></div></div></div>
+              <div class="hire-stage"><div class="hire-stage-dot"></div><div class="hire-stage-wrap"><div class="hire-stage-label">Screened <span class="hire-stage-count">· 5 candidates</span></div><div class="hire-stage-bar"><div class="hire-stage-fill hs-fill-62"></div></div></div></div>
+              <div class="hire-stage"><div class="hire-stage-dot"></div><div class="hire-stage-wrap"><div class="hire-stage-label">Interview <span class="hire-stage-count">· 3 candidates</span></div><div class="hire-stage-bar"><div class="hire-stage-fill hs-fill-37"></div></div></div></div>
+              <div class="hire-stage"><div class="hire-stage-dot"></div><div class="hire-stage-wrap"><div class="hire-stage-label">Offer sent <span class="hire-stage-count">· 1 candidate</span></div><div class="hire-stage-bar"><div class="hire-stage-fill hs-fill-12"></div></div></div></div>
+            </div>
+          </div>
+          <div class="feat-rows">
+            <div class="feat-row" data-fi="0"><span class="feat-icon">📋</span><h4>Sheet Sync → Stage Pipeline</h4><p>Google Forms and Sheets entries auto-convert into candidate records in ZitBoard with field mapping — no manual import needed.</p></div>
+            <div class="feat-row" data-fi="1"><span class="feat-icon">🔍</span><h4>Bottleneck Detection</h4><p>Stage latency heatmap shows where candidates are stalling. Identify which stage is killing your offer acceptance rate before it costs you the hire.</p></div>
+            <div class="feat-row" data-fi="2"><span class="feat-icon">🎯</span><h4>Hiring Agent Fit Scoring</h4><p>The Hiring Agent scores candidates against role requirements, past-hire signals, and activity recency — ranked so your team always reviews the best-fit first.</p></div>
+            <div class="feat-row" data-fi="3"><span class="feat-icon">🔔</span><h4>SLA Alerts &amp; Auto-Nudges</h4><p>When a candidate exceeds the configured days-in-stage threshold, the Hiring Agent sends an alert to the recruiter and optionally drafts an outreach message.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④c MODULE: PREDICTIVE AI -->
+      <section class="prd-module" id="ai-core">
+        <div class="container">
+          <div class="module-sticky">
+            <span class="module-badge badge-ai">Predictive AI</span>
+            <h2 class="module-title">Forecast with numbers you can defend in the boardroom.</h2>
+            <p class="module-desc">Live scoring APIs with explainable confidence layers. Know exactly which signals drive every score — and let the model improve itself as outcomes roll in.</p>
+            <div class="ai-vis-wrap" id="ai-vis-wrap">
+              <div class="ai-vis-label">Confidence Score — Live Inference</div>
+              <div class="ai-vis-main">
+                <svg class="ai-arc-svg" viewBox="0 0 80 80" width="88" height="88">
+                  <defs><linearGradient id="ai-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#c084fc"/></linearGradient></defs>
+                  <circle class="ai-arc-track" cx="40" cy="40" r="32" fill="none" stroke-width="5"/>
+                  <circle class="ai-arc-fill" cx="40" cy="40" r="32" fill="none" stroke-width="5" transform="rotate(-90 40 40)"/>
+                  <text class="ai-arc-num" x="40" y="45" text-anchor="middle">87</text>
+                </svg>
+                <div class="ai-vis-signals-col">
+                  <div class="ai-signal" style="--sd:.0s"><span class="ai-signal-dot" style="background:#8b5cf6"></span><span class="ai-signal-label">Stage age</span><span class="ai-signal-val">+41%</span></div>
+                  <div class="ai-signal" style="--sd:.14s"><span class="ai-signal-dot" style="background:#7cf5dd"></span><span class="ai-signal-label">Last activity</span><span class="ai-signal-val">+28%</span></div>
+                  <div class="ai-signal" style="--sd:.28s"><span class="ai-signal-dot" style="background:#c084fc"></span><span class="ai-signal-label">Deal size</span><span class="ai-signal-val">+18%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="feat-rows">
+            <div class="feat-row" data-fi="0"><span class="feat-icon">🧠</span><h4>Live Scoring API</h4><p>Real-time model inference scores every deal and candidate as new signals arrive — no batch jobs, no stale data.</p></div>
+            <div class="feat-row" data-fi="1"><span class="feat-icon">💡</span><h4>Explainability Layer</h4><p>Every score shows the top 3 contributing signals with direction and weight — so your team understands why the AI said what it said.</p></div>
+            <div class="feat-row" data-fi="2"><span class="feat-icon">📈</span><h4>Confidence Bands</h4><p>High / Medium / Low confidence bucketing with colour coding lets managers instantly triage which forecasts need human review.</p></div>
+            <div class="feat-row" data-fi="3"><span class="feat-icon">🔄</span><h4>Retraining Hooks</h4><p>Actual outcomes (won/lost, hired/passed) feed back into the model automatically — accuracy compounds over time without manual intervention.</p></div>
+          </div>
+        </div>
+      </section>
+      </div><!-- /modules-zone -->
+
+      <!-- ⑥ AGENT FLOW -->
+      <section class="prd-agents">
+        <div class="container">
+          <div class="agents-head sec-head">
+            <p class="eyebrow">AGENCY AGENTS</p>
+            <h2>Three agents. Every decision covered.</h2>
+            <p>Autonomous agents act on intelligence — writing back to your tools, notifying your teams, and triggering tasks without a human in the loop.</p>
+          </div>
+          <div class="agents-row" id="agents-row">
+            <div class="agent-tile at-crm">
+              <span class="agent-icon">🔵</span>
+              <div class="agent-name">Deal Agent</div>
+              <div class="agent-desc">Monitors pipeline health, writes scores back to Salesforce/HubSpot, triggers follow-up tasks on stall detection, and updates forecast weighting automatically.</div>
+            </div>
+            <div class="agent-conn" aria-hidden="true">
+              <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8H32M26 2L38 8L26 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="agent-tile at-hire">
+              <span class="agent-icon">🟢</span>
+              <div class="agent-name">Hiring Agent</div>
+              <div class="agent-desc">Scores candidates against role fit, sends SLA alerts, drafts recruiter outreach, and moves candidates between stages based on activity and score signals.</div>
+            </div>
+            <div class="agent-conn" aria-hidden="true">
+              <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8H32M26 2L38 8L26 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="agent-tile at-pred">
+              <span class="agent-icon">🟣</span>
+              <div class="agent-name">Forecast Agent</div>
+              <div class="agent-desc">Aggregates live deal and hiring signals into a unified forecast, flags confidence drift, and pushes boardroom-ready summaries to Slack or email on schedule.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑦ BENTO GRID -->
+      <section class="prd-bento">
+        <div class="container">
+          <div class="sec-head">
+            <p class="eyebrow">PLATFORM CAPABILITIES</p>
+            <h2>Everything your operations need. Nothing it doesn't.</h2>
+            <p>Purposefully built features that wire together without configuration headaches.</p>
+          </div>
+          <div class="cap-grid" id="bento-grid">
+            <div class="cap-card cap-a1">
+              <div class="cap-icon-wrap">⚡</div>
+              <div class="cap-title">Live Bi-directional Sync</div>
+              <div class="cap-detail">AI scores write back to your CRM the instant they change — no manual exports, ever.</div>
+              <span class="cap-tag">Data Layer</span>
+            </div>
+            <div class="cap-card cap-a2">
+              <div class="cap-icon-wrap">🏢</div>
+              <div class="cap-title">Multi-Tenant Architecture</div>
+              <div class="cap-detail">Each org gets isolated models, pipeline configs, and integration credentials.</div>
+              <span class="cap-tag">Architecture</span>
+            </div>
+            <div class="cap-card cap-a3">
+              <div class="cap-icon-wrap">🌙</div>
+              <div class="cap-title">Dark &amp; Light Mode</div>
+              <div class="cap-detail">System-native theme preference persists — built into the design system from day one.</div>
+              <span class="cap-tag">UI / UX</span>
+            </div>
+            <div class="cap-card cap-a4">
+              <div class="cap-icon-wrap">📊</div>
+              <div class="cap-title">Unified Reporting</div>
+              <div class="cap-detail">Sales, hiring, and AI metrics in one view — filterable, exportable, and role-gated.</div>
+              <span class="cap-tag">Analytics</span>
+            </div>
+            <div class="cap-card cap-a5">
+              <div class="cap-icon-wrap">🔗</div>
+              <div class="cap-title">Webhooks &amp; REST API</div>
+              <div class="cap-detail">Inbound/outbound JSON webhooks plus a full REST API for any custom integration.</div>
+              <span class="cap-tag">Integrations</span>
+            </div>
+            <div class="cap-card cap-a6">
+              <div class="cap-icon-wrap">🔒</div>
+              <div class="cap-title">Enterprise Security</div>
+              <div class="cap-detail">RLS, encrypted credentials, OAuth 2.0, HTTPS-only — security baked into the data layer.</div>
+              <span class="cap-tag">Enterprise</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑧ STATS -->
+      <section class="prd-stats" id="prd-stats">
+        <div class="container">
+          <div class="stats-grid">
+            <div><div class="stat-num" data-count="3" data-suffix="">3</div><div class="stat-label">Unified pipelines<br>Sales · Hiring · AI</div></div>
+            <div><div class="stat-num" data-count="14" data-suffix="">14</div><div class="stat-label">Dashboards replaced<br>by one command layer</div></div>
+            <div><div class="stat-num" data-count="500" data-prefix="&lt;" data-suffix="ms">&lt;500ms</div><div class="stat-label">AI scoring latency<br>per record</div></div>
+            <div><div class="stat-num" data-count="99.9" data-suffix="%" data-decimal="1">99.9%</div><div class="stat-label">Uptime SLA<br>across all tenants</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑨ THE DIFFERENCE — fullscreen scroll-step storytelling -->
+      <section class="prd-compare" id="compare-scene">
+        <div class="compare-sticky" id="compare-sticky">
+
+          <!-- top bar -->
+          <div class="compare-top-bar">
+            <span class="compare-top-eyebrow">The Difference</span>
+            <div class="compare-top-right">
+              <div class="compare-top-dots" id="compare-dots">
+                <button class="compare-top-dot active" aria-label="Step 1 of 5"></button>
+                <button class="compare-top-dot" aria-label="Step 2 of 5"></button>
+                <button class="compare-top-dot" aria-label="Step 3 of 5"></button>
+                <button class="compare-top-dot" aria-label="Step 4 of 5"></button>
+                <button class="compare-top-dot" aria-label="Step 5 of 5"></button>
+              </div>
+              <span class="compare-top-counter" id="compare-counter">1 / 5</span>
+            </div>
+          </div>
+
+          <!-- split halves (pile-up rows) -->
+          <div class="compare-halves">
+            <div class="compare-half compare-half-before">
+              <div class="compare-half-label"><span class="compare-sign">✕</span> Without ZitBoard</div>
+              <div class="compare-pile" id="pile-before">
+                <div class="ci-row" data-idx="0">14 disjointed tools across sales and hiring</div>
+                <div class="ci-row" data-idx="1">Manual CRM updates by reps after every call</div>
+                <div class="ci-row" data-idx="2">Forecast built on gut feel in a spreadsheet</div>
+                <div class="ci-row" data-idx="3">Candidates lost to slow follow-up and SLA misses</div>
+                <div class="ci-row" data-idx="4">AI insights locked in a separate BI tool nobody opens</div>
+              </div>
+            </div>
+            <div class="compare-center-line"><span class="compare-vs-badge">VS</span></div>
+            <div class="compare-half compare-half-after">
+              <div class="compare-half-label"><span class="compare-sign">✓</span> With ZitBoard</div>
+              <div class="compare-pile" id="pile-after">
+                <div class="ci-row" data-idx="0">One command layer for CRM, hiring, and forecasting</div>
+                <div class="ci-row" data-idx="1">Agent auto-writes scores and tasks back to Salesforce</div>
+                <div class="ci-row" data-idx="2">Model-driven forecast with confidence bands and explainability</div>
+                <div class="ci-row" data-idx="3">Hiring Agent alerts before SLAs break — and auto-nudges</div>
+                <div class="ci-row" data-idx="4">AI scores surfaced inline in every deal and candidate view</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- scroll hint -->
+          <div class="compare-scroll-hint" id="compare-hint">↓ Scroll to explore each change</div>
+        </div>
+      </section>
+
+      <!-- ⑩ FINAL CTA -->
+      <section class="prd-cta">
+        <div class="container">
+          <div class="prd-cta-eyebrow"><span class="prd-eyebrow-dot"></span>Ready to unify your operations?<span class="prd-eyebrow-dot"></span></div>
+          <h2>Your entire operations layer.<br><em>Wired. Scored. Automated.</em></h2>
+          <p>Start free — no credit card required. Get your pipeline, hiring flow, and AI scoring connected in minutes.</p>
+          <a class="btn btn-primary cta-track" data-cta="product_bottom_cta" href="login.html" style="font-size:1.05rem;padding:.9rem 2.2rem;">Get Started Free →</a>
+        </div>
+      </section>
+
     </main>
 
     <footer class="site-footer">
@@ -109,7 +946,7 @@
             <h4>Product</h4>
             <a href="index.html#features">Platform Features</a>
             <a href="product.html">Full Capabilities</a>
-            <a href="integrations.html">Integrations & Plugins</a>
+            <a href="integrations.html">Integrations &amp; Plugins</a>
             <a href="pricing.html">Pricing Plans</a>
           </div>
           <div class="footer-col">
@@ -126,18 +963,217 @@
             <a href="terms.html">Terms</a>
           </div>
         </div>
-
         <div class="footer-bottom">
           <p>© 2026 ZitBoard. Multi-tenant intelligence for revenue and talent.</p>
         </div>
-
         <div class="footer-watermark">
           <img src="logo_nobg.webp" alt="ZitBoard Logo" class="footer-logo-img">
           ZitBoard
         </div>
       </div>
     </footer>
+
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/pricing-background.js"></script>
+    <script>
+      (function () {
+        'use strict';
+
+        /* ── 1. Generic scroll-reveal ───────────────────────── */
+        var revealIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add('vis');
+            revealIO.unobserve(e.target);
+          });
+        }, { rootMargin: '-60px 0px -40px 0px', threshold: 0.1 });
+        document.querySelectorAll('.feat-row, .agent-tile').forEach(function (el) {
+          revealIO.observe(el);
+        });
+
+        /* ── 3. Feat-row stagger delay ──────────────────────── */
+        document.querySelectorAll('.feat-row').forEach(function (el) {
+          var i = parseInt(el.getAttribute('data-fi') || '0', 10);
+          el.style.transitionDelay = (i * 110) + 'ms';
+        });
+
+        /* ── 4. CRM Kanban entrance ─────────────────────────── */
+        var crmFired = false;
+        var crmIO = new IntersectionObserver(function (entries) {
+          if (crmFired || !entries[0].isIntersecting) return;
+          crmFired = true;
+          var cards = document.querySelectorAll('.kanban-card');
+          cards.forEach(function (c, i) {
+            setTimeout(function () { c.classList.add('kc-vis'); }, i * 110);
+          });
+          setTimeout(function () {
+            var ind = document.querySelector('.kc-move-indicator');
+            if (ind) ind.classList.add('kc-pulse');
+          }, cards.length * 110 + 220);
+        }, { threshold: 0.25 });
+        var crmEl = document.getElementById('crm-core');
+        if (crmEl) crmIO.observe(crmEl);
+
+        /* ── 5. Hiring pipeline entrance ────────────────────── */
+        var hireFired = false;
+        var hireIO = new IntersectionObserver(function (entries) {
+          if (hireFired || !entries[0].isIntersecting) return;
+          hireFired = true;
+          document.querySelectorAll('.hire-stage').forEach(function (s, i) {
+            setTimeout(function () { s.classList.add('hs-vis'); }, i * 180);
+          });
+        }, { threshold: 0.25 });
+        var hireEl = document.getElementById('hiring-core');
+        if (hireEl) hireIO.observe(hireEl);
+
+        /* ── 6. AI arc entrance ──────────────────────────────── */
+        var aiFired = false;
+        var aiIO = new IntersectionObserver(function (entries) {
+          if (aiFired || !entries[0].isIntersecting) return;
+          aiFired = true;
+          var arc = document.querySelector('.ai-arc-fill');
+          var num = document.querySelector('.ai-arc-num');
+          if (arc) arc.classList.add('arc-vis');
+          if (num) num.classList.add('arc-vis');
+          document.querySelectorAll('.ai-signal').forEach(function (s, i) {
+            setTimeout(function () { s.classList.add('sig-vis'); }, i * 140 + 700);
+          });
+        }, { threshold: 0.25 });
+        var aiEl = document.getElementById('ai-core');
+        if (aiEl) aiIO.observe(aiEl);
+
+        /* ── 7. Bento sequential reveal ─────────────────────── */
+        var bentoFired = false;
+        var bentoIO = new IntersectionObserver(function (entries) {
+          if (bentoFired || !entries[0].isIntersecting) return;
+          bentoFired = true;
+          document.querySelectorAll('.cap-card').forEach(function (tile, i) {
+            setTimeout(function () { tile.classList.add('vis'); }, i * 85);
+          });
+        }, { threshold: 0.08 });
+        var bentoEl = document.getElementById('bento-grid');
+        if (bentoEl) bentoIO.observe(bentoEl);
+
+        /* ── 8. The Difference — pile-up scroll-step engine ────── */
+        var compareScene   = document.getElementById('compare-scene');
+        var compareCounter = document.getElementById('compare-counter');
+        var compareHint    = document.getElementById('compare-hint');
+        var compareDots    = Array.prototype.slice.call(document.querySelectorAll('.compare-top-dot'));
+        var pileBeforeRows = Array.prototype.slice.call(document.querySelectorAll('#pile-before .ci-row'));
+        var pileAfterRows  = Array.prototype.slice.call(document.querySelectorAll('#pile-after .ci-row'));
+        var N_CMP  = pileBeforeRows.length;
+        var curCmp = -1;
+
+        function applyCompareStep(step) {
+          step = Math.max(0, Math.min(N_CMP - 1, step));
+          if (step === curCmp) return;
+          curCmp = step;
+
+          /* dots + counter */
+          compareDots.forEach(function (d, i) { d.classList.toggle('active', i === step); });
+          if (compareCounter) compareCounter.textContent = (step + 1) + ' / ' + N_CMP;
+          if (compareHint) compareHint.style.opacity = step === N_CMP - 1 ? '0' : '';
+
+          /* update each row: visible rows get ci-past or ci-current */
+          function updatePile(rows) {
+            rows.forEach(function (row, i) {
+              row.classList.remove('ci-past', 'ci-current');
+              if (i < step)  row.classList.add('ci-past');
+              if (i === step) row.classList.add('ci-current');
+              /* rows beyond step stay with no class → opacity 0 (initial state) */
+            });
+          }
+          updatePile(pileBeforeRows);
+          updatePile(pileAfterRows);
+        }
+
+        /* dot clicks → scroll to that step */
+        compareDots.forEach(function (dot, i) {
+          dot.addEventListener('click', function () {
+            if (!compareScene) return;
+            var totalH = compareScene.offsetHeight - window.innerHeight;
+            var pct = N_CMP > 1 ? i / (N_CMP - 1) : 0;
+            window.scrollTo({ top: compareScene.offsetTop + pct * totalH, behavior: 'smooth' });
+          });
+        });
+
+        /* scroll-driven step calculation */
+        var cmpRaf = null;
+        function updateCmpOnScroll() {
+          cmpRaf = null;
+          if (!compareScene) return;
+          var rect     = compareScene.getBoundingClientRect();
+          var totalH   = compareScene.offsetHeight - window.innerHeight;
+          if (totalH <= 0) return;
+          var scrolled = Math.max(0, -rect.top);
+          var progress = Math.min(scrolled / totalH, 1);
+          /* map progress to step; add small dead-zone at each end */
+          var adjusted = Math.max(0, Math.min(1, (progress - 0.02) / 0.96));
+          var rawStep  = Math.floor(adjusted * N_CMP);
+          applyCompareStep(Math.min(rawStep, N_CMP - 1));
+        }
+        window.addEventListener('scroll', function () {
+          if (!cmpRaf) cmpRaf = requestAnimationFrame(updateCmpOnScroll);
+        }, { passive: true });
+        /* init — show first item immediately on load */
+        applyCompareStep(0);
+
+        /* ── 9. Animated stat counters ───────────────────────── */
+        function animateCounter(el) {
+          var target  = parseFloat(el.getAttribute('data-count'));
+          var suffix  = el.getAttribute('data-suffix') || '';
+          var prefix  = el.getAttribute('data-prefix') || '';
+          var decimal = parseInt(el.getAttribute('data-decimal') || '0', 10);
+          var dur = 1800, start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            var p = Math.min((ts - start) / dur, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            var val = eased * target;
+            el.textContent = prefix + (decimal ? val.toFixed(decimal) : Math.round(val)) + suffix;
+            if (p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+        var statsFired = false;
+        var statsIO = new IntersectionObserver(function (entries) {
+          if (statsFired || !entries[0].isIntersecting) return;
+          statsFired = true;
+          document.querySelectorAll('.stat-num[data-count]').forEach(animateCounter);
+        }, { threshold: 0.4 });
+        var statsEl = document.getElementById('prd-stats');
+        if (statsEl) statsIO.observe(statsEl);
+
+        /* ── 10. Module tab scrollspy ────────────────────────── */
+        var tabs   = document.querySelectorAll('.prd-tab');
+        var panels = ['crm-core', 'hiring-core', 'ai-core'];
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var target = document.getElementById(tab.getAttribute('data-tab'));
+            if (target) {
+              var top = target.getBoundingClientRect().top + window.pageYOffset - 140;
+              window.scrollTo({ top: top, behavior: 'smooth' });
+            }
+          });
+        });
+        var spyIO = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var id = e.target.id;
+            tabs.forEach(function (t) {
+              var active = t.getAttribute('data-tab') === id;
+              t.classList.toggle('active', active);
+              t.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+          });
+        }, { rootMargin: '-130px 0px -55% 0px', threshold: 0 });
+        panels.forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) spyIO.observe(el);
+        });
+
+      })();
+    </script>
   </body>
 </html>
 
