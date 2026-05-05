@@ -199,17 +199,54 @@ function redirectToDashboard(returnTo) {
   window.location.replace(callback.toString());
 }
 
-function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
+async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
   if (!session?.access_token) {
     window.location.replace(`${DASHBOARD_URL}/`);
     return;
   }
 
+  const resolvedTenantId = tenantId || DEFAULT_TENANT_ID;
+  const resolvedReturnTo = returnTo || '/';
+
+  try {
+    const bridgeResponse = await fetchWithTimeout(
+      `${DASHBOARD_API_BASE}/auth/bridge-token`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessToken: session.access_token,
+          tenantId: resolvedTenantId,
+          role: DEFAULT_ROLE,
+          supabaseUrl: SUPABASE_URL,
+          supabaseAnonKey: SUPABASE_ANON_KEY,
+        }),
+      },
+      10000,
+    );
+
+    if (bridgeResponse.ok) {
+      const bridgeBody = await bridgeResponse.json().catch(() => null);
+      const bridgeToken = bridgeBody?.bridgeToken;
+
+      if (bridgeToken) {
+        const callbackUrl = new URL(`${DASHBOARD_URL}/auth/callback`);
+        callbackUrl.searchParams.set('bridge_token', bridgeToken);
+        callbackUrl.searchParams.set('returnTo', resolvedReturnTo);
+        window.location.replace(callbackUrl.toString());
+        return;
+      }
+    }
+  } catch {
+    console.warn('[Auth] bridge-token API call failed, falling back to window.name handoff.');
+  }
+
   window.name = JSON.stringify({
     supabaseAccessToken: session.access_token,
-    tenantId: tenantId || DEFAULT_TENANT_ID,
+    tenantId: resolvedTenantId,
     role: DEFAULT_ROLE,
-    returnTo: returnTo || '/',
+    returnTo: resolvedReturnTo,
   });
 
   window.location.replace(`${DASHBOARD_URL}/auth/callback`);
