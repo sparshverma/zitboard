@@ -36,7 +36,9 @@ function resolveApiBase() {
     return normalizeApiBase('https://api.jollyfield-1a95ff5f.centralindia.azurecontainerapps.io/api');
   }
 
-  return normalizeApiBase('/api');
+  // On the ZitBoard site (www.zitboard.dev), use the Dashboard API directly.
+  // The relative '/api' only works on app.zitboard.dev which has Next.js rewrites.
+  return normalizeApiBase(DASHBOARD_API_BASE);
 }
 
 const API_BASE = resolveApiBase();
@@ -370,8 +372,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Missing Supabase runtime config. Set meta tags "supabase-url" and "supabase-anon-key".');
   }
 
-  const requireEmailAuth = () => {
+  const requireEmailAuth = async () => {
     if (supabaseClient) {
+      return true;
+    }
+
+    // Retry hydration in case initial load was slow
+    const ready = await ensureSupabaseClientReady();
+    if (ready) {
       return true;
     }
 
@@ -389,7 +397,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const password = loginForm.querySelector('input[type="password"]').value;
       
       if (!email || !password) return alert("Please enter both email and password.");
-      if (!requireEmailAuth()) return;
+      if (!(await requireEmailAuth())) return;
       
       const response = await supabaseClient.auth.signInWithPassword({ email, password });
       await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
@@ -416,7 +424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return alert('Please accept the Terms and Conditions to create an account.');
       }
 
-      if (!requireEmailAuth()) return;
+      if (!(await requireEmailAuth())) return;
 
       const tenantId = buildSignupTenantId(email);
       rememberTenantForEmail(email, tenantId);
@@ -443,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const email = loginForm.querySelector('input[type="email"]').value;
       
       if (!email) return alert("Please enter your email.");
-      if (!requireEmailAuth()) return;
+      if (!(await requireEmailAuth())) return;
 
       const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password.html`,
