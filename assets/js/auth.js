@@ -200,13 +200,18 @@ function redirectToDashboard(returnTo) {
 }
 
 async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
+  console.log('[ZitBoard Auth] redirectToDashboardViaSupabase called', { hasAccessToken: !!session?.access_token, tenantId, returnTo, DASHBOARD_URL, DASHBOARD_API_BASE });
+
   if (!session?.access_token) {
+    console.warn('[ZitBoard Auth] No access token, redirecting to dashboard root');
     window.location.replace(`${DASHBOARD_URL}/`);
     return;
   }
 
   const resolvedTenantId = tenantId || DEFAULT_TENANT_ID;
   const resolvedReturnTo = returnTo || '/';
+
+  console.log('[ZitBoard Auth] Attempting bridge token request', { resolvedTenantId, resolvedReturnTo, endpoint: `${DASHBOARD_API_BASE}/auth/bridge-token` });
 
   try {
     const bridgeResponse = await fetchWithTimeout(
@@ -226,20 +231,32 @@ async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
       10000,
     );
 
+    console.log('[ZitBoard Auth] Bridge token response', { ok: bridgeResponse.ok, status: bridgeResponse.status });
+
     if (bridgeResponse.ok) {
-      const bridgeBody = await bridgeResponse.json().catch(() => null);
+      const bridgeBody = await bridgeResponse.json().catch((err) => {
+        console.error('[ZitBoard Auth] Failed to parse bridge response', err);
+        return null;
+      });
       const bridgeToken = bridgeBody?.bridgeToken;
+
+      console.log('[ZitBoard Auth] Bridge token received', { hasToken: !!bridgeToken });
 
       if (bridgeToken) {
         const callbackUrl = new URL(`${DASHBOARD_URL}/auth/callback`);
         callbackUrl.searchParams.set('bridge_token', bridgeToken);
         callbackUrl.searchParams.set('returnTo', resolvedReturnTo);
+        console.log('[ZitBoard Auth] Redirecting to callback', { callbackUrl: callbackUrl.toString() });
         window.location.replace(callbackUrl.toString());
         return;
       }
+
+      console.warn('[ZitBoard Auth] Bridge token missing in response');
+    } else {
+      console.error('[ZitBoard Auth] Bridge token request failed', { status: bridgeResponse.status, statusText: bridgeResponse.statusText });
     }
-  } catch {
-    console.warn('[Auth] bridge-token API call failed, falling back to window.name handoff.');
+  } catch (err) {
+    console.warn('[ZitBoard Auth] bridge-token API call failed, falling back to window.name handoff.', err);
   }
 
   window.name = JSON.stringify({
