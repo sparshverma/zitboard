@@ -563,6 +563,143 @@ if (leadForm && formMessage) {
   });
 }
 
+function initCustomSelect(wrapper) {
+  const trigger = wrapper.querySelector('.custom-select__trigger');
+  const valueEl = wrapper.querySelector('.custom-select__value');
+  const options = wrapper.querySelectorAll('.custom-select__option');
+  const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+  let focusedIndex = -1;
+
+  function open() {
+    wrapper.classList.add('is-open');
+    wrapper.classList.remove('is-invalid');
+    trigger.setAttribute('aria-expanded', 'true');
+    focusedIndex = -1;
+    options.forEach((o) => o.classList.remove('is-focused'));
+  }
+
+  function close() {
+    wrapper.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    focusedIndex = -1;
+    options.forEach((o) => o.classList.remove('is-focused'));
+  }
+
+  function select(option) {
+    valueEl.textContent = option.textContent.trim();
+    valueEl.classList.remove('is-placeholder');
+    hiddenInput.value = option.getAttribute('data-value');
+    options.forEach((o) => o.classList.remove('is-selected'));
+    option.classList.add('is-selected');
+    close();
+    trigger.focus();
+  }
+
+  wrapper._reset = function () {
+    valueEl.textContent = 'Select a reason\u2026';
+    valueEl.classList.add('is-placeholder');
+    hiddenInput.value = '';
+    options.forEach((o) => o.classList.remove('is-selected', 'is-focused'));
+    close();
+  };
+
+  trigger.addEventListener('click', () => {
+    wrapper.classList.contains('is-open') ? close() : open();
+  });
+
+  options.forEach((option, index) => {
+    option.addEventListener('click', () => select(option));
+    option.addEventListener('mouseenter', () => {
+      options.forEach((o) => o.classList.remove('is-focused'));
+      option.classList.add('is-focused');
+      focusedIndex = index;
+    });
+  });
+
+  trigger.addEventListener('keydown', (e) => {
+    const isOpen = wrapper.classList.contains('is-open');
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (isOpen && focusedIndex >= 0) {
+        select(options[focusedIndex]);
+      } else if (isOpen) {
+        close();
+      } else {
+        open();
+      }
+    } else if (e.key === 'Escape') {
+      close();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!isOpen) open();
+      focusedIndex = Math.min(focusedIndex + 1, options.length - 1);
+      options.forEach((o) => o.classList.remove('is-focused'));
+      options[focusedIndex].classList.add('is-focused');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!isOpen) open();
+      focusedIndex = Math.max(focusedIndex - 1, 0);
+      options.forEach((o) => o.classList.remove('is-focused'));
+      options[focusedIndex].classList.add('is-focused');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) close();
+  });
+}
+
+document.querySelectorAll('.custom-select').forEach(initCustomSelect);
+
+const contactForm = document.querySelector('#contact-form');
+const contactFormStatus = document.querySelector('#contact-form-status');
+
+if (contactForm && contactFormStatus) {
+  contactForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    contactFormStatus.className = 'contact-form-status';
+    contactFormStatus.textContent = '';
+
+    const reason = (contactForm.querySelector('#contact-reason') || {}).value || '';
+
+    if (!contactForm.checkValidity()) {
+      contactFormStatus.classList.add('is-error');
+      contactFormStatus.textContent = 'Please complete all required fields.';
+      return;
+    }
+
+    if (!reason.trim()) {
+      contactFormStatus.classList.add('is-error');
+      contactFormStatus.textContent = 'Please select a reason for contacting us.';
+      const selectWrapper = document.querySelector('#contact-reason-wrapper');
+      if (selectWrapper) {
+        selectWrapper.classList.add('is-invalid');
+        selectWrapper.querySelector('.custom-select__trigger').focus();
+      }
+      return;
+    }
+
+    const name = contactForm.querySelector('#contact-name').value.trim();
+    const email = contactForm.querySelector('#contact-email').value.trim();
+    const message = contactForm.querySelector('#contact-message').value.trim();
+
+    const subject = encodeURIComponent(`[ZitBoard] ${reason.trim()} \u2014 from ${name}`);
+    const body = encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\nReason: ${reason.trim()}\n\nMessage:\n${message}`
+    );
+
+    window.location.href = `mailto:contact@zitboard.dev?subject=${subject}&body=${body}`;
+
+    trackEvent('contact_form_submit', { reason: reason.trim() });
+    contactFormStatus.classList.add('is-success');
+    contactFormStatus.textContent = 'Opening your email client\u2026';
+    contactForm.reset();
+    const selectWrapper = document.querySelector('#contact-reason-wrapper');
+    if (selectWrapper && selectWrapper._reset) selectWrapper._reset();
+  });
+}
+
 // Parallax Interactive Hero
 const interactiveHero = document.querySelector('.interactive-hero');
 if (interactiveHero) {
