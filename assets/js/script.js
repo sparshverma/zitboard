@@ -511,7 +511,7 @@ if (leadForm && formMessage) {
     if (!DEMO_ENDPOINT) {
       trackEvent('lead_form_error', { reason: 'missing_endpoint' });
       formMessage.textContent =
-        'Submission service is unavailable. Please contact demo@zitboard.com for access.';
+        'Submission service is unavailable. Please contact demo@zitboard.dev for access.';
       return;
     }
 
@@ -554,7 +554,7 @@ if (leadForm && formMessage) {
       });
       leadForm.reset();
     } catch (error) {
-      formMessage.textContent = 'Could not submit right now. Please try again or email demo@zitboard.com.';
+      formMessage.textContent = 'Could not submit right now. Please try again or email demo@zitboard.dev.';
       trackEvent('lead_form_error', {
         reason: 'network',
         endpoint: DEMO_ENDPOINT,
@@ -1246,11 +1246,11 @@ const faqContentMap = {
     },
     {
       q: 'How do I reset my ZitBoard password?',
-      a: 'Click "Forgot Password" on the login screen and enter your registered email address. You will receive a secure password reset link within a few minutes. If the email does not arrive, check your spam folder or contact support@zitboard.com.',
+      a: 'Click "Forgot Password" on the login screen and enter your registered email address. You will receive a secure password reset link within a few minutes. If the email does not arrive, check your spam folder or contact support@zitboard.dev.',
     },
     {
       q: 'How do I contact ZitBoard customer support?',
-      a: 'ZitBoard offers 24/7 support via the "Contact Support" button at the bottom of this page, or by emailing support@zitboard.com. Pro and Enterprise users also get access to priority support with faster response SLAs.',
+      a: 'ZitBoard offers 24/7 support via the "Contact Support" button at the bottom of this page, or by emailing support@zitboard.dev. Pro and Enterprise users also get access to priority support with faster response SLAs.',
     },
     {
       q: 'Does ZitBoard support Two-Factor Authentication (2FA)?',

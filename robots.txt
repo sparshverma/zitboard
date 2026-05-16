@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.zitboard.com/sitemap.xml
+Sitemap: https://www.zitboard.dev/sitemap.xml
