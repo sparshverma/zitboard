@@ -3,63 +3,63 @@
 
   <!-- Core -->
   <url>
-    <loc>https://www.zitboard.com/</loc>
+    <loc>https://zitboard.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Product -->
   <url>
-    <loc>https://www.zitboard.com/product</loc>
+    <loc>https://zitboard.com/product</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/integrations</loc>
+    <loc>https://zitboard.com/integrations</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/pricing</loc>
+    <loc>https://zitboard.com/pricing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Account -->
   <url>
-    <loc>https://www.zitboard.com/login</loc>
+    <loc>https://zitboard.com/login</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/signup</loc>
+    <loc>https://zitboard.com/signup</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/forgot-password</loc>
+    <loc>https://zitboard.com/forgot-password</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- Legal -->
   <url>
-    <loc>https://www.zitboard.com/privacy-and-security</loc>
+    <loc>https://zitboard.com/privacy-and-security</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/terms</loc>
+    <loc>https://zitboard.com/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/security</loc>
+    <loc>https://zitboard.com/security</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://www.zitboard.com/cookies</loc>
+    <loc>https://zitboard.com/cookies</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
