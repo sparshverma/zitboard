@@ -7,7 +7,7 @@ dynamic_island = '''<header class="dynamic-island" aria-label="Primary Navigatio
         <div class="island-group group-left">
           <a href="index.html#features">Features</a>
           <a href="index.html#why">Why Us</a>
-          <a href="index.html#results">Results</a>
+          <a href="index.html#faq">FAQ</a>
           <a href="product.html">Product</a>
         </div>
         
@@ -17,7 +17,6 @@ dynamic_island = '''<header class="dynamic-island" aria-label="Primary Navigatio
         
         <div class="island-group group-right">
           <a href="integrations.html">Integrations</a>
-          <a href="index.html#faq">FAQ</a>
           <a href="pricing.html">Pricing</a>
           <div class="island-actions">
             <button class="theme-toggle btn-icon" aria-label="Toggle Dark Mode">

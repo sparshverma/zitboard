@@ -2225,6 +2225,7 @@ input[type="checkbox"]:checked::after { left: 16px; }
   width: 500px;
   opacity: 1;
   pointer-events: auto;
+  overflow: visible;
 }
 
 .dynamic-island:hover .island-group a:not(.nav-demo-btn),
@@ -2437,6 +2438,11 @@ input[type="checkbox"]:checked::after { left: 16px; }
   color: var(--cta-text);
 }
 
+.mobile-dropdown a[href="index.html#testimonials"],
+.mobile-dropdown a[href="security.html"] {
+  display: none;
+}
+
 .mobile-dropdown-actions .theme-toggle {
   width: 46px;
   height: 46px;
@@ -2448,11 +2454,11 @@ input[type="checkbox"]:checked::after { left: 16px; }
   background: rgba(255, 255, 255, 0.08);
 }
 
-[data-theme="dark"] .mobile-login-btn {
+[data-theme="dark"] .mobile-dropdown .mobile-login-btn {
   color: #0b1724;
 }
 
-[data-theme="dark"] .mobile-login-btn:hover {
+[data-theme="dark"] .mobile-dropdown .mobile-login-btn:hover {
   color: #0b1724;
 }
 
