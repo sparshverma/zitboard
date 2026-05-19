@@ -30,15 +30,11 @@ function resolveDashboardUrl() {
     return 'http://localhost:3000';
   }
 
-  if (hostname === 'zidboard.dev' || hostname === 'www.zidboard.dev') {
-    return 'https://app.zidboard.dev';
-  }
-
   if (hostname === 'zitboard.dev' || hostname === 'www.zitboard.dev') {
     return 'https://app.zitboard.dev';
   }
 
-  return 'https://app.zidboard.dev';
+  return 'https://app.zitboard.dev';
 }
 
 // Redirect target for successful login (Dashboard App)
