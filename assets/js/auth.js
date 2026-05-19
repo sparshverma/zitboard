@@ -19,8 +19,30 @@ let SUPABASE_ANON_KEY =
   window.ZITBOARD_SUPABASE_ANON_KEY ||
   '';
 
+function resolveDashboardUrl() {
+  const configuredUrl = readMetaConfig('dashboard-url') || window.ZITBOARD_DASHBOARD_URL || '';
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/+$/, '');
+  }
+
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:3000';
+  }
+
+  if (hostname === 'zidboard.dev' || hostname === 'www.zidboard.dev') {
+    return 'https://app.zidboard.dev';
+  }
+
+  if (hostname === 'zitboard.dev' || hostname === 'www.zitboard.dev') {
+    return 'https://app.zitboard.dev';
+  }
+
+  return 'https://app.zidboard.dev';
+}
+
 // Redirect target for successful login (Dashboard App)
-const DASHBOARD_URL = 'https://app.zitboard.dev'; // Adjust to local/staging/prod url
+const DASHBOARD_URL = resolveDashboardUrl();
 const DASHBOARD_API_BASE = `${DASHBOARD_URL}/api`; // Bridge calls go directly to dashboard domain for cookie alignment
 
 function normalizeApiBase(rawBase) {
