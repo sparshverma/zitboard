@@ -65,6 +65,11 @@ const DEFAULT_TENANT_ID = 'app';
 const DEFAULT_ROLE = 'admin';
 const SIGNUP_TENANT_MAP_STORAGE_KEY = 'zitboard_signup_tenant_map';
 const PENDING_SIGNUP_TENANT_KEY = 'zitboard_pending_signup_tenant';
+const SUPABASE_CLIENT_READY_TIMEOUT_MS = 12000;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function createSupabaseClient(url, anonKey) {
   if (!url || !anonKey || !window.supabase) {
@@ -118,9 +123,23 @@ async function ensureSupabaseClientReady() {
     return true;
   }
 
+  const startedAt = Date.now();
+  while (!window.supabase && Date.now() - startedAt < SUPABASE_CLIENT_READY_TIMEOUT_MS) {
+    await sleep(100);
+  }
+
+  supabaseClient = createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  if (supabaseClient) {
+    return true;
+  }
+
   const hydrated = await hydrateSupabaseConfigFromBackend();
   if (!hydrated) {
     return false;
+  }
+
+  while (!window.supabase && Date.now() - startedAt < SUPABASE_CLIENT_READY_TIMEOUT_MS) {
+    await sleep(100);
   }
 
   supabaseClient = createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -230,6 +249,7 @@ async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
 
   const resolvedTenantId = tenantId || DEFAULT_TENANT_ID;
   const resolvedReturnTo = returnTo || '/';
+  const isSignupFlow = resolvedReturnTo === '/onboarding';
 
   console.log('[ZitBoard Auth] Attempting bridge token request', { resolvedTenantId, resolvedReturnTo, endpoint: `${DASHBOARD_API_BASE}/auth/bridge-token` });
 
@@ -266,6 +286,9 @@ async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
         const callbackUrl = new URL(`${DASHBOARD_URL}/auth/callback`);
         callbackUrl.searchParams.set('bridge_token', bridgeToken);
         callbackUrl.searchParams.set('returnTo', resolvedReturnTo);
+        if (isSignupFlow) {
+          callbackUrl.searchParams.set('signup', '1');
+        }
         console.log('[ZitBoard Auth] Redirecting to callback', { callbackUrl: callbackUrl.toString() });
         window.location.replace(callbackUrl.toString());
         return;
@@ -288,6 +311,9 @@ async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
 
   const fallbackCallbackUrl = new URL(`${DASHBOARD_URL}/auth/callback`);
   fallbackCallbackUrl.searchParams.set('returnTo', resolvedReturnTo);
+  if (isSignupFlow) {
+    fallbackCallbackUrl.searchParams.set('signup', '1');
+  }
   window.location.replace(fallbackCallbackUrl.toString());
 }
 
@@ -397,13 +423,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       return true;
     }
 
-    // Retry hydration in case initial load was slow
     const ready = await ensureSupabaseClientReady();
     if (ready) {
       return true;
     }
 
-    alert('Email/password auth is temporarily unavailable. Please use Google, Microsoft, or Twitter login.');
+    alert('Authentication is still loading. Please try again in a moment.');
     return false;
   };
 
