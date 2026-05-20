@@ -442,11 +442,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isHidden = input.type === 'password';
       input.type = isHidden ? 'text' : 'password';
 
-      const icon = toggleBtn.querySelector('[data-lucide]');
-      if (icon) {
-        icon.setAttribute('data-lucide', isHidden ? 'eye' : 'eye-off');
-        if (window.lucide) window.lucide.createIcons();
-      }
+      const nextIcon = isHidden ? 'eye' : 'eye-off';
+      toggleBtn.innerHTML = `<i data-lucide="${nextIcon}" width="18" height="18"></i>`;
+      if (window.lucide) window.lucide.createIcons();
     });
   });
 
@@ -456,7 +454,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = loginForm.querySelector('input[type="email"]').value;
-      const password = loginForm.querySelector('input[type="password"]').value;
+      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
       
       if (!email || !password) return alert("Please enter both email and password.");
       if (!(await requireEmailAuth())) return;
@@ -474,7 +472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const firstName = loginForm.querySelector('input[placeholder="First name"]')?.value || '';
       const lastName = loginForm.querySelector('input[placeholder="Last name"]')?.value || '';
       const email = loginForm.querySelector('input[type="email"]').value;
-      const password = loginForm.querySelector('input[type="password"]').value;
+      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
       const termsCheckbox = loginForm.querySelector('#termsCheckbox');
 
       if (!email || !password) return alert("Please provide email and password.");
