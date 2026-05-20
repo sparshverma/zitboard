@@ -286,7 +286,9 @@ async function redirectToDashboardViaSupabase(session, returnTo, tenantId) {
     returnTo: resolvedReturnTo,
   });
 
-  window.location.replace(`${DASHBOARD_URL}/auth/callback`);
+  const fallbackCallbackUrl = new URL(`${DASHBOARD_URL}/auth/callback`);
+  fallbackCallbackUrl.searchParams.set('returnTo', resolvedReturnTo);
+  window.location.replace(fallbackCallbackUrl.toString());
 }
 
 async function bridgeSupabaseSession(session, returnTo, tenantId) {
@@ -352,7 +354,7 @@ async function handleAuthResponse(response, context) {
   }
   
   if (data?.session) {
-    redirectToDashboardViaSupabase(data.session, '/', tenantId);
+    await redirectToDashboardViaSupabase(data.session, mode === 'signup' ? '/onboarding' : '/', tenantId);
     return;
   }
 
@@ -362,7 +364,7 @@ async function handleAuthResponse(response, context) {
       const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
       if (signInResponse.data?.session) {
         await handleAuthResponse(signInResponse, {
-          mode: 'login',
+          mode: 'signup',
           email,
           tenantId: resolveLoginTenantId(email),
         });
