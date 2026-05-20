@@ -432,7 +432,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     return false;
   };
 
-  
+  // Password visibility toggles
+  document.querySelectorAll('.auth-password-toggle').forEach((toggleBtn) => {
+    toggleBtn.addEventListener('click', () => {
+      const group = toggleBtn.closest('.auth-input-group');
+      const input = group?.querySelector('input');
+      if (!input) return;
+
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+
+      const icon = toggleBtn.querySelector('[data-lucide]');
+      if (icon) {
+        icon.setAttribute('data-lucide', isHidden ? 'eye' : 'eye-off');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+  });
+
   // Login Form
   const loginForm = document.querySelector('#loginForm, #signupForm, #forgotForm, form');
   if (window.location.pathname.includes('login') && loginForm) {

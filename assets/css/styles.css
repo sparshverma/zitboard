@@ -4723,6 +4723,39 @@ input[type="checkbox"]:checked::after { left: 16px; }
   position: relative;
 }
 
+.auth-input-group .auth-input {
+  padding-right: 2.8rem;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(212, 230, 255, 0.52);
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: color 0.18s ease;
+}
+
+.auth-password-toggle:hover {
+  color: rgba(124, 245, 221, 0.9);
+}
+
+[data-theme="light"] .auth-password-toggle {
+  color: rgba(62, 89, 118, 0.55);
+}
+
+[data-theme="light"] .auth-password-toggle:hover {
+  color: rgba(14, 90, 80, 0.9);
+}
+
 .auth-input {
   width: 100%;
   min-height: 48px;
