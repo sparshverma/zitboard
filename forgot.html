@@ -7,10 +7,12 @@
   <meta name="supabase-anon-key" content="">
   <link rel="icon" type="image/webp" href="logo_nobg.webp">
   <title>Forgot Password - ZitBoard</title>
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://www.zitboard.dev/forgot" />
   <meta property="og:title" content="Forgot Password - ZitBoard" />
   <meta property="og:description" content="Reset your ZitBoard account password and regain access to your command center." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.zitboard.dev/forgot.html" />
+  <meta property="og:url" content="https://www.zitboard.dev/forgot" />
   <meta property="og:image" content="https://www.zitboard.dev/ogtags_cover.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -26,7 +28,7 @@
 <body>
   <div class="auth-wrapper">
     <header class="auth-top-brand">
-      <a class="auth-brand" href="index.html" aria-label="ZitBoard home">
+      <a class="auth-brand" href="/" aria-label="ZitBoard home">
         <img src="logo_nobg.webp" alt="" class="auth-brand-logo">
         <span>ZitBoard</span>
       </a>
@@ -42,7 +44,7 @@
         <h1 id="auth-title-forgot">Reset password</h1>
         <p class="subtitle">Enter the email associated with your account and we will send you a secure reset link.</p>
 
-        <form action="forgot.html" id="forgotForm">
+        <form action="/forgot" id="forgotForm">
           <div class="auth-form-grid full auth-form-grid-spacious">
             <input type="email" class="auth-input" placeholder="Email address" aria-label="Email Address" required>
           </div>
@@ -51,7 +53,7 @@
         </form>
 
         <div class="auth-divider auth-divider-tight">
-          <a href="login.html" class="auth-link-accent">Wait, I remember it! Go back</a>
+          <a href="/login" class="auth-link-accent">Wait, I remember it! Go back</a>
         </div>
 
         <div class="auth-divider">Or continue with</div>
@@ -71,9 +73,9 @@
 
     <footer class="auth-footer">
       <div class="auth-legal-links">
-        <a href="terms.html">Terms</a>
+        <a href="/terms">Terms</a>
         <span class="divider">·</span>
-        <a href="privacy-and-security.html">Privacy &amp; Security</a>
+        <a href="/privacy-and-security">Privacy &amp; Security</a>
       </div>
       <p class="auth-copyright">© 2026 ZitBoard</p>
     </footer>

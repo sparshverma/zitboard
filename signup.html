@@ -7,10 +7,12 @@
   <meta name="supabase-anon-key" content="">
   <link rel="icon" type="image/webp" href="logo_nobg.webp">
   <title>Sign Up - ZitBoard</title>
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://www.zitboard.dev/signup" />
   <meta property="og:title" content="Sign Up - ZitBoard" />
   <meta property="og:description" content="Create your ZitBoard account and unify CRM, hiring, and predictive AI in one command center." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://www.zitboard.dev/signup.html" />
+  <meta property="og:url" content="https://www.zitboard.dev/signup" />
   <meta property="og:image" content="https://www.zitboard.dev/ogtags_cover.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -26,7 +28,7 @@
 <body>
   <div class="auth-wrapper">
     <header class="auth-top-brand">
-      <a class="auth-brand" href="index.html" aria-label="ZitBoard home">
+      <a class="auth-brand" href="/" aria-label="ZitBoard home">
         <img src="logo_nobg.webp" alt="" class="auth-brand-logo">
         <span>ZitBoard</span>
       </a>
@@ -40,9 +42,9 @@
         </button>
 
         <h1 id="auth-title-signup">Create an account</h1>
-        <p class="subtitle">Already have an account? <a href="login.html">Log in</a></p>
+        <p class="subtitle">Already have an account? <a href="/login">Log in</a></p>
 
-        <form action="signup.html" id="signupForm">
+        <form action="/signup" id="signupForm">
           <div class="auth-form-grid">
             <input type="text" class="auth-input" placeholder="First name" aria-label="First Name" required>
             <input type="text" class="auth-input" placeholder="Last name" aria-label="Last Name" required>
@@ -59,7 +61,7 @@
 
           <label class="auth-checkbox auth-terms-checkbox" for="termsCheckbox">
             <input type="checkbox" id="termsCheckbox" required>
-            <span>I accept the <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms and Conditions</a></span>
+            <span>I accept the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a></span>
           </label>
 
           <button class="auth-btn-primary" type="submit">Create account</button>
@@ -82,9 +84,9 @@
 
     <footer class="auth-footer">
       <div class="auth-legal-links">
-        <a href="terms.html">Terms</a>
+        <a href="/terms">Terms</a>
         <span class="divider">·</span>
-        <a href="privacy-and-security.html">Privacy &amp; Security</a>
+        <a href="/privacy-and-security">Privacy &amp; Security</a>
       </div>
       <p class="auth-copyright">© 2026 ZitBoard</p>
     </footer>

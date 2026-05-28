@@ -1,6 +1,23 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/forgot-password",
+      "destination": "/forgot",
+      "permanent": true
+    },
+    {
+      "source": "/cookies",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api",

@@ -3,65 +3,47 @@
 
   <!-- Core -->
   <url>
-    <loc>https://zitboard.dev/</loc>
+    <loc>https://www.zitboard.dev/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- Product -->
   <url>
-    <loc>https://zitboard.dev/product</loc>
+    <loc>https://www.zitboard.dev/product</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://zitboard.dev/integrations</loc>
+    <loc>https://www.zitboard.dev/integrations</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://zitboard.dev/pricing</loc>
+    <loc>https://www.zitboard.dev/pricing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Account -->
-  <url>
-    <loc>https://zitboard.dev/login</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://zitboard.dev/signup</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://zitboard.dev/forgot-password</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
   <!-- Legal -->
   <url>
-    <loc>https://zitboard.dev/privacy-and-security</loc>
+    <loc>https://www.zitboard.dev/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://zitboard.dev/terms</loc>
+    <loc>https://www.zitboard.dev/privacy-and-security</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://zitboard.dev/security</loc>
+    <loc>https://www.zitboard.dev/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://zitboard.dev/cookies</loc>
+    <loc>https://www.zitboard.dev/security</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.4</priority>
   </url>
-
 </urlset>
