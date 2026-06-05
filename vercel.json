@@ -9,7 +9,17 @@
     },
     {
       "source": "/cookies",
-      "destination": "/privacy",
+      "destination": "/privacy-and-security",
+      "permanent": true
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy-and-security",
+      "permanent": true
+    },
+    {
+      "source": "/security",
+      "destination": "/privacy-and-security",
       "permanent": true
     },
     {
