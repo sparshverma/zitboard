@@ -471,16 +471,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('login') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = loginForm.querySelector('input[type="email"]').value;
-      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
-      
-      if (!email || !password) return alert("Please enter both email and password.");
-      if (!(await requireEmailAuth())) return;
       
       const submitBtn = loginForm.querySelector('button[type="submit"]');
       const originalHtml = setBtnLoading(submitBtn, 'Logging in...');
 
+      const email = loginForm.querySelector('input[type="email"]').value;
+      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
+      
+      if (!email || !password) {
+        restoreBtn(submitBtn, originalHtml);
+        return alert("Please enter both email and password.");
+      }
+
       try {
+        if (!(await requireEmailAuth())) {
+          restoreBtn(submitBtn, originalHtml);
+          return;
+        }
+        
         const response = await supabaseClient.auth.signInWithPassword({ email, password });
         const success = await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
         if (!success) {
@@ -497,15 +505,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('signup') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      // Adjust to grab the appropriate query selectors
-      const firstName = loginForm.querySelector('input[placeholder="First name"]')?.value || '';
-      const lastName = loginForm.querySelector('input[placeholder="Last name"]')?.value || '';
-      const email = loginForm.querySelector('input[type="email"]').value;
-      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
+
       const termsCheckbox = loginForm.querySelector('#termsCheckbox');
-
-      if (!email || !password) return alert("Please provide email and password.");
-
       if (termsCheckbox && !termsCheckbox.checked) {
         termsCheckbox.classList.add('input-error');
         termsCheckbox.focus();
@@ -513,15 +514,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         return alert('Please accept the Terms and Conditions to create an account.');
       }
 
-      if (!(await requireEmailAuth())) return;
-
       const submitBtn = loginForm.querySelector('button[type="submit"]');
       const originalHtml = setBtnLoading(submitBtn, 'Creating account...');
+
+      // Adjust to grab the appropriate query selectors
+      const firstName = loginForm.querySelector('input[placeholder="First name"]')?.value || '';
+      const lastName = loginForm.querySelector('input[placeholder="Last name"]')?.value || '';
+      const email = loginForm.querySelector('input[type="email"]').value;
+      const password = (loginForm.querySelector('.auth-input-group input') || loginForm.querySelector('input[type="password"]')).value;
+
+      if (!email || !password) {
+        restoreBtn(submitBtn, originalHtml);
+        return alert("Please provide email and password.");
+      }
 
       const tenantId = buildSignupTenantId(email);
       rememberTenantForEmail(email, tenantId);
 
       try {
+        if (!(await requireEmailAuth())) {
+          restoreBtn(submitBtn, originalHtml);
+          return;
+        }
+
         const response = await supabaseClient.auth.signUp({ 
           email, 
           password,
@@ -548,15 +563,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('forgot') && loginForm) {
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = loginForm.querySelector('input[type="email"]').value;
       
-      if (!email) return alert("Please enter your email.");
-      if (!(await requireEmailAuth())) return;
-
       const submitBtn = loginForm.querySelector('button[type="submit"]');
       const originalHtml = setBtnLoading(submitBtn, 'Sending reset link...');
 
+      const email = loginForm.querySelector('input[type="email"]').value;
+      
+      if (!email) {
+        restoreBtn(submitBtn, originalHtml);
+        return alert("Please enter your email.");
+      }
+
       try {
+        if (!(await requireEmailAuth())) {
+          restoreBtn(submitBtn, originalHtml);
+          return;
+        }
+
         const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password.html`,
         });
