@@ -355,6 +355,25 @@ async function bridgeSupabaseSession(session, returnTo, tenantId) {
   return false;
 }
 
+// Helper to set button loading state
+function setBtnLoading(btn, loadingText) {
+  if (!btn) return null;
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.classList.add('is-loading');
+  btn.setAttribute('aria-busy', 'true');
+  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin" style="margin-right: 8px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> ${loadingText}`;
+  return originalHtml;
+}
+
+function restoreBtn(btn, originalHtml) {
+  if (!btn || originalHtml === null) return;
+  btn.disabled = false;
+  btn.classList.remove('is-loading');
+  btn.removeAttribute('aria-busy');
+  btn.innerHTML = originalHtml;
+}
+
 async function handleAuthResponse(response, context) {
   const { data, error } = response;
   const mode = context?.mode || 'login';
@@ -371,17 +390,16 @@ async function handleAuthResponse(response, context) {
 
     if (alreadyRegistered) {
       const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
-      await handleAuthResponse(signInResponse, { mode: 'login', tenantId: resolveLoginTenantId(email) });
-      return;
+      return await handleAuthResponse(signInResponse, { mode: 'login', tenantId: resolveLoginTenantId(email) });
     }
 
     alert(`Authentication Error: ${error.message}`);
-    return;
+    return false;
   }
   
   if (data?.session) {
     await redirectToDashboardViaSupabase(data.session, mode === 'signup' ? '/onboarding' : '/', tenantId);
-    return;
+    return true;
   }
 
   if (mode === 'signup' && data?.user && password) {
@@ -389,17 +407,16 @@ async function handleAuthResponse(response, context) {
     if (email) {
       const signInResponse = await supabaseClient.auth.signInWithPassword({ email, password });
       if (signInResponse.data?.session) {
-        await handleAuthResponse(signInResponse, {
+        return await handleAuthResponse(signInResponse, {
           mode: 'signup',
           email,
           tenantId: resolveLoginTenantId(email),
         });
-        return;
       }
 
       if (signInResponse.error) {
         alert('Account created. Please verify your email if required, then log in.');
-        return;
+        return false;
       }
     }
   }
@@ -407,6 +424,7 @@ async function handleAuthResponse(response, context) {
   if (data?.user) {
     alert('Please check your email to confirm your account!');
   }
+  return false;
 }
 
 // ---------------------------------------------
@@ -459,8 +477,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!email || !password) return alert("Please enter both email and password.");
       if (!(await requireEmailAuth())) return;
       
-      const response = await supabaseClient.auth.signInWithPassword({ email, password });
-      await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      const originalHtml = setBtnLoading(submitBtn, 'Logging in...');
+
+      try {
+        const response = await supabaseClient.auth.signInWithPassword({ email, password });
+        const success = await handleAuthResponse(response, { mode: 'login', email, tenantId: resolveLoginTenantId(email) });
+        if (!success) {
+          restoreBtn(submitBtn, originalHtml);
+        }
+      } catch (err) {
+        console.error(err);
+        restoreBtn(submitBtn, originalHtml);
+      }
     });
   }
 
@@ -486,21 +515,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (!(await requireEmailAuth())) return;
 
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      const originalHtml = setBtnLoading(submitBtn, 'Creating account...');
+
       const tenantId = buildSignupTenantId(email);
       rememberTenantForEmail(email, tenantId);
 
-      const response = await supabaseClient.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: {
-            full_name: `${firstName} ${lastName}`.trim(),
-            terms_accepted: true,
-            terms_accepted_at: new Date().toISOString()
+      try {
+        const response = await supabaseClient.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            data: {
+              full_name: `${firstName} ${lastName}`.trim(),
+              terms_accepted: true,
+              terms_accepted_at: new Date().toISOString()
+            }
           }
+        });
+        const success = await handleAuthResponse(response, { mode: 'signup', password, email, tenantId });
+        if (!success) {
+          restoreBtn(submitBtn, originalHtml);
         }
-      });
-      await handleAuthResponse(response, { mode: 'signup', password, email, tenantId });
+      } catch (err) {
+        console.error(err);
+        restoreBtn(submitBtn, originalHtml);
+      }
     });
   }
 
@@ -513,17 +553,27 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!email) return alert("Please enter your email.");
       if (!(await requireEmailAuth())) return;
 
-      const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password.html`,
-      });
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+      const originalHtml = setBtnLoading(submitBtn, 'Sending reset link...');
 
-      if (error) {
-        alert(`Error: ${error.message}`);
-      } else {
-        alert('Password reset link sent to your email!');
+      try {
+        const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password.html`,
+        });
+
+        if (error) {
+          alert(`Error: ${error.message}`);
+        } else {
+          alert('Password reset link sent to your email!');
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        restoreBtn(submitBtn, originalHtml);
       }
     });
   }
+
 
   // ---------------------------------------------
   // 2. Setup OAuth (Google, Microsoft, Twitter) Providers
