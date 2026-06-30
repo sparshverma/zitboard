@@ -6171,3 +6171,50 @@ input[type="checkbox"]:checked::after { left: 16px; }
   }
 }
 
+/* -------------------------------------
+ * PRODUCT HUNT FLOATING BADGE STYLES
+ * ------------------------------------- */
+.ph-badge-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.15));
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ph-badge-container:hover {
+  transform: translateY(-2px);
+}
+
+.ph-badge-container .ph-badge-dark {
+  display: none;
+}
+
+.ph-badge-container .ph-badge-light {
+  display: block;
+}
+
+[data-theme="dark"] .ph-badge-container .ph-badge-dark {
+  display: block;
+}
+
+[data-theme="dark"] .ph-badge-container .ph-badge-light {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .ph-badge-container {
+    bottom: 16px;
+    left: 16px;
+    transform: scale(0.85);
+    transform-origin: bottom left;
+  }
+  .ph-badge-container:hover {
+    transform: scale(0.85) translateY(-2px);
+  }
+}
+
