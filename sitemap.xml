@@ -15,6 +15,26 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.zitboard.dev/blogs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.zitboard.dev/blog-choose-crm-saas</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.zitboard.dev/blog-crm-software-examples</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.zitboard.dev/blog-strategy-to-execution</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.zitboard.dev/integrations</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
